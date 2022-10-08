@@ -1,4 +1,4 @@
-package com.licenta.database.business.models;
+package com.licenta.database.business.models.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,8 +12,9 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuthenticateUserRequest {
+public class UserResponse {
 
-    private String username;
+    private String id;
+    private String email;
     private String password;
 }

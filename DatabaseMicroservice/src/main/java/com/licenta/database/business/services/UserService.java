@@ -1,18 +1,22 @@
 package com.licenta.database.business.services;
 
 import com.licenta.database.business.interfaces.IUserService;
-import com.licenta.database.business.models.AuthenticateUserRequest;
-import com.licenta.database.business.models.CreateUserRequest;
-import com.licenta.database.business.models.UpdateUserPasswordRequest;
+import com.licenta.database.business.models.user.AuthenticateUserRequest;
+import com.licenta.database.business.models.user.CreateUserRequest;
+import com.licenta.database.business.models.user.UpdateUserPasswordRequest;
+import com.licenta.database.business.models.user.UserResponse;
 import com.licenta.database.business.util.converters.UserConverter;
-import com.licenta.database.business.util.exceptions.AlreadyExistsException;
+import com.licenta.database.business.util.exceptions.EmailAlreadyInUseException;
 import com.licenta.database.business.util.exceptions.FailedAuthenticationException;
 import com.licenta.database.business.util.exceptions.NotFoundException;
 import com.licenta.database.business.util.validators.Validator;
-import com.licenta.database.persistence.models.UserModel;
+import com.licenta.database.persistence.models.User;
 import com.licenta.database.persistence.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 public class UserService implements IUserService {
@@ -24,73 +28,80 @@ public class UserService implements IUserService {
     @Autowired
     private Validator validator;
 
-    private static final String USER_ALREADY_EXISTS_MESSAGE = "User with username <%s> already exists.";
-    private static final String USER_NOT_FOUND_MESSAGE = "User with username <%s> does not exist.";
-    private static final String INCORRECT_PASSWORD_MESSAGE = "Incorrect password for user with username <%s>.";
+    private static final String EMAIL_ALREADY_IN_USE_MESSAGE = "Email <%s> is already in use.";
+    protected static final String USER_NOT_FOUND_MESSAGE = "User with id <%s> does not exist.";
+    private static final String FAILED_AUTHENTICATION_MESSAGE = "Incorrect email or password.";
 
+    // TODO: encrypt password
     @Override
-    public void addUser(CreateUserRequest request) {
+    public void createUser(CreateUserRequest request) {
         validator.validate(request);
 
-        String username = request.getUsername();
+        String email = request.getEmail();
 
-        if (userRepository.findById(username).isPresent()) {
-            throw new AlreadyExistsException(String.format(USER_ALREADY_EXISTS_MESSAGE, username));
+        if (userRepository.findUserByEmail(email).isPresent()) {
+            throw new EmailAlreadyInUseException(String.format(EMAIL_ALREADY_IN_USE_MESSAGE, email));
         }
 
-        UserModel userModel = userConverter.toModel(request);
-        userRepository.save(userModel);
+        User user = userConverter.toModel(request);
+        userRepository.save(user);
     }
 
     @Override
-    public UserModel getUser(String username) {
-        validator.validate(username);
+    public UserResponse getUser(String id) {
+        validator.validate(id);
 
-        return userRepository.findById(username).orElseThrow(
-                () -> new NotFoundException(String.format(USER_NOT_FOUND_MESSAGE, username))
-        );
+        User user = getUserOrElseThrowException(id);
+        
+        return userConverter.toResponse(user);
     }
 
     @Override
-    public Iterable<UserModel> getUsers() {
-        return userRepository.findAll();
+    public Iterable<UserResponse> getUsers() {
+
+        return StreamSupport.stream(userRepository.findAll().spliterator(), false)
+                .map(user -> userConverter.toResponse(user))
+                .collect(Collectors.toList());
     }
 
     @Override
-    public void updateUserPassword(String username, UpdateUserPasswordRequest request) {
-        validator.validate(username);
+    public void updateUserPassword(String id, UpdateUserPasswordRequest request) {
+        validator.validate(id);
         validator.validate(request);
 
-        UserModel userModel = userRepository.findById(username).orElseThrow(
-                () -> new NotFoundException(String.format(USER_NOT_FOUND_MESSAGE, username))
-        );
-
-        userModel.setPassword(request.getPassword());
-        userRepository.save(userModel);
+        User user = getUserOrElseThrowException(id);
+        
+        user.setPassword(request.getPassword());
+        userRepository.save(user);
     }
 
     @Override
-    public void deleteUser(String username) {
-        validator.validate(username);
+    public void deleteUser(String id) {
+        validator.validate(id);
 
-        userRepository.findById(username).orElseThrow(
-                () -> new NotFoundException(String.format(USER_NOT_FOUND_MESSAGE, username))
-        );
+        getUserOrElseThrowException(id);
 
-        userRepository.deleteById(username);
+        userRepository.deleteById(id);
     }
 
     @Override
     public void authenticate(AuthenticateUserRequest request) {
         validator.validate(request);
 
-        String username = request.getUsername();
+        String email = request.getEmail();
 
-        UserModel userModel = userRepository.findById(username).orElseThrow(
-                () -> new NotFoundException(String.format(USER_NOT_FOUND_MESSAGE, username))
+        User user = userRepository.findUserByEmail(email).orElseThrow(
+                () -> new FailedAuthenticationException(FAILED_AUTHENTICATION_MESSAGE)
         );
 
-        if(!userModel.getPassword().equals(request.getPassword()))
-            throw new FailedAuthenticationException(String.format(INCORRECT_PASSWORD_MESSAGE, username));
+        if(!user.getPassword().equals(request.getPassword()))
+            throw new FailedAuthenticationException(FAILED_AUTHENTICATION_MESSAGE);
+    }
+    
+    private User getUserOrElseThrowException(String id) {
+        
+        return userRepository.findById(id).orElseThrow(
+                () -> new NotFoundException(String.format(USER_NOT_FOUND_MESSAGE, id))
+        );
     }
 }

@@ -1,4 +1,4 @@
-package com.licenta.database.business.models;
+package com.licenta.database.business.models.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,7 +12,8 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdateUserPasswordRequest {
+public class AuthenticateUserRequest {
 
+    private String email;
     private String password;
 }

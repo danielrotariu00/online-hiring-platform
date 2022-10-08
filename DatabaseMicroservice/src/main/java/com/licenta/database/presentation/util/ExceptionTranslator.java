@@ -7,15 +7,15 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
-public class GlobalExceptionHandler {
+public class ExceptionTranslator {
 
     @ExceptionHandler(ExceptionWithStatus.class)
-    public ResponseEntity<String> handleConflict(ExceptionWithStatus ex) {
+    public ResponseEntity<String> translate(ExceptionWithStatus ex) {
         return new ResponseEntity<>(ex.getMessage(), ex.getStatus());
     }
 
     @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<String> handleConflict() {
+    public ResponseEntity<String> translate() {
         return new ResponseEntity<>("An error occurred while processing your request", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

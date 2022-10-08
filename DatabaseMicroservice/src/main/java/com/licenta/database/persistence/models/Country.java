@@ -9,8 +9,9 @@ import lombok.Setter;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
+import java.util.Set;
 
 @Getter
 @Setter
@@ -18,13 +19,13 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="user")
-public class UserModel {
+@Table(name="country")
+public class Country {
 
     @Id
     @NonNull
-    private String username;
+    private String name;
 
-    @NonNull
-    private String password;
+    @OneToMany(mappedBy="country")
+    private Set<City> cities;
 }

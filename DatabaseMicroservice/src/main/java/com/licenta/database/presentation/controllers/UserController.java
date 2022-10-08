@@ -1,10 +1,10 @@
 package com.licenta.database.presentation.controllers;
 
 import com.licenta.database.business.interfaces.IUserService;
-import com.licenta.database.business.models.AuthenticateUserRequest;
-import com.licenta.database.business.models.CreateUserRequest;
-import com.licenta.database.business.models.UpdateUserPasswordRequest;
-import com.licenta.database.persistence.models.UserModel;
+import com.licenta.database.business.models.user.AuthenticateUserRequest;
+import com.licenta.database.business.models.user.CreateUserRequest;
+import com.licenta.database.business.models.user.UpdateUserPasswordRequest;
+import com.licenta.database.business.models.user.UserResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,32 +23,39 @@ public class UserController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(method=RequestMethod.POST)
-    public void addUser (@RequestBody CreateUserRequest createUserRequest) {
-        userService.addUser(createUserRequest);
+    public void createUser (@RequestBody CreateUserRequest createUserRequest) {
+
+        userService.createUser(createUserRequest);
     }
 
     @RequestMapping(method=RequestMethod.GET)
-    public Iterable<UserModel> getAllUsers() {
+    public Iterable<UserResponse> getAllUsers() {
+
         return userService.getUsers();
     }
 
-    @RequestMapping(value="/{username}", method=RequestMethod.GET)
-    public UserModel getUser(@PathVariable String username) {
-        return userService.getUser(username);
+    @RequestMapping(value="/{id}", method=RequestMethod.GET)
+    public UserResponse getUser(@PathVariable String id) {
+
+        return userService.getUser(id);
     }
 
-    @RequestMapping(value="/{username}", method=RequestMethod.PATCH)
-    public void updateUserPassword(@PathVariable String username, @RequestBody UpdateUserPasswordRequest request) {
-        userService.updateUserPassword(username, request);
+    @RequestMapping(value="/{id}", method=RequestMethod.PATCH)
+    public void updateUserPassword(@PathVariable String id,
+                                   @RequestBody UpdateUserPasswordRequest request) {
+
+        userService.updateUserPassword(id, request);
     }
 
-    @RequestMapping(value="/{username}", method=RequestMethod.DELETE)
-    public void deleteUser(@PathVariable String username) {
-        userService.deleteUser(username);
+    @RequestMapping(value="/{id}", method=RequestMethod.DELETE)
+    public void deleteUser(@PathVariable String id) {
+
+        userService.deleteUser(id);
     }
 
     @RequestMapping(value="/login", method=RequestMethod.POST)
     public void login(@RequestBody AuthenticateUserRequest request) {
+
         userService.authenticate(request);
     }
 }
