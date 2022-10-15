@@ -6,7 +6,7 @@ import com.licenta.database.business.models.user.CreateUserRequest;
 import com.licenta.database.business.models.user.UpdateUserPasswordRequest;
 import com.licenta.database.business.models.user.UserResponse;
 import com.licenta.database.business.util.converters.UserConverter;
-import com.licenta.database.business.util.exceptions.EmailAlreadyInUseException;
+import com.licenta.database.business.util.exceptions.AlreadyExistsException;
 import com.licenta.database.business.util.exceptions.FailedAuthenticationException;
 import com.licenta.database.business.util.exceptions.NotFoundException;
 import com.licenta.database.business.util.validators.Validator;
@@ -40,7 +40,7 @@ public class UserService implements IUserService {
         String email = request.getEmail();
 
         if (userRepository.findUserByEmail(email).isPresent()) {
-            throw new EmailAlreadyInUseException(String.format(EMAIL_ALREADY_IN_USE_MESSAGE, email));
+            throw new AlreadyExistsException(String.format(EMAIL_ALREADY_IN_USE_MESSAGE, email));
         }
 
         User user = userConverter.toModel(request);

@@ -14,7 +14,7 @@ public class ExceptionTranslator {
         return new ResponseEntity<>(ex.getMessage(), ex.getStatus());
     }
 
-    @ExceptionHandler(RuntimeException.class)
+    // @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<String> translate() {
         return new ResponseEntity<>("An error occurred while processing your request", HttpStatus.INTERNAL_SERVER_ERROR);
     }

@@ -7,13 +7,10 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.Setter;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import java.util.Set;
 import java.util.UUID;
@@ -25,8 +22,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="user")
-public class User {
+@Table(name="company")
+public class Company {
 
     @Id
     @NonNull
@@ -34,16 +31,11 @@ public class User {
 
     @NonNull
     @Column(unique=true)
-    private String email;
+    private String name;
 
     @NonNull
-    private String password;
+    private String photo;
 
-    // Foreign keys
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    @PrimaryKeyJoinColumn
-    private UserDetails userDetails;
-
-    @OneToMany(mappedBy = "user")
-    private Set<CompanyFollower> followedCompanies;
+    @OneToMany(mappedBy = "company")
+    private Set<CompanyFollower> followers;
 }

@@ -67,10 +67,10 @@ public class UserDetailsService implements IUserDetailsService {
             return UserDetailsResponse.builder().build();
     }
 
-    private User getUserOrElseThrowException(String username) {
+    private User getUserOrElseThrowException(String id) {
 
-        return userRepository.findById(username).orElseThrow(
-                () -> new NotFoundException(String.format(USER_NOT_FOUND_MESSAGE, username))
+        return userRepository.findById(id).orElseThrow(
+                () -> new NotFoundException(String.format(USER_NOT_FOUND_MESSAGE, id))
         );
     }
 

@@ -1,5 +1,7 @@
 package com.licenta.database.business.util.validators;
 
+import com.licenta.database.business.models.companyfollower.CompanyFollowerRequest;
+import com.licenta.database.business.models.company.CreateCompanyRequest;
 import com.licenta.database.business.models.userdetails.SaveUserDetailsRequest;
 import com.licenta.database.business.models.user.AuthenticateUserRequest;
 import com.licenta.database.business.models.user.CreateUserRequest;
@@ -33,6 +35,18 @@ public class Validator {
         checkNotNull(request);
         validate(request.getEmail());
         validate(request.getPassword());
+    }
+
+    public void validate(CreateCompanyRequest request) {
+        checkNotNull(request);
+        validate(request.getName());
+        validate(request.getPhoto());
+    }
+
+    public void validate(CompanyFollowerRequest request) {
+        checkNotNull(request);
+        validate(request.getUserId());
+        validate(request.getCompanyId());
     }
 
     public void validate(UpdateUserPasswordRequest request) {
