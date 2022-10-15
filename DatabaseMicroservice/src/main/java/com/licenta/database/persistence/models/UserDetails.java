@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 import lombok.Setter;
 
 import javax.persistence.CascadeType;
@@ -14,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotEmpty;
 
 
 @Getter
@@ -26,24 +26,19 @@ import javax.persistence.Table;
 public class UserDetails {
 
     @Id
+    @NotEmpty
     private String userId;
-
-    @NonNull
+    @NotEmpty
     private String firstName;
-
-    @NonNull
+    @NotEmpty
     private String lastName;
-
-    @NonNull
+    @NotEmpty
     private String phoneNumber;
-
-    @NonNull
+    @NotEmpty
     private String address;
-
-    @NonNull
+    @NotEmpty
     private String profileDescription;
-
-    @NonNull
+    @NotEmpty
     private String profilePicture;
 
     // Foreign keys

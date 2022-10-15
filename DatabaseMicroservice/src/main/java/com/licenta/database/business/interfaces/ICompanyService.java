@@ -6,7 +6,7 @@ import com.licenta.database.business.models.company.CreateCompanyRequest;
 public interface ICompanyService {
 
     void createCompany(CreateCompanyRequest request);
-    CompanyResponse getCompany(String id);
+    CompanyResponse getCompany(String companyId);
     Iterable<CompanyResponse> getCompanies();
-    void deleteCompany(String id);
+    void deleteCompany(String companyId);
 }

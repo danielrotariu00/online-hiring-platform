@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
+
 @RestController
 @RequestMapping(value="/users/{userId}/details")
 public class UserDetailsController {
@@ -18,14 +21,13 @@ public class UserDetailsController {
     private IUserDetailsService userDetailsService;
 
     @RequestMapping(method=RequestMethod.PUT)
-    public void saveUserDetails (@PathVariable String userId,
-                                @RequestBody SaveUserDetailsRequest request) {
+    public void saveUserDetails(@NotEmpty @PathVariable String userId, @Valid @RequestBody SaveUserDetailsRequest request) {
 
         userDetailsService.saveUserDetails(userId, request);
     }
 
     @RequestMapping(method=RequestMethod.GET)
-    public UserDetailsResponse getUserDetails(@PathVariable String userId) {
+    public UserDetailsResponse getUserDetails(@NotEmpty @PathVariable String userId) {
 
         return userDetailsService.getUserDetails(userId);
     }

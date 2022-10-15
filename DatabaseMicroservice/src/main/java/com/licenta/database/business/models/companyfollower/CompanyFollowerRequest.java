@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.NotEmpty;
+
 
 @Getter
 @Setter
@@ -14,6 +16,8 @@ import lombok.Setter;
 @AllArgsConstructor
 public class CompanyFollowerRequest {
 
+    @NotEmpty
     private String userId;
+    @NotEmpty
     private String companyId;
 }

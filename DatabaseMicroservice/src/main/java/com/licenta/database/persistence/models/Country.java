@@ -4,13 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 import lombok.Setter;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotEmpty;
 import java.util.Set;
 
 @Getter
@@ -23,7 +23,7 @@ import java.util.Set;
 public class Country {
 
     @Id
-    @NonNull
+    @NotEmpty
     private String name;
 
     @OneToMany(mappedBy="country")

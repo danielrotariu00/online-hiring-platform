@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
+
 @RestController
 @RequestMapping(value="/users")
 public class UserController {
@@ -23,7 +26,7 @@ public class UserController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(method=RequestMethod.POST)
-    public void createUser (@RequestBody CreateUserRequest createUserRequest) {
+    public void createUser (@Valid @RequestBody CreateUserRequest createUserRequest) {
 
         userService.createUser(createUserRequest);
     }
@@ -35,26 +38,25 @@ public class UserController {
     }
 
     @RequestMapping(value="/{id}", method=RequestMethod.GET)
-    public UserResponse getUser(@PathVariable String id) {
+    public UserResponse getUser(@NotEmpty @PathVariable String id) {
 
         return userService.getUser(id);
     }
 
     @RequestMapping(value="/{id}", method=RequestMethod.PATCH)
-    public void updateUserPassword(@PathVariable String id,
-                                   @RequestBody UpdateUserPasswordRequest request) {
+    public void updateUserPassword(@NotEmpty @PathVariable String id, @Valid @RequestBody UpdateUserPasswordRequest request) {
 
         userService.updateUserPassword(id, request);
     }
 
     @RequestMapping(value="/{id}", method=RequestMethod.DELETE)
-    public void deleteUser(@PathVariable String id) {
+    public void deleteUser(@NotEmpty @PathVariable String id) {
 
         userService.deleteUser(id);
     }
 
     @RequestMapping(value="/login", method=RequestMethod.POST)
-    public void login(@RequestBody AuthenticateUserRequest request) {
+    public void login(@Valid @RequestBody AuthenticateUserRequest request) {
 
         userService.authenticate(request);
     }

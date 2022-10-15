@@ -8,9 +8,9 @@ import com.licenta.database.business.models.user.UserResponse;
 public interface IUserService {
 
     void createUser(CreateUserRequest request);
-    UserResponse getUser(String id);
+    UserResponse getUser(String userId);
     Iterable<UserResponse> getUsers();
-    void updateUserPassword(String id, UpdateUserPasswordRequest request);
-    void deleteUser(String id);
+    void updateUserPassword(String userId, UpdateUserPasswordRequest request);
+    void deleteUser(String userId);
     void authenticate(AuthenticateUserRequest request);
 }
