@@ -1,7 +1,7 @@
 package com.licenta.database.business.services;
 
 import com.licenta.database.business.util.exceptions.NotFoundException;
-import com.licenta.database.persistence.models.Country;
+import com.licenta.database.persistence.entities.Country;
 import com.licenta.database.persistence.repositories.CountryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,12 +12,12 @@ public class CountryService {
     @Autowired
     private CountryRepository countryRepository;
 
-    static final String COUNTRY_NOT_FOUND_MESSAGE = "Country <%s> does not exist.";
+    static final String COUNTRY_NOT_FOUND_MESSAGE = "Country with id <%s> does not exist.";
 
-    public Country getCountryOrElseThrowException(String countryName) {
+    public Country getCountryOrElseThrowException(Integer countryId) {
 
-        return countryRepository.findById(countryName).orElseThrow(
-                () -> new NotFoundException(String.format(COUNTRY_NOT_FOUND_MESSAGE, countryName))
+        return countryRepository.findById(countryId).orElseThrow(
+                () -> new NotFoundException(String.format(COUNTRY_NOT_FOUND_MESSAGE, countryId))
         );
     }
 }

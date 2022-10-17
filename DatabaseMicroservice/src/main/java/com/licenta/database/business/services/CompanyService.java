@@ -1,12 +1,12 @@
 package com.licenta.database.business.services;
 
 import com.licenta.database.business.interfaces.ICompanyService;
-import com.licenta.database.business.models.company.CompanyResponse;
-import com.licenta.database.business.models.company.CreateCompanyRequest;
+import com.licenta.database.business.model.company.CompanyResponse;
+import com.licenta.database.business.model.company.CreateCompanyRequest;
 import com.licenta.database.business.util.exceptions.AlreadyExistsException;
 import com.licenta.database.business.util.exceptions.NotFoundException;
 import com.licenta.database.business.util.mappers.CompanyMapper;
-import com.licenta.database.persistence.models.Company;
+import com.licenta.database.persistence.entities.Company;
 import com.licenta.database.persistence.repositories.CompanyRepository;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;

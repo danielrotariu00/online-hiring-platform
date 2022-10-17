@@ -1,8 +1,8 @@
 package com.licenta.database.business.util.mappers;
 
-import com.licenta.database.business.models.userdetails.SaveUserDetailsRequest;
-import com.licenta.database.business.models.userdetails.UserDetailsResponse;
-import com.licenta.database.persistence.models.UserDetails;
+import com.licenta.database.business.model.userdetails.SaveUserDetailsRequest;
+import com.licenta.database.business.model.userdetails.UserDetailsResponse;
+import com.licenta.database.persistence.entities.UserDetails;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -14,6 +14,6 @@ public interface UserDetailsMapper {
 
     UserDetails toModel(SaveUserDetailsRequest request);
 
-    @Mapping(target="cityName", source="city.name")
+    @Mapping(target="cityId", source="city.id")
     UserDetailsResponse toResponse(UserDetails userDetails);
 }

@@ -1,14 +1,13 @@
 package com.licenta.database.business.services;
 
 import com.licenta.database.business.interfaces.IJobService;
-import com.licenta.database.business.models.job.JobRequest;
-import com.licenta.database.business.models.job.JobResponse;
+import com.licenta.database.business.model.job.JobRequest;
+import com.licenta.database.business.model.job.JobResponse;
 import com.licenta.database.business.util.exceptions.NotFoundException;
 import com.licenta.database.business.util.mappers.JobMapper;
-import com.licenta.database.persistence.models.City;
-import com.licenta.database.persistence.models.Company;
-import com.licenta.database.persistence.models.Country;
-import com.licenta.database.persistence.models.Job;
+import com.licenta.database.persistence.entities.City;
+import com.licenta.database.persistence.entities.CompanyIndustry;
+import com.licenta.database.persistence.entities.Job;
 import com.licenta.database.persistence.repositories.JobRepository;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +21,7 @@ import java.util.stream.StreamSupport;
 public class JobService implements IJobService {
 
     @Autowired
-    private CompanyService companyService;
+    private CompanyIndustryService companyIndustryService;
     @Autowired
     private CityService cityService;
     @Autowired
@@ -38,13 +37,12 @@ public class JobService implements IJobService {
     public void createJob(JobRequest request) {
         Job job = jobMapper.toModel(request);
 
-        City city = cityService.getCityOrElseThrowException(request.getCityName());
-        Country country = countryService.getCountryOrElseThrowException(request.getCountryName());
-        Company company = companyService.getCompanyOrElseThrowException(request.getCompanyId());
+        City city = cityService.getCityOrElseThrowException(request.getCityId());
+        CompanyIndustry companyIndustry =
+                companyIndustryService.getCompanyIndustryOrElseThrowException(request.getCompanyIndustryId());
 
         job.setCity(city);
-        job.setCountry(country);
-        job.setCompany(company);
+        job.setCompanyIndustry(companyIndustry);
 
         jobRepository.save(job);
     }
@@ -65,19 +63,28 @@ public class JobService implements IJobService {
     }
 
     @Override
+    public Iterable<JobResponse> getCompanyIndustryJobs(Integer companyIndustryId) {
+
+        companyIndustryService.getCompanyIndustryOrElseThrowException(companyIndustryId);
+
+        return jobRepository.findJobsByCompanyIndustryId(companyIndustryId).stream()
+                .map(jobMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public void updateJob(String jobId, JobRequest request) {
         Job job = getJobOrElseThrowException(jobId);
         Job newJob = jobMapper.toModel(request);
 
-        City city = cityService.getCityOrElseThrowException(request.getCityName());
-        Country country = countryService.getCountryOrElseThrowException(request.getCountryName());
-        Company company = companyService.getCompanyOrElseThrowException(request.getCompanyId());
+        City city = cityService.getCityOrElseThrowException(request.getCityId());
+        CompanyIndustry companyIndustry =
+                companyIndustryService.getCompanyIndustryOrElseThrowException(request.getCompanyIndustryId());
 
         newJob.setId(jobId);
-        newJob.setCreatedAt(job.getCreatedAt());
+        newJob.setPostedAt(job.getPostedAt());
         newJob.setCity(city);
-        newJob.setCountry(country);
-        newJob.setCompany(company);
+        newJob.setCompanyIndustry(companyIndustry);
 
         jobRepository.save(newJob);
     }

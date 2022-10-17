@@ -1,8 +1,8 @@
 package com.licenta.database.presentation.controllers;
 
 import com.licenta.database.business.interfaces.IUserDetailsService;
-import com.licenta.database.business.models.userdetails.SaveUserDetailsRequest;
-import com.licenta.database.business.models.userdetails.UserDetailsResponse;
+import com.licenta.database.business.model.userdetails.SaveUserDetailsRequest;
+import com.licenta.database.business.model.userdetails.UserDetailsResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;

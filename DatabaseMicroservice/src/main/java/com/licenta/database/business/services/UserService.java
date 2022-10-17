@@ -1,15 +1,15 @@
 package com.licenta.database.business.services;
 
 import com.licenta.database.business.interfaces.IUserService;
-import com.licenta.database.business.models.user.AuthenticateUserRequest;
-import com.licenta.database.business.models.user.CreateUserRequest;
-import com.licenta.database.business.models.user.UpdateUserPasswordRequest;
-import com.licenta.database.business.models.user.UserResponse;
+import com.licenta.database.business.model.user.AuthenticateUserRequest;
+import com.licenta.database.business.model.user.CreateUserRequest;
+import com.licenta.database.business.model.user.UpdateUserPasswordRequest;
+import com.licenta.database.business.model.user.UserResponse;
 import com.licenta.database.business.util.exceptions.AlreadyExistsException;
 import com.licenta.database.business.util.exceptions.FailedAuthenticationException;
 import com.licenta.database.business.util.exceptions.NotFoundException;
 import com.licenta.database.business.util.mappers.UserMapper;
-import com.licenta.database.persistence.models.User;
+import com.licenta.database.persistence.entities.User;
 import com.licenta.database.persistence.repositories.UserRepository;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;

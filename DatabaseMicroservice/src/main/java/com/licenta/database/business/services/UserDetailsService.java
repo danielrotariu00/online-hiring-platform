@@ -1,12 +1,12 @@
 package com.licenta.database.business.services;
 
 import com.licenta.database.business.interfaces.IUserDetailsService;
-import com.licenta.database.business.models.userdetails.SaveUserDetailsRequest;
-import com.licenta.database.business.models.userdetails.UserDetailsResponse;
+import com.licenta.database.business.model.userdetails.SaveUserDetailsRequest;
+import com.licenta.database.business.model.userdetails.UserDetailsResponse;
 import com.licenta.database.business.util.mappers.UserDetailsMapper;
-import com.licenta.database.persistence.models.City;
-import com.licenta.database.persistence.models.User;
-import com.licenta.database.persistence.models.UserDetails;
+import com.licenta.database.persistence.entities.City;
+import com.licenta.database.persistence.entities.User;
+import com.licenta.database.persistence.entities.UserDetails;
 import com.licenta.database.persistence.repositories.UserDetailsRepository;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +30,7 @@ public class UserDetailsService implements IUserDetailsService {
         UserDetails userDetails = userDetailsMapper.toModel(request);
 
         User user = userService.getUserOrElseThrowException(userId);
-        City city = cityService.getCityOrElseThrowException(request.getCityName());
+        City city = cityService.getCityOrElseThrowException(request.getCityId());
 
         userDetails.setUser(user);
         userDetails.setCity(city);

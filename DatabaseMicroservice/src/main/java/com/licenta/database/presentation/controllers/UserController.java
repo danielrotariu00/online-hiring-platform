@@ -1,10 +1,10 @@
 package com.licenta.database.presentation.controllers;
 
 import com.licenta.database.business.interfaces.IUserService;
-import com.licenta.database.business.models.user.AuthenticateUserRequest;
-import com.licenta.database.business.models.user.CreateUserRequest;
-import com.licenta.database.business.models.user.UpdateUserPasswordRequest;
-import com.licenta.database.business.models.user.UserResponse;
+import com.licenta.database.business.model.user.AuthenticateUserRequest;
+import com.licenta.database.business.model.user.CreateUserRequest;
+import com.licenta.database.business.model.user.UpdateUserPasswordRequest;
+import com.licenta.database.business.model.user.UserResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;

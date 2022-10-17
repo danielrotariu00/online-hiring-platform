@@ -1,8 +1,8 @@
 package com.licenta.database.presentation.controllers;
 
 import com.licenta.database.business.interfaces.ICompanyService;
-import com.licenta.database.business.models.company.CompanyResponse;
-import com.licenta.database.business.models.company.CreateCompanyRequest;
+import com.licenta.database.business.model.company.CompanyResponse;
+import com.licenta.database.business.model.company.CreateCompanyRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -37,15 +37,15 @@ public class CompanyController {
         return companyService.getCompanies();
     }
 
-    @RequestMapping(value="/{id}", method=RequestMethod.GET)
-    public CompanyResponse getUser(@NotEmpty @PathVariable String id) {
+    @RequestMapping(value="/{companyId}", method=RequestMethod.GET)
+    public CompanyResponse getUser(@NotEmpty @PathVariable String companyId) {
 
-        return companyService.getCompany(id);
+        return companyService.getCompany(companyId);
     }
 
-    @RequestMapping(value="/{id}", method=RequestMethod.DELETE)
-    public void deleteCompany(@NotEmpty @PathVariable String id) {
+    @RequestMapping(value="/{companyId}", method=RequestMethod.DELETE)
+    public void deleteCompany(@NotEmpty @PathVariable String companyId) {
 
-        companyService.deleteCompany(id);
+        companyService.deleteCompany(companyId);
     }
 }

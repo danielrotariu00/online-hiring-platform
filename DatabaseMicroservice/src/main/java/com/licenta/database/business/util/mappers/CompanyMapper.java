@@ -1,8 +1,8 @@
 package com.licenta.database.business.util.mappers;
 
-import com.licenta.database.business.models.company.CompanyResponse;
-import com.licenta.database.business.models.company.CreateCompanyRequest;
-import com.licenta.database.persistence.models.Company;
+import com.licenta.database.business.model.company.CompanyResponse;
+import com.licenta.database.business.model.company.CreateCompanyRequest;
+import com.licenta.database.persistence.entities.Company;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

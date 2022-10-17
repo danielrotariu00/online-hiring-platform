@@ -1,6 +1,6 @@
 package com.licenta.database.persistence.repositories;
 
-import com.licenta.database.persistence.models.Company;
+import com.licenta.database.persistence.entities.Company;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;
