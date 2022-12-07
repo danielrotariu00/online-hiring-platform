@@ -5,6 +5,7 @@ import com.licenta.databasemicroservice.business.model.job.JobRequest;
 import com.licenta.databasemicroservice.business.model.job.JobResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,10 +14,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Min;
 
 @Validated
 @RestController
+@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
 @RequestMapping(value="/jobs")
 public class JobController {
 
@@ -30,25 +32,25 @@ public class JobController {
     }
 
     @RequestMapping(method=RequestMethod.GET)
-    public Iterable<JobResponse> getAllJobs(@RequestParam(required = false) Integer companyIndustryId) {
+    public Iterable<JobResponse> getAllJobs(@RequestParam(required = false) Long companyIndustryId) {
 
         return (companyIndustryId == null) ? jobService.getJobs() : jobService.getCompanyIndustryJobs(companyIndustryId);
     }
 
     @RequestMapping(value="/{jobId}", method=RequestMethod.GET)
-    public JobResponse getJob(@NotEmpty @PathVariable String jobId) {
+    public JobResponse getJob(@Min(1) @PathVariable Long jobId) {
 
         return jobService.getJob(jobId);
     }
 
     @RequestMapping(value="/{jobId}", method=RequestMethod.PUT)
-    public void updateJob(@NotEmpty @PathVariable String jobId, @Valid @RequestBody JobRequest request) {
+    public void updateJob(@Min(1) @PathVariable Long jobId, @Valid @RequestBody JobRequest request) {
 
         jobService.updateJob(jobId, request);
     }
 
     @RequestMapping(value="/{jobId}", method=RequestMethod.DELETE)
-    public void deleteJob(@NotEmpty @PathVariable String jobId) {
+    public void deleteJob(@Min(1) @PathVariable Long jobId) {
 
         jobService.deleteJob(jobId);
     }

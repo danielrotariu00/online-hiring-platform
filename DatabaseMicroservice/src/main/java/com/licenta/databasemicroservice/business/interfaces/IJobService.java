@@ -6,9 +6,9 @@ import com.licenta.databasemicroservice.business.model.job.JobResponse;
 public interface IJobService {
 
     void createJob(JobRequest request);
-    JobResponse getJob(String jobId);
+    JobResponse getJob(Long jobId);
     Iterable<JobResponse> getJobs();
-    Iterable<JobResponse> getCompanyIndustryJobs(Integer companyIndustryId);
-    void updateJob(String jobId, JobRequest request);
-    void deleteJob(String jobId);
+    Iterable<JobResponse> getCompanyIndustryJobs(Long companyIndustryId);
+    void updateJob(Long jobId, JobRequest request);
+    void deleteJob(Long jobId);
 }

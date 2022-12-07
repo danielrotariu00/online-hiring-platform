@@ -39,7 +39,7 @@ public class CompanyService implements ICompanyService {
     }
 
     @Override
-    public CompanyResponse getCompany(String id) {
+    public CompanyResponse getCompany(Long id) {
         Company company = getCompanyOrElseThrowException(id);
 
         return companyMapper.toResponse(company);
@@ -54,14 +54,15 @@ public class CompanyService implements ICompanyService {
     }
 
     @Override
-    public void deleteCompany(String id) {
+    public void deleteCompany(Long id) {
 
         getCompanyOrElseThrowException(id);
 
         companyRepository.deleteById(id);
     }
 
-    public Company getCompanyOrElseThrowException(String id) {
+    @Override
+    public Company getCompanyOrElseThrowException(Long id) {
 
         return companyRepository.findById(id).orElseThrow(
                 () -> new NotFoundException(String.format(COMPANY_NOT_FOUND_MESSAGE, id))

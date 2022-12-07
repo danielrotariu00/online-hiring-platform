@@ -26,8 +26,7 @@ import javax.validation.constraints.NotEmpty;
 public class UserDetails {
 
     @Id
-    @NotEmpty
-    private String userId;
+    private Long userId;
     @NotEmpty
     private String firstName;
     @NotEmpty

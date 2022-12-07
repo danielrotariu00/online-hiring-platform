@@ -9,7 +9,7 @@ import javax.persistence.Table
 @Entity
 @Table(name = "call_table")
 class Call (
-    var userId: String,
+    var userId: Long,
     var lastTimestamp: LocalDateTime = LocalDateTime.now(),
-    @Id @GeneratedValue var id: Int? = null
+    @Id @GeneratedValue var id: Long? = null
 )

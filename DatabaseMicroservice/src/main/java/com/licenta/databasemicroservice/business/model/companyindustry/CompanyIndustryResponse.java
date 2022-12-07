@@ -14,7 +14,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class CompanyIndustryResponse {
 
-    private Integer id;
+    private Long id;
     private Integer industryId;
-    private String companyId;
+    private Long companyId;
 }

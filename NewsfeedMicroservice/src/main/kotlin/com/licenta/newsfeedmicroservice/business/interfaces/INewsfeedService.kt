@@ -4,5 +4,5 @@ import com.licenta.newsfeedmicroservice.business.model.EntryResponse
 
 
 interface INewsfeedService {
-    fun getNewsfeed(userId: String, maxEntries: Int): Iterable<EntryResponse>
+    fun getNewsfeed(userId: Long, maxEntries: Int): Iterable<EntryResponse>
 }

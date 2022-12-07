@@ -5,14 +5,19 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotEmpty;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -24,11 +29,15 @@ import javax.validation.constraints.NotEmpty;
 public class Job {
 
     @Id
-    @NotEmpty
-    private String id;
+    @GeneratedValue
+    private Long id;
 
     @NotEmpty
     private String title;
+
+    @ManyToOne
+    @JoinColumn(name = "recruiter_id", nullable=false)
+    private User recruiter;
 
     @ManyToOne
     @JoinColumn(name = "company_industry_id", nullable=false)
@@ -53,5 +62,12 @@ public class Job {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    private String postedAt;
+    @ManyToOne
+    @JoinColumn(name="job_status_id")
+    private JobStatus jobStatus; // open, closed
+
+    @CreationTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "posted_at")
+    private Date postedAt;
 }

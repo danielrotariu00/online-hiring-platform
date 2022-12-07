@@ -14,7 +14,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class CompanyResponse {
 
-    private String id;
+    private Long id;
     private String name;
     private String photo;
 }

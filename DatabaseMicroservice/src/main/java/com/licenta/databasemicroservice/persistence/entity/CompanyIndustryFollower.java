@@ -24,7 +24,7 @@ public class CompanyIndustryFollower {
 
     @Id
     @GeneratedValue
-    private Integer id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable=false)

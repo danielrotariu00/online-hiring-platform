@@ -6,8 +6,8 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.Optional;
 import java.util.Set;
 
-public interface CompanyIndustryFollowerRepository extends CrudRepository<CompanyIndustryFollower, Integer> {
-    Set<CompanyIndustryFollower> findCompanyIndustryFollowersByCompanyIndustryId(Integer companyIndustryId);
-    Set<CompanyIndustryFollower> findCompanyIndustryFollowersByUserId(String userId);
-    Optional<CompanyIndustryFollower> findCompanyIndustryFollowerByCompanyIndustryIdAndUserId(Integer companyIndustryId, String userId);
+public interface CompanyIndustryFollowerRepository extends CrudRepository<CompanyIndustryFollower, Long> {
+    Set<CompanyIndustryFollower> findCompanyIndustryFollowersByCompanyIndustryId(Long companyIndustryId);
+    Set<CompanyIndustryFollower> findCompanyIndustryFollowersByUserId(Long userId);
+    Optional<CompanyIndustryFollower> findCompanyIndustryFollowerByCompanyIndustryIdAndUserId(Long companyIndustryId, Long userId);
 }

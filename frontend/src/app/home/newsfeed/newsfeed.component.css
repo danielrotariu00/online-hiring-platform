@@ -1,0 +1,14 @@
+.newsfeed {
+  text-align: left;
+}
+
+.jobDetails {
+  margin-left: 35%;
+}
+
+.companyLogo {
+  margin-left: 5%;
+  float: left;
+  height: 8em;
+  width: 8em;
+}

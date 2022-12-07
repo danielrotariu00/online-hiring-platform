@@ -1,0 +1,75 @@
+<div class="container-fluid text-white bg-dark">
+  <div class="row">
+    <div class="col-3">
+      <h3>Filters</h3>
+      <div id="filters">
+        <h5>Country</h5>
+        <p-multiSelect
+          [options]="countries"
+          [showToggleAll]="false"
+          [(ngModel)]="selectedCountries"
+          optionLabel="name"
+          [virtualScroll]="true"
+          [filter]="true"
+          [itemSize]="34"
+          class="multiselect-custom-virtual-scroll"
+        >
+          <ng-template let-country pTemplate="item">
+            <div class="country-item">
+              <div>{{ country.name }}</div>
+            </div>
+          </ng-template>
+        </p-multiSelect>
+        <h5>Company</h5>
+        <p-multiSelect
+          [options]="companies"
+          [showToggleAll]="false"
+          [(ngModel)]="selectedCompanies"
+          optionLabel="name"
+          [virtualScroll]="true"
+          [filter]="true"
+          [itemSize]="34"
+          class="multiselect-custom-virtual-scroll"
+        >
+          <ng-template let-company pTemplate="item">
+            <div class="company-item">
+              <div>{{ company.name }}</div>
+            </div>
+          </ng-template>
+        </p-multiSelect>
+        <br />
+        <br />
+        <button type="button" (click)="onClickFilter()">Filter</button>
+      </div>
+    </div>
+    <div class="col-4">
+      <h3>Jobs</h3>
+      <div id="job-list">
+        <ng-template ngFor let-job [ngForOf]="jobs">
+          <div (click)="setSelectedJob(job)" class="job-preview">
+            <br />
+            <img
+              src="{{ job.company.photo }}"
+              class="companyLogo"
+              alt="companyLogo"
+            />
+            <div class="jobDetails">
+              <h2>&nbsp; {{ job.title }}</h2>
+              <h3>&nbsp; {{ job.company.name }}</h3>
+              <h4>
+                &nbsp; {{ job.city.name }}, {{ job.country.name }} ({{
+                  job.workType.name
+                }})
+              </h4>
+            </div>
+            <br />
+          </div>
+        </ng-template>
+        <button type="button" (click)="onClickLoadMore()">Load more</button>
+      </div>
+    </div>
+    <div class="col-5" id="job-details">
+      <app-job-details [job]="selectedJob"></app-job-details>
+    </div>
+  </div>
+</div>

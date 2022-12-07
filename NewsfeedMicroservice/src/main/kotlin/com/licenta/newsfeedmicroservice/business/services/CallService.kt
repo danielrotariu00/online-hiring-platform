@@ -13,7 +13,7 @@ class CallService {
     @Autowired
     private lateinit var callRepository: CallRepository
 
-    fun getAndUpdateLastCallTimestamp(userId: String): String {
+    fun getAndUpdateLastCallTimestamp(userId: Long): String {
         var call = callRepository.findByUserId(userId)
         val output: String
 

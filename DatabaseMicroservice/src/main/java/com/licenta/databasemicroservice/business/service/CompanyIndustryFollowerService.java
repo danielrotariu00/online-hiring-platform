@@ -1,6 +1,8 @@
 package com.licenta.databasemicroservice.business.service;
 
 import com.licenta.databasemicroservice.business.interfaces.ICompanyIndustryFollowerService;
+import com.licenta.databasemicroservice.business.interfaces.ICompanyIndustryService;
+import com.licenta.databasemicroservice.business.interfaces.IUserService;
 import com.licenta.databasemicroservice.business.model.companyindustry.CompanyIndustryResponse;
 import com.licenta.databasemicroservice.business.model.companyindustryfollower.CompanyIndustryFollowerRequest;
 import com.licenta.databasemicroservice.business.model.user.UserResponse;
@@ -11,7 +13,6 @@ import com.licenta.databasemicroservice.persistence.entity.CompanyIndustry;
 import com.licenta.databasemicroservice.persistence.entity.CompanyIndustryFollower;
 import com.licenta.databasemicroservice.persistence.entity.User;
 import com.licenta.databasemicroservice.persistence.repository.CompanyIndustryFollowerRepository;
-import com.licenta.databasemicroservice.persistence.repository.CompanyIndustryRepository;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,11 +25,9 @@ import java.util.stream.Collectors;
 public class CompanyIndustryFollowerService implements ICompanyIndustryFollowerService {
 
     @Autowired
-    private UserService userService;
+    private IUserService userService;
     @Autowired
-    private CompanyIndustryService companyIndustryService;
-    @Autowired
-    private CompanyIndustryRepository  companyIndustryRepository;
+    private ICompanyIndustryService companyIndustryService;
     @Autowired
     private CompanyIndustryFollowerRepository companyIndustryFollowerRepository;
 
@@ -39,8 +38,8 @@ public class CompanyIndustryFollowerService implements ICompanyIndustryFollowerS
 
     @Override
     public void addCompanyIndustryFollower(CompanyIndustryFollowerRequest request) {
-        String userId = request.getUserId();
-        Integer companyIndustryId = request.getCompanyIndustryId();
+        Long userId = request.getUserId();
+        Long companyIndustryId = request.getCompanyIndustryId();
 
         User user = userService.getUserOrElseThrowException(userId);
         CompanyIndustry companyIndustry = companyIndustryService.getCompanyIndustryOrElseThrowException(companyIndustryId);
@@ -61,7 +60,7 @@ public class CompanyIndustryFollowerService implements ICompanyIndustryFollowerS
     }
 
     @Override
-    public Iterable<UserResponse> getCompanyIndustryFollowers(Integer companyIndustryId) {
+    public Iterable<UserResponse> getCompanyIndustryFollowers(Long companyIndustryId) {
 
         companyIndustryService.getCompanyIndustryOrElseThrowException(companyIndustryId);
 
@@ -71,20 +70,20 @@ public class CompanyIndustryFollowerService implements ICompanyIndustryFollowerS
     }
 
     @Override
-    public Iterable<CompanyIndustryResponse> getFollowedCompanyIndustries(String userId) {
+    public Iterable<CompanyIndustryResponse> getFollowedCompanyIndustries(Long userId) {
 
         userService.getUserOrElseThrowException(userId);
 
         return companyIndustryFollowerRepository.findCompanyIndustryFollowersByUserId(userId).stream()
-                .map(follower -> companyIndustryRepository.findById(follower.getCompanyIndustry().getId()))
-                .map(companyIndustry -> companyIndustryMapper.toResponse(companyIndustry.get()))
+                .map(follower -> companyIndustryService.getCompanyIndustryOrElseThrowException(follower.getCompanyIndustry().getId()))
+                .map(companyIndustryMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
     @Override
     public void removeCompanyIndustryFollower(CompanyIndustryFollowerRequest request) {
-        String userId = request.getUserId();
-        Integer companyIndustryId = request.getCompanyIndustryId();
+        Long userId = request.getUserId();
+        Long companyIndustryId = request.getCompanyIndustryId();
 
         userService.getUserOrElseThrowException(userId);
         companyIndustryService.getCompanyIndustryOrElseThrowException(companyIndustryId);

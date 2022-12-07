@@ -7,7 +7,7 @@ import com.licenta.databasemicroservice.business.model.user.UserResponse;
 public interface ICompanyIndustryFollowerService {
 
     void addCompanyIndustryFollower(CompanyIndustryFollowerRequest request);
-    Iterable<UserResponse> getCompanyIndustryFollowers(Integer companyIndustryId);
-    Iterable<CompanyIndustryResponse> getFollowedCompanyIndustries(String userId);
+    Iterable<UserResponse> getCompanyIndustryFollowers(Long companyIndustryId);
+    Iterable<CompanyIndustryResponse> getFollowedCompanyIndustries(Long userId);
     void removeCompanyIndustryFollower(CompanyIndustryFollowerRequest request);
 }

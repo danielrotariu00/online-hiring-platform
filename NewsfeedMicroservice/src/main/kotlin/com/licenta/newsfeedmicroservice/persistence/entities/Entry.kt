@@ -9,13 +9,14 @@ import javax.persistence.Table
 @Entity
 @Table(name = "entry_table")
 class Entry (
-    var userId: String,
-    var jobId: String,
+    var userId: Long,
+    var jobId: Long,
     var jobTitle: String,
-    var companyId: String,
-    var cityId: Int,
-    var countryId: Int,
-    var workTypeId: Int,
+    var companyName: String,
+    var companyLogoURL: String,
+    var cityName: String,
+    var countryName: String,
+    var workType: String,
     var postedAt: LocalDateTime,
-    @Id @GeneratedValue var id: Int? = null
+    @Id @GeneratedValue var id: Long? = null
 )

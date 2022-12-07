@@ -4,7 +4,7 @@ import com.licenta.newsfeedmicroservice.persistence.entities.Entry
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.PagingAndSortingRepository
 
-interface EntryRepository: PagingAndSortingRepository<Entry, Int> {
+interface EntryRepository: PagingAndSortingRepository<Entry, Long> {
 
-    fun findAllByUserId(userId: String, pageable: Pageable): List<Entry>
+    fun findAllByUserId(userId: Long, pageable: Pageable): List<Entry>
 }

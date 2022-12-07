@@ -24,7 +24,7 @@ public class CompanyIndustry {
 
     @Id
     @GeneratedValue
-    private Integer id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "industry_id", nullable=false)

@@ -1,6 +1,8 @@
 package com.licenta.databasemicroservice.business.service;
 
+import com.licenta.databasemicroservice.business.interfaces.ICityService;
 import com.licenta.databasemicroservice.business.interfaces.IUserDetailsService;
+import com.licenta.databasemicroservice.business.interfaces.IUserService;
 import com.licenta.databasemicroservice.business.model.userdetails.SaveUserDetailsRequest;
 import com.licenta.databasemicroservice.business.model.userdetails.UserDetailsResponse;
 import com.licenta.databasemicroservice.business.util.mapper.UserDetailsMapper;
@@ -17,16 +19,16 @@ import org.springframework.stereotype.Service;
 public class UserDetailsService implements IUserDetailsService {
 
     @Autowired
-    private UserService userService;
+    private IUserService userService;
     @Autowired
-    private CityService cityService;
+    private ICityService cityService;
     @Autowired
     private UserDetailsRepository userDetailsRepository;
 
     private final UserDetailsMapper userDetailsMapper = Mappers.getMapper(UserDetailsMapper.class);
 
     @Override
-    public void saveUserDetails(String userId, SaveUserDetailsRequest request) {
+    public void saveUserDetails(Long userId, SaveUserDetailsRequest request) {
         UserDetails userDetails = userDetailsMapper.toModel(request);
 
         User user = userService.getUserOrElseThrowException(userId);
@@ -43,11 +45,11 @@ public class UserDetailsService implements IUserDetailsService {
     }
 
     @Override
-    public UserDetailsResponse getUserDetails(String username) {
+    public UserDetailsResponse getUserDetails(Long userId) {
 
-        userService.getUserOrElseThrowException(username);
+        userService.getUserOrElseThrowException(userId);
 
-        UserDetails  userDetails = userDetailsRepository.findById(username).orElse(null);
+        UserDetails  userDetails = userDetailsRepository.findById(userId).orElse(null);
 
         if(userDetails != null)
             return userDetailsMapper.toResponse(userDetails);

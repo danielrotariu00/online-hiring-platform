@@ -44,7 +44,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public UserResponse getUser(String id) {
+    public UserResponse getUser(Long id) {
         User user = getUserOrElseThrowException(id);
         
         return userMapper.toResponse(user);
@@ -59,7 +59,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void updateUserPassword(String id, UpdateUserPasswordRequest request) {
+    public void updateUserPassword(Long id, UpdateUserPasswordRequest request) {
         User user = getUserOrElseThrowException(id);
         
         user.setPassword(request.getPassword());
@@ -67,7 +67,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void deleteUser(String id) {
+    public void deleteUser(Long id) {
         getUserOrElseThrowException(id);
 
         userRepository.deleteById(id);
@@ -85,7 +85,7 @@ public class UserService implements IUserService {
             throw new FailedAuthenticationException(FAILED_AUTHENTICATION_MESSAGE);
     }
     
-    public User getUserOrElseThrowException(String id) {
+    public User getUserOrElseThrowException(Long id) {
         
         return userRepository.findById(id).orElseThrow(
                 () -> new NotFoundException(String.format(USER_NOT_FOUND_MESSAGE, id))

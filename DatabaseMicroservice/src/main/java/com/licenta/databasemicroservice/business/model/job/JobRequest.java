@@ -15,11 +15,11 @@ public class JobRequest {
     @NotEmpty
     private String title;
     @Min(1)
-    private Integer companyIndustryId;
+    private Long recruiterId;
+    @Min(1)
+    private Long companyIndustryId;
     @Min(1)
     private Integer cityId;
-    @Min(1)
-    private Integer countryId;
     @Min(1)
     private Integer workTypeId;
     @Min(1)
@@ -28,4 +28,6 @@ public class JobRequest {
     private Integer experienceLevelId;
     @NotEmpty
     private String description;
+
+    private Integer jobStatusId;
 }

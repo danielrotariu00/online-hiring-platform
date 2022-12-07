@@ -5,6 +5,6 @@ import com.licenta.databasemicroservice.business.model.userdetails.UserDetailsRe
 
 public interface IUserDetailsService {
 
-    void saveUserDetails(String userId, SaveUserDetailsRequest request);
-    UserDetailsResponse getUserDetails(String userId);
+    void saveUserDetails(Long userId, SaveUserDetailsRequest request);
+    UserDetailsResponse getUserDetails(Long userId);
 }

@@ -17,7 +17,7 @@ class EntryService {
         entryRepository.save(entry)
     }
 
-    fun getAndDeleteEntries(userId: String, limit: Int): List<Entry> {
+    fun getAndDeleteEntries(userId: Long, limit: Int): List<Entry> {
         val entries = entryRepository.findAllByUserId(
             userId,
             PageRequest.of(0, limit, Sort.by("postedAt").descending())

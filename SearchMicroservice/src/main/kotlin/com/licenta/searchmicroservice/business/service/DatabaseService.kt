@@ -2,15 +2,16 @@ package com.licenta.searchmicroservice.business.service
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.licenta.searchmicroservice.business.`interface`.IDatabaseService
 import com.licenta.searchmicroservice.business.model.Job
 import com.licenta.searchmicroservice.business.util.exception.ExceptionWithStatus
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 
 @Service
-class DatabaseService {
+class DatabaseService: IDatabaseService{
 
-    fun getJobs(): List<Job> {
+    override fun getJobs(): List<Job> {
         // TODO: replace localhost with env variable
         val response = khttp.get("http://localhost:23050/jobs")
 

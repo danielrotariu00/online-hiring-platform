@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 @Getter
 public class ExceptionWithStatus extends RuntimeException{
 
-    private final HttpStatus status;
+    public final HttpStatus status;
 
     @Builder
     public ExceptionWithStatus(String errorMessage, HttpStatus status) {

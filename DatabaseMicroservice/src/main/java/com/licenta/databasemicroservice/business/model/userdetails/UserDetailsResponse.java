@@ -12,7 +12,7 @@ public class UserDetailsResponse {
     private String firstName;
     private String lastName;
     private String phoneNumber;
-    private Integer cityId;
+    private Long cityId;
     private String address;
     private String profileDescription;
     private String profilePicture;

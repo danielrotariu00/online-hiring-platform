@@ -5,10 +5,11 @@ import com.licenta.newsfeedmicroservice.business.model.EntryResponse
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
-import javax.validation.constraints.NotEmpty
+import javax.validation.constraints.Min
 
 @Validated
 @RestController
+@CrossOrigin(origins = ["http://localhost:4200"], maxAge = 3600)
 @RequestMapping(value = ["/users/{userId}/newsfeed"])
 class NewsfeedController {
 
@@ -18,7 +19,7 @@ class NewsfeedController {
 
     @GetMapping
     fun getNewsfeed(
-        @NotEmpty @PathVariable userId: String,
+        @Min(1) @PathVariable userId: Long,
         @RequestParam(defaultValue = "10") maxEntries: Int
     ): Iterable<EntryResponse> {
 

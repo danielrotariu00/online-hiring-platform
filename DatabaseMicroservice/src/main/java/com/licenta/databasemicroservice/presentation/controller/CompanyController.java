@@ -6,6 +6,7 @@ import com.licenta.databasemicroservice.business.model.company.CreateCompanyRequ
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,10 +15,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Min;
 
 @Validated
 @RestController
+@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
 @RequestMapping(value="/companies")
 public class CompanyController {
 
@@ -38,13 +40,13 @@ public class CompanyController {
     }
 
     @RequestMapping(value="/{companyId}", method=RequestMethod.GET)
-    public CompanyResponse getCompany(@NotEmpty @PathVariable String companyId) {
+    public CompanyResponse getCompany(@Min(1) @PathVariable Long companyId) {
 
         return companyService.getCompany(companyId);
     }
 
     @RequestMapping(value="/{companyId}", method=RequestMethod.DELETE)
-    public void deleteCompany(@NotEmpty @PathVariable String companyId) {
+    public void deleteCompany(@Min(1) @PathVariable Long companyId) {
 
         companyService.deleteCompany(companyId);
     }

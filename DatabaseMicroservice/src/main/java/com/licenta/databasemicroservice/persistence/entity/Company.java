@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
@@ -23,8 +24,8 @@ import javax.validation.constraints.NotEmpty;
 public class Company {
 
     @Id
-    @NotEmpty
-    private String id;
+    @GeneratedValue
+    private Long id;
 
     @NotEmpty
     @Column(unique=true)

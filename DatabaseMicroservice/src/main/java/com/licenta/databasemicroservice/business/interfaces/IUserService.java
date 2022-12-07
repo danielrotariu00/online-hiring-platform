@@ -4,13 +4,15 @@ import com.licenta.databasemicroservice.business.model.user.AuthenticateUserRequ
 import com.licenta.databasemicroservice.business.model.user.CreateUserRequest;
 import com.licenta.databasemicroservice.business.model.user.UpdateUserPasswordRequest;
 import com.licenta.databasemicroservice.business.model.user.UserResponse;
+import com.licenta.databasemicroservice.persistence.entity.User;
 
 public interface IUserService {
 
     void createUser(CreateUserRequest request);
-    UserResponse getUser(String userId);
+    UserResponse getUser(Long userId);
     Iterable<UserResponse> getUsers();
-    void updateUserPassword(String userId, UpdateUserPasswordRequest request);
-    void deleteUser(String userId);
+    void updateUserPassword(Long userId, UpdateUserPasswordRequest request);
+    void deleteUser(Long userId);
     void authenticate(AuthenticateUserRequest request);
+    User getUserOrElseThrowException(Long userId);
 }

@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Min;
 
 
 @Getter
@@ -16,8 +16,8 @@ import javax.validation.constraints.NotEmpty;
 @AllArgsConstructor
 public class CompanyIndustryFollowerRequest {
 
-    @NotEmpty
-    private String userId;
-
-    private Integer companyIndustryId;
+    @Min(1)
+    private Long userId;
+    @Min(1)
+    private Long companyIndustryId;
 }

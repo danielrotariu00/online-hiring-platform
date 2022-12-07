@@ -3,11 +3,12 @@ package com.licenta.newsfeedmicroservice.business.model
 import java.io.Serializable
 
 data class EntryResponse(
-    var jobId: String,
+    var jobId: Long,
     var jobTitle: String,
-    var companyId: String,
-    var cityId: Int,
-    var countryId: Int,
-    var workTypeId: Int,
+    var companyName: String,
+    var companyLogoURL: String,
+    var cityName: String,
+    var countryName: String,
+    var workType: String,
     var postedAt: String,
 ): Serializable

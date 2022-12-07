@@ -7,6 +7,7 @@ import com.licenta.databasemicroservice.business.model.user.UserResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,10 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
 
 @Validated
 @RestController
+@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
 public class CompanyIndustryFollowerController {
 
     @Autowired
@@ -32,14 +33,14 @@ public class CompanyIndustryFollowerController {
         companyIndustryFollowerService.addCompanyIndustryFollower(request);
     }
 
-    @RequestMapping(value="/users/{userId}/followed-company-industries",method=RequestMethod.GET)
-    public Iterable<CompanyIndustryResponse> getCompanyIndustriesFollowedByUser(@NotEmpty @PathVariable String userId) {
+    @RequestMapping(value="/users/{userId}/followed-company-industries", method=RequestMethod.GET)
+    public Iterable<CompanyIndustryResponse> getCompanyIndustriesFollowedByUser(@Min(1) @PathVariable Long userId) {
 
         return companyIndustryFollowerService.getFollowedCompanyIndustries(userId);
     }
 
-    @RequestMapping(value="/company-industry/{companyIndustryId}/followers",method=RequestMethod.GET)
-    public Iterable<UserResponse> getCompanyIndustryFollowers(@Min(1) @PathVariable Integer companyIndustryId) {
+    @RequestMapping(value="/company-industries/{companyIndustryId}/followers", method=RequestMethod.GET)
+    public Iterable<UserResponse> getCompanyIndustryFollowers(@Min(1) @PathVariable Long companyIndustryId) {
 
         return companyIndustryFollowerService.getCompanyIndustryFollowers(companyIndustryId);
     }

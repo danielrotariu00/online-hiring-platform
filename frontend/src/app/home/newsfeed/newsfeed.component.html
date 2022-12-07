@@ -1,0 +1,30 @@
+<div
+  infinite-scroll
+  [infiniteScrollDistance]="2"
+  [infiniteScrollThrottle]="1000"
+  (scrolled)="onScroll()"
+>
+  <div class="newsfeed" *ngFor="let entry of entries">
+    <br />
+    <p-card [style]="{ width: '50rem', margin: 'auto' }">
+      <ng-template pTemplate="title">
+        <img
+          src="{{ entry.companyLogoURL }}"
+          class="companyLogo"
+          alt="companyLogo"
+        />
+        <div class="jobDetails">
+          <h2>{{ entry.jobTitle }}</h2>
+          <h3>{{ entry.companyName }}</h3>
+          <h4>
+            {{ entry.cityName }}, {{ entry.countryName }} ({{ entry.workType }})
+          </h4>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="footer">
+        <p-button label="Save" icon="pi pi-check"></p-button>
+      </ng-template>
+    </p-card>
+    <br />
+  </div>
+</div>
