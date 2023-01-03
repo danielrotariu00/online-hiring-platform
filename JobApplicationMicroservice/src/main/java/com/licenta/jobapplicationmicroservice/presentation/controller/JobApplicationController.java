@@ -7,6 +7,7 @@ import com.licenta.jobapplicationmicroservice.business.model.JobApplicationStatu
 import com.licenta.jobapplicationmicroservice.business.model.UpdateJobApplicationRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +19,7 @@ import javax.validation.constraints.Min;
 
 @Validated
 @RestController
+@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
 public class JobApplicationController {
 
     @Autowired
@@ -65,5 +67,11 @@ public class JobApplicationController {
     public Iterable<JobApplicationStatusResponse> getStatus() {
 
         return jobApplicationService.getStatus();
+    }
+
+    @RequestMapping(value = "/job-applications/status/{statusId}", method = RequestMethod.GET)
+    public JobApplicationStatusResponse getStatusById(@Min(1) @PathVariable Integer statusId) {
+
+        return jobApplicationService.getStatusById(statusId);
     }
 }

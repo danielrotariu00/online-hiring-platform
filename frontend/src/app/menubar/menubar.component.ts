@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 import { MenuItem } from "primeng/api";
 
-import { AccountService } from "../_services";
+import { AccountService } from "../services";
 
 @Component({
   selector: "app-menubar",
@@ -20,6 +20,11 @@ export class MenubarComponent {
         routerLink: "/home",
       },
       {
+        label: "Companies",
+        icon: "pi pi-fw pi-globe",
+        routerLink: "/companies",
+      },
+      {
         label: "Jobs",
         icon: "pi pi-fw pi-briefcase",
         routerLink: "/jobs",
@@ -27,6 +32,7 @@ export class MenubarComponent {
       {
         label: "My Job Applications",
         icon: "pi pi-fw pi-envelope",
+        routerLink: "/job-applications",
       },
       {
         label: "Notifications",

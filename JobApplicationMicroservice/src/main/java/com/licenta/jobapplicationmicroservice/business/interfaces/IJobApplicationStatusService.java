@@ -5,5 +5,8 @@ import com.licenta.jobapplicationmicroservice.persistence.entity.JobApplicationS
 
 public interface IJobApplicationStatusService {
     Iterable<JobApplicationStatusResponse> getStatus();
+
+    JobApplicationStatusResponse getStatusById(Integer statusId);
+
     JobApplicationStatus getStatusOrElseThrowException(Integer statusId);
 }

@@ -1,8 +1,8 @@
 package com.licenta.searchmicroservice.presentation.controller
 
-import com.licenta.searchmicroservice.business.`interface`.IJobFilterService
-import com.licenta.searchmicroservice.business.model.Job
+import com.licenta.searchmicroservice.business.interfaces.IFilterService
 import com.licenta.searchmicroservice.business.model.JobQuery
+import com.licenta.searchmicroservice.business.model.JobQueryResponse
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*
 class JobController {
 
     @Autowired
-    private lateinit var jobFilterService: IJobFilterService
+    private lateinit var jobFilterService: IFilterService
 
     @GetMapping
     fun getNewsfeed(
@@ -31,7 +31,9 @@ class JobController {
         @RequestParam(defaultValue = "") descriptionKeyword: List<String>,
         @RequestParam(defaultValue = "2000-01-01 00:00:00") postedSince: String,
         @RequestParam(defaultValue = "") jobStatusIdList: List<Int>,
-    ): List<Job> {
+        @RequestParam(defaultValue = "0") page: Int,
+        @RequestParam(defaultValue = "10") size: Int
+    ): JobQueryResponse {
 
         val jobQuery = JobQuery(
             title,
@@ -48,6 +50,6 @@ class JobController {
             jobStatusIdList
         )
 
-        return jobFilterService.getFilteredJobs(jobQuery)
+        return jobFilterService.getFilteredJobs(jobQuery, page, size)
     }
 }

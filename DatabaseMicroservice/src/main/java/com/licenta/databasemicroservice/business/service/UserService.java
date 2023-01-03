@@ -1,8 +1,9 @@
 package com.licenta.databasemicroservice.business.service;
 
 import com.licenta.databasemicroservice.business.interfaces.IUserService;
-import com.licenta.databasemicroservice.business.model.user.AuthenticateUserRequest;
+import com.licenta.databasemicroservice.business.model.user.LoginRequest;
 import com.licenta.databasemicroservice.business.model.user.CreateUserRequest;
+import com.licenta.databasemicroservice.business.model.user.LoginResponse;
 import com.licenta.databasemicroservice.business.model.user.UpdateUserPasswordRequest;
 import com.licenta.databasemicroservice.business.model.user.UserResponse;
 import com.licenta.databasemicroservice.business.util.exception.AlreadyExistsException;
@@ -74,7 +75,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void authenticate(AuthenticateUserRequest request) {
+    public LoginResponse authenticate(LoginRequest request) {
         String email = request.getEmail();
 
         User user = userRepository.findUserByEmail(email).orElseThrow(
@@ -83,6 +84,12 @@ public class UserService implements IUserService {
 
         if(!user.getPassword().equals(request.getPassword()))
             throw new FailedAuthenticationException(FAILED_AUTHENTICATION_MESSAGE);
+
+        return LoginResponse.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .token("jwt token")
+                .build();
     }
     
     public User getUserOrElseThrowException(Long id) {

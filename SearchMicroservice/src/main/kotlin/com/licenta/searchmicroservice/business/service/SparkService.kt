@@ -1,8 +1,8 @@
 package com.licenta.searchmicroservice.business.service
 
 import com.licenta.searchmicroservice.business.config.Spark
-import com.licenta.searchmicroservice.business.`interface`.ISparkService
-import com.licenta.searchmicroservice.business.model.Job
+import com.licenta.searchmicroservice.business.interfaces.ISparkService
+import com.licenta.searchmicroservice.business.model.JobDTO
 import com.licenta.searchmicroservice.business.model.JobQuery
 import com.licenta.searchmicroservice.business.util.parser.LocalDateTimeParser
 import org.springframework.stereotype.Service
@@ -12,15 +12,15 @@ import java.io.Serializable
 @Service
 class SparkService: ISparkService, Serializable {
 
-    override fun getFilteredJobs(jobList: List<Job>, jobQuery: JobQuery) : List<Job> {
-        val distributedDataset = Spark.context.parallelize(jobList)
+    override fun getFilteredJobs(jobDTOList: List<JobDTO>, jobQuery: JobQuery) : List<JobDTO> {
+        val distributedDataset = Spark.context.parallelize(jobDTOList)
 
         return distributedDataset
             .filter { job -> job.matchesQuery(jobQuery) }
             .collect()
     }
 
-    private fun Job.matchesQuery(jobQuery: JobQuery): Boolean {
+    private fun JobDTO.matchesQuery(jobQuery: JobQuery): Boolean {
         return  this.title.containsAnyMemberOf(jobQuery.titleList) &&
                 this.description.containsAnyMemberOf(jobQuery.descriptionKeywordList) &&
                 jobQuery.cityIdList.isEmptyOrContains(this.cityId) &&

@@ -1,0 +1,45 @@
+<div class="container-fluid text-white bg-dark">
+  <div class="row">
+    <div class="col-2"></div>
+    <div class="col-3">
+      <div id="industry-list">
+        <p-orderList
+          header="Industries"
+          [value]="industries"
+          (onSelectionChange)="onIndustrySelectionChange($event)"
+          [listStyle]="{ height: 'auto' }"
+          filterBy="name"
+          filterPlaceholder="Filter by name"
+        >
+          <ng-template let-industry pTemplate="item">
+            <div class="product-item">
+              <div class="product-list-detail">
+                <div>{{ industry.name }}</div>
+              </div>
+            </div>
+          </ng-template>
+        </p-orderList>
+      </div>
+    </div>
+    <div class="col-5">
+      <div id="company-list">
+        <p-orderList
+          header="Companies"
+          [value]="companies"
+          (onSelectionChange)="onCompanySelectionChange($event)"
+          [listStyle]="{ height: 'auto' }"
+          filterBy="name"
+          filterPlaceholder="Filter by name"
+        >
+          <ng-template let-company pTemplate="item">
+            <div class="product-item">
+              <div class="product-list-detail">
+                <app-company-preview [company]="company"></app-company-preview>
+              </div>
+            </div>
+          </ng-template>
+        </p-orderList>
+      </div>
+    </div>
+  </div>
+</div>

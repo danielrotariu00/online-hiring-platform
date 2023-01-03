@@ -14,4 +14,6 @@ public interface IJobApplicationService {
     void update(Long jobApplicationId, UpdateJobApplicationRequest request);
     void delete(Long jobApplicationId);
     Iterable<JobApplicationStatusResponse> getStatus();
+
+    JobApplicationStatusResponse getStatusById(Integer statusId);
 }

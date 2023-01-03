@@ -1,8 +1,9 @@
 package com.licenta.databasemicroservice.presentation.controller;
 
 import com.licenta.databasemicroservice.business.interfaces.IUserService;
-import com.licenta.databasemicroservice.business.model.user.AuthenticateUserRequest;
+import com.licenta.databasemicroservice.business.model.user.LoginRequest;
 import com.licenta.databasemicroservice.business.model.user.CreateUserRequest;
+import com.licenta.databasemicroservice.business.model.user.LoginResponse;
 import com.licenta.databasemicroservice.business.model.user.UpdateUserPasswordRequest;
 import com.licenta.databasemicroservice.business.model.user.UserResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,8 +59,8 @@ public class UserController {
     }
 
     @RequestMapping(value="/login", method=RequestMethod.POST)
-    public void login(@Valid @RequestBody AuthenticateUserRequest request) {
+    public LoginResponse login(@Valid @RequestBody LoginRequest request) {
 
-        userService.authenticate(request);
+        return userService.authenticate(request);
     }
 }

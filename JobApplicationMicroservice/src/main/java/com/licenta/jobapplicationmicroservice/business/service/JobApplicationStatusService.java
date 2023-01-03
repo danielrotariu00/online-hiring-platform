@@ -32,6 +32,12 @@ public class JobApplicationStatusService implements IJobApplicationStatusService
     }
 
     @Override
+    public JobApplicationStatusResponse getStatusById(Integer statusId) {
+
+        return jobApplicationMapper.toResponse(getStatusOrElseThrowException(statusId));
+    }
+
+    @Override
     public JobApplicationStatus getStatusOrElseThrowException(Integer statusId) {
 
         return jobApplicationStatusRepository.findById(statusId).orElseThrow(

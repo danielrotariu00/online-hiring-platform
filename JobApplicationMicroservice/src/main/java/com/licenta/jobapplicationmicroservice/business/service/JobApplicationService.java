@@ -10,6 +10,7 @@ import com.licenta.jobapplicationmicroservice.business.model.JobApplicationStatu
 import com.licenta.jobapplicationmicroservice.business.model.Notification;
 import com.licenta.jobapplicationmicroservice.business.model.NotificationType;
 import com.licenta.jobapplicationmicroservice.business.model.UpdateJobApplicationRequest;
+import com.licenta.jobapplicationmicroservice.business.util.exception.ExceptionWithStatus;
 import com.licenta.jobapplicationmicroservice.business.util.exception.NotFoundException;
 import com.licenta.jobapplicationmicroservice.business.util.mapper.JobApplicationMapper;
 import com.licenta.jobapplicationmicroservice.persistence.entity.JobApplication;
@@ -17,9 +18,11 @@ import com.licenta.jobapplicationmicroservice.persistence.entity.JobApplicationS
 import com.licenta.jobapplicationmicroservice.persistence.repository.JobApplicationRepository;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -46,6 +49,13 @@ public class JobApplicationService implements IJobApplicationService {
     @Override
     public void create(CreateJobApplicationRequest request) {
         verifyUserExists(request.getUserId());
+
+        Optional<JobApplication> jobApplicationOptional = jobApplicationRepository
+                .findByUserIdAndJobId(request.getUserId(), request.getJobId());
+
+        if(jobApplicationOptional.isPresent()) {
+            throw new ExceptionWithStatus("You already applied to this job", HttpStatus.CONFLICT);
+        }
 
         Job job = databaseService.getJob(request.getJobId());
         JobApplicationStatus status = jobApplicationStatusService.getStatusOrElseThrowException(INITIAL_STATUS_ID);
@@ -125,6 +135,11 @@ public class JobApplicationService implements IJobApplicationService {
     @Override
     public Iterable<JobApplicationStatusResponse> getStatus() {
         return jobApplicationStatusService.getStatus();
+    }
+
+    @Override
+    public JobApplicationStatusResponse getStatusById(Integer statusId) {
+        return jobApplicationStatusService.getStatusById(statusId);
     }
 
     private JobApplication getJobApplicationOrElseThrowException(Long jobApplicationId) {

@@ -20,4 +20,8 @@ public class CreateCompanyRequest {
     private String name;
     @NotEmpty
     private String photo;
+    @NotEmpty
+    private String description;
+    @NotEmpty
+    private Integer cityId;
 }

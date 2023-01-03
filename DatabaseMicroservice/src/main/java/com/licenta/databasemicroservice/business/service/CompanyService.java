@@ -1,11 +1,13 @@
 package com.licenta.databasemicroservice.business.service;
 
+import com.licenta.databasemicroservice.business.interfaces.ICityService;
 import com.licenta.databasemicroservice.business.interfaces.ICompanyService;
 import com.licenta.databasemicroservice.business.model.company.CompanyResponse;
 import com.licenta.databasemicroservice.business.model.company.CreateCompanyRequest;
 import com.licenta.databasemicroservice.business.util.exception.AlreadyExistsException;
 import com.licenta.databasemicroservice.business.util.exception.NotFoundException;
 import com.licenta.databasemicroservice.business.util.mapper.CompanyMapper;
+import com.licenta.databasemicroservice.persistence.entity.City;
 import com.licenta.databasemicroservice.persistence.entity.Company;
 import com.licenta.databasemicroservice.persistence.repository.CompanyRepository;
 import org.mapstruct.factory.Mappers;
@@ -20,6 +22,8 @@ public class CompanyService implements ICompanyService {
 
     @Autowired
     private CompanyRepository companyRepository;
+    @Autowired
+    private ICityService cityService;
 
     private final CompanyMapper companyMapper = Mappers.getMapper(CompanyMapper.class);
 
@@ -34,7 +38,11 @@ public class CompanyService implements ICompanyService {
             throw new AlreadyExistsException(String.format(NAME_ALREADY_IN_USE_MESSAGE, name));
         }
 
+        City city = cityService.getCityOrElseThrowException(request.getCityId());
+
         Company company = companyMapper.toModel(request);
+        company.setCity(city);
+
         companyRepository.save(company);
     }
 
