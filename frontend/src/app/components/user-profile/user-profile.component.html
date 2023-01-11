@@ -1,0 +1,324 @@
+<div *ngIf="userDetails">
+  <div id="user-profile" class="container-fluid text-white bg-dark">
+    <div class="row">
+      <div class="col-3"></div>
+      <div class="col-6">
+        <br />
+        <div class="row">
+          <div class="col-3">
+            <img
+              src="{{ userDetails.profilePictureUrl }}"
+              class="profilePicture"
+              alt="profilePicture"
+            />
+          </div>
+        </div>
+        <br />
+        <div class="row">
+          <div class="col-6">
+            <h1>{{ userDetails.firstName }} {{ userDetails.lastName }}</h1>
+            <h3>
+              {{ userDetails.city?.name }}, {{ userDetails.country?.name }}
+            </h3>
+          </div>
+        </div>
+        <br />
+        <br />
+        <h3>About</h3>
+        <br />
+        <br />
+        <p>{{ userDetails.profileDescription }}</p>
+        <br />
+        <br />
+        <h3>Professional Experience</h3>
+        <button
+          *ngIf="isOwner"
+          pButton
+          pRipple
+          type="button"
+          icon="pi pi-plus"
+          class="p-button-rounded p-button-outlined add"
+          (click)="showUserProfessionalExperienceForm()"
+        ></button>
+        <p-dialog
+          [(visible)]="displayUserProfessionalExperienceForm"
+          [style]="{ width: '50vw', height: '45vw' }"
+          [baseZIndex]="10000"
+        >
+          <h4>Company</h4>
+          <p-dropdown
+            [options]="companies"
+            [(ngModel)]="selectedCompany"
+            optionLabel="name"
+            [filter]="true"
+            filterBy="name"
+            [showClear]="true"
+            placeholder="Select a Company"
+          >
+            <ng-template pTemplate="selectedItem">
+              <div
+                class="country-item country-item-value"
+                *ngIf="selectedCompany"
+              >
+                <div>{{ selectedCompany.name }}</div>
+              </div>
+            </ng-template>
+            <ng-template let-country pTemplate="item">
+              <div class="country-item">
+                <div>{{ country.name }}</div>
+              </div>
+            </ng-template>
+          </p-dropdown>
+          <br />
+          <br />
+          <h4>Job Title</h4>
+          <input type="text" pInputText [(ngModel)]="jobTitle" />
+          <br />
+          <br />
+          <h4>Start Date</h4>
+          <p-calendar inputId="basic" [(ngModel)]="startDate"></p-calendar>
+          <br />
+          <br />
+          <h4>End Date</h4>
+          <p-calendar inputId="basic" [(ngModel)]="endDate"></p-calendar>
+          <br />
+          <br />
+          <h4>Description</h4>
+          <textarea
+            rows="5"
+            cols="60"
+            pInputTextarea
+            [(ngModel)]="description"
+          ></textarea>
+          <ng-template pTemplate="footer">
+            <p-button
+              *ngIf="isOwner"
+              icon="pi pi-check"
+              (click)="addUserProfessionalExperience()"
+              label="Save"
+              styleClass="p-button-text"
+            ></p-button>
+            <p-button
+              *ngIf="isOwner"
+              icon="pi pi-times"
+              (click)="displayUserProfessionalExperienceForm = false"
+              label="Cancel"
+            ></p-button>
+          </ng-template>
+        </p-dialog>
+        <br />
+        <br />
+        <ng-template
+          ngFor
+          let-professionalExperience
+          [ngForOf]="userProfessionalExperienceList"
+        >
+          <br />
+          <img
+            src="{{ professionalExperience?.company?.photo }}"
+            class="logo"
+            alt="companyPhoto"
+            (click)="companyPhotoClick(professionalExperience.company.id)"
+          />
+          <button
+            *ngIf="isOwner"
+            pButton
+            pRipple
+            type="button"
+            icon="pi pi-times"
+            class="p-button-rounded p-button-danger p-button-outlined"
+            (click)="
+              deleteUserProfessionalExperience(professionalExperience.id)
+            "
+          ></button>
+          <button
+            *ngIf="isOwner"
+            pButton
+            pRipple
+            type="button"
+            icon="pi pi-pencil"
+            class="p-button-rounded p-button-outlined edit"
+          ></button>
+          <div class="experience-text">
+            <h4>{{ professionalExperience?.company?.name }}</h4>
+            <h5>{{ professionalExperience?.jobTitle }}</h5>
+            <h6>
+              {{ professionalExperience?.formattedStartDate }} -
+              {{ professionalExperience?.formattedEndDate }}
+            </h6>
+            <p>{{ professionalExperience?.description }}</p>
+          </div>
+
+          <br />
+        </ng-template>
+        <br />
+        <br />
+        <h3>Educational Experience</h3>
+        <button
+          *ngIf="isOwner"
+          pButton
+          pRipple
+          type="button"
+          icon="pi pi-plus"
+          class="p-button-rounded p-button-outlined add"
+        ></button>
+        <br />
+        <br />
+        <ng-template
+          ngFor
+          let-educationalExperience
+          [ngForOf]="userEducationalExperienceList"
+        >
+          <br />
+          <img
+            src="{{ educationalExperience?.educationalInstitution?.photo }}"
+            class="logo"
+            alt="institutionPhoto"
+            (click)="
+              institutionPhotoClick(
+                educationalExperience?.educationalInstitution?.website
+              )
+            "
+          />
+          <button
+            *ngIf="isOwner"
+            pButton
+            pRipple
+            type="button"
+            icon="pi pi-times"
+            class="p-button-rounded p-button-danger p-button-outlined"
+            (click)="deleteUserEducationalExperience(educationalExperience.id)"
+          ></button>
+          <button
+            *ngIf="isOwner"
+            pButton
+            pRipple
+            type="button"
+            icon="pi pi-pencil"
+            class="p-button-rounded p-button-outlined edit"
+          ></button>
+          <div class="experience-text">
+            <h4>{{ educationalExperience?.educationalInstitution?.name }}</h4>
+            <h5>{{ educationalExperience?.speciality }}</h5>
+            <h5>{{ educationalExperience?.title }}</h5>
+            <h6>
+              {{ educationalExperience?.formattedStartDate }} -
+              {{ educationalExperience?.formattedEndDate }}
+            </h6>
+            <p>{{ educationalExperience?.description }}</p>
+          </div>
+
+          <br />
+        </ng-template>
+        <br />
+        <br />
+        <h3>Skills</h3>
+        <button
+          *ngIf="isOwner"
+          pButton
+          pRipple
+          type="button"
+          icon="pi pi-plus"
+          class="p-button-rounded p-button-outlined add"
+        ></button>
+        <br />
+        <br />
+        <ng-template ngFor let-userSkill [ngForOf]="userSkills">
+          <br />
+          <button
+            *ngIf="isOwner"
+            pButton
+            pRipple
+            type="button"
+            icon="pi pi-times"
+            class="p-button-rounded p-button-danger p-button-outlined"
+            (click)="deleteUserSkill(userSkill.skillId)"
+          ></button>
+          <h4 class="tabbed">{{ userSkill?.skill?.name }}</h4>
+          <br />
+        </ng-template>
+        <br />
+        <br />
+        <h3>Projects</h3>
+        <button
+          *ngIf="isOwner"
+          pButton
+          pRipple
+          type="button"
+          icon="pi pi-plus"
+          class="p-button-rounded p-button-outlined add"
+        ></button>
+        <br />
+        <br />
+        <ng-template ngFor let-userProject [ngForOf]="userProjects">
+          <br />
+          <button
+            *ngIf="isOwner"
+            pButton
+            pRipple
+            type="button"
+            icon="pi pi-times"
+            class="p-button-rounded p-button-danger p-button-outlined"
+            (click)="deleteUserProject(userProject.id)"
+          ></button>
+          <button
+            *ngIf="isOwner"
+            pButton
+            pRipple
+            type="button"
+            icon="pi pi-pencil"
+            class="p-button-rounded p-button-outlined edit"
+          ></button>
+          <div class="tabbed">
+            <h4>{{ userProject?.name }}</h4>
+            <h6>
+              {{ userProject?.formattedStartDate }} -
+              {{ userProject?.formattedEndDate }}
+            </h6>
+            <p>{{ userProject?.description }}</p>
+          </div>
+
+          <br />
+        </ng-template>
+        <br />
+        <br />
+        <h3>Languages</h3>
+        <button
+          *ngIf="isOwner"
+          pButton
+          pRipple
+          type="button"
+          icon="pi pi-plus"
+          class="p-button-rounded p-button-outlined add"
+        ></button>
+        <br />
+        <br />
+        <ng-template ngFor let-userLanguage [ngForOf]="userLanguages">
+          <button
+            *ngIf="isOwner"
+            pButton
+            pRipple
+            type="button"
+            icon="pi pi-times"
+            class="p-button-rounded p-button-danger p-button-outlined"
+            (click)="deleteUserLanguage(userLanguage.languageId)"
+          ></button>
+          <button
+            *ngIf="isOwner"
+            pButton
+            pRipple
+            type="button"
+            icon="pi pi-pencil"
+            class="p-button-rounded p-button-outlined edit"
+          ></button>
+          <div class="tabbed">
+            <h4>
+              {{ userLanguage?.language?.name }} -
+              {{ userLanguage?.languageLevel?.name }}
+            </h4>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>

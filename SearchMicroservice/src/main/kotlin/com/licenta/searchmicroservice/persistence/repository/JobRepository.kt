@@ -8,4 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository
 interface JobRepository: JpaRepository<Job, String> {
 
     fun findAllByQueryId(queryId: String, pageable: Pageable): Page<Job>
+    fun deleteAllByQueryId(queryId: String);
 }

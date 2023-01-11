@@ -39,6 +39,9 @@ public class Company {
     @NotEmpty
     private String description;
 
+    @NotEmpty
+    private String website;
+
     @ManyToOne
     @JoinColumn(name="city_id")
     private City city;

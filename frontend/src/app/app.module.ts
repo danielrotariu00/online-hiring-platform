@@ -2,10 +2,10 @@ import { NgModule } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { InfiniteScrollModule } from "ngx-infinite-scroll";
 import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { MenubarModule } from "primeng/menubar";
 import { InputTextModule } from "primeng/inputtext";
+import { InputTextareaModule } from "primeng/inputtextarea";
 import { ButtonModule } from "primeng/button";
 import { CardModule } from "primeng/card";
 import { MultiSelectModule } from "primeng/multiselect";
@@ -13,23 +13,31 @@ import { PaginatorModule } from "primeng/paginator";
 import { OrderListModule } from "primeng/orderlist";
 import { FieldsetModule } from "primeng/fieldset";
 import { ConfirmDialogModule } from "primeng/confirmdialog";
+import { DialogModule } from "primeng/dialog";
 import { ToastModule } from "primeng/toast";
 import { RippleModule } from "primeng/ripple";
+import { CalendarModule } from "primeng/calendar";
+import { SplitButtonModule } from "primeng/splitbutton";
 
 import { AppRoutingModule } from "./app-routing.module";
 import { JwtInterceptor, ErrorInterceptor } from "./helpers";
 import { AppComponent } from "./app.component";
-import { MenubarComponent } from "./menubar/menubar.component";
-import { NewsfeedComponent } from "./newsfeed/newsfeed.component";
-import { AlertComponent } from "./alert/alert.component";
-import { JobsComponent } from "./jobs/jobs.component";
-import { JobDetailsComponent } from "./job-details/job-details.component";
-import { JobApplicationsComponent } from "./job-applications/job-applications.component";
-import { JobPreviewComponent } from "./job-preview/job-preview.component";
-import { JobApplicationDetailsComponent } from "./job-application-details/job-application-details.component";
-import { CompaniesComponent } from "./companies/companies.component";
-import { CompanyPreviewComponent } from "./company-preview/company-preview.component";
-import { CompanyDetailsComponent } from "./company-details/company-details.component";
+import { MenubarComponent } from "./components/menubar/menubar.component";
+import { NewsfeedComponent } from "./components/newsfeed/newsfeed.component";
+import { AlertComponent } from "./components/alert/alert.component";
+import { JobsComponent } from "./components/jobs/jobs.component";
+import { JobDetailsComponent } from "./components/job-details/job-details.component";
+import { JobApplicationsComponent } from "./components/job-applications/job-applications.component";
+import { JobPreviewComponent } from "./components/job-preview/job-preview.component";
+import { JobApplicationDetailsComponent } from "./components/job-application-details/job-application-details.component";
+import { CompaniesComponent } from "./components/companies/companies.component";
+import { CompanyPreviewComponent } from "./components/company-preview/company-preview.component";
+import { CompanyDetailsComponent } from "./components/company-details/company-details.component";
+import { UserProfileComponent } from "./components/user-profile/user-profile.component";
+import { NotificationsComponent } from "./components/notifications/notifications.component";
+import { RecruiterHomeComponent } from "./components/recruiter-home/recruiter-home.component";
+import { RecruiterJobApplicationsComponent } from "./components/recruiter-job-applications/recruiter-job-applications.component";
+import { UserPreviewComponent } from "./components/user-preview/user-preview.component";
 
 @NgModule({
   imports: [
@@ -37,11 +45,11 @@ import { CompanyDetailsComponent } from "./company-details/company-details.compo
     BrowserAnimationsModule,
     FormsModule,
     ReactiveFormsModule,
-    InfiniteScrollModule,
     HttpClientModule,
     AppRoutingModule,
     MenubarModule,
     InputTextModule,
+    InputTextareaModule,
     ButtonModule,
     CardModule,
     MultiSelectModule,
@@ -49,8 +57,11 @@ import { CompanyDetailsComponent } from "./company-details/company-details.compo
     OrderListModule,
     FieldsetModule,
     ConfirmDialogModule,
+    DialogModule,
     ToastModule,
     RippleModule,
+    CalendarModule,
+    SplitButtonModule,
   ],
   declarations: [
     AppComponent,
@@ -65,6 +76,11 @@ import { CompanyDetailsComponent } from "./company-details/company-details.compo
     CompaniesComponent,
     CompanyPreviewComponent,
     CompanyDetailsComponent,
+    UserProfileComponent,
+    NotificationsComponent,
+    RecruiterHomeComponent,
+    RecruiterJobApplicationsComponent,
+    UserPreviewComponent,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },

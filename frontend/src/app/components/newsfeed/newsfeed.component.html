@@ -1,0 +1,22 @@
+<div class="container-fluid text-white bg-dark">
+  <div class="row">
+    <div class="col-2"></div>
+    <div class="col-4">
+      <h3>Recently posted jobs</h3>
+      <div id="job-list" (scroll)="onScroll($event)">
+        <ng-template ngFor let-job [ngForOf]="jobs">
+          <div (click)="setSelectedJob(job)" class="job-preview">
+            <br />
+            <app-job-preview *ngIf="job" [job]="job"></app-job-preview>
+            <br />
+          </div>
+        </ng-template>
+      </div>
+    </div>
+    <div *ngIf="selectedJob" class="col-4" id="job-details">
+      <h3>Job Details</h3>
+      <app-job-details [job]="selectedJob"></app-job-details>
+    </div>
+    <div class="col-2"></div>
+  </div>
+</div>

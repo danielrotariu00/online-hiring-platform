@@ -1,0 +1,51 @@
+<div class="container-fluid text-white bg-dark">
+  <div class="row">
+    <div class="col-5">
+      <div id="jobApplicationList">
+        <p-orderList
+          header="Job Applications"
+          [value]="jobApplications"
+          (onSelectionChange)="onSelectionChange($event)"
+          [listStyle]="{ height: 'auto' }"
+          filterBy="job.title"
+          filterPlaceholder="Filter by job title"
+        >
+          <ng-template let-jobApplication pTemplate="item">
+            <div class="product-item">
+              <div class="product-list-detail">
+                <app-user-preview
+                  [userId]="jobApplication?.userId"
+                ></app-user-preview>
+              </div>
+              <h5>{{ jobApplication?.status?.name }}</h5>
+            </div>
+          </ng-template>
+        </p-orderList>
+      </div>
+    </div>
+    <div *ngIf="selectedJobApplication" class="col-7">
+      <h4>
+        {{ selectedJobApplication?.userDetails?.lastName }}
+        {{ selectedJobApplication?.userDetails?.firstName }} applied for this
+        job on ...
+      </h4>
+      <p-button label="View Profile" (click)="viewProfile()"></p-button>
+      <h4>
+        This application was last updated on
+        {{ selectedJobApplication?.formattedUpdatedAt }}
+      </h4>
+      <h4>Current Status: {{ selectedJobApplication?.status?.name }}</h4>
+      <p-splitButton
+        label="Change Status"
+        icon="pi pi-plus"
+        [model]="statusItems"
+      ></p-splitButton>
+
+      <p-confirmDialog
+        [style]="{ width: '25vw' }"
+        [baseZIndex]="10000"
+      ></p-confirmDialog>
+      <p>Chat...</p>
+    </div>
+  </div>
+</div>

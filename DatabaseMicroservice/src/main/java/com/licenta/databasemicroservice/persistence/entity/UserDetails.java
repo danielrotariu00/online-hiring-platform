@@ -10,8 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.MapsId;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 
@@ -38,13 +36,7 @@ public class UserDetails {
     @NotEmpty
     private String profileDescription;
     @NotEmpty
-    private String profilePicture;
-
-    // Foreign keys
-    @OneToOne
-    @MapsId
-    @JoinColumn(name = "userId")
-    private User user;
+    private String profilePictureUrl;
 
     @ManyToOne
     @JoinColumn(name = "city_id", nullable=false)

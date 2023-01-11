@@ -14,3 +14,5 @@ export * from "./experience_level";
 export * from "./job_application";
 export * from "./job_application_response";
 export * from "./company_industry";
+export * from "./user_details";
+export * from "./notification";

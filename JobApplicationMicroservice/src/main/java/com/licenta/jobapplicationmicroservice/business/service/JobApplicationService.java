@@ -3,13 +3,14 @@ package com.licenta.jobapplicationmicroservice.business.service;
 import com.licenta.jobapplicationmicroservice.business.interfaces.IDatabaseService;
 import com.licenta.jobapplicationmicroservice.business.interfaces.IJobApplicationService;
 import com.licenta.jobapplicationmicroservice.business.interfaces.INotificationService;
+import com.licenta.jobapplicationmicroservice.business.model.Company;
 import com.licenta.jobapplicationmicroservice.business.model.CreateJobApplicationRequest;
 import com.licenta.jobapplicationmicroservice.business.model.Job;
 import com.licenta.jobapplicationmicroservice.business.model.JobApplicationResponse;
 import com.licenta.jobapplicationmicroservice.business.model.JobApplicationStatusResponse;
 import com.licenta.jobapplicationmicroservice.business.model.Notification;
-import com.licenta.jobapplicationmicroservice.business.model.NotificationType;
 import com.licenta.jobapplicationmicroservice.business.model.UpdateJobApplicationRequest;
+import com.licenta.jobapplicationmicroservice.business.util.constants.Constants;
 import com.licenta.jobapplicationmicroservice.business.util.exception.ExceptionWithStatus;
 import com.licenta.jobapplicationmicroservice.business.util.exception.NotFoundException;
 import com.licenta.jobapplicationmicroservice.business.util.mapper.JobApplicationMapper;
@@ -67,7 +68,7 @@ public class JobApplicationService implements IJobApplicationService {
         buildAndSendNotification(
                 job.getRecruiterId(),
                 jobApplication.getId(),
-                NotificationType.JOB_APPLICATION_SUBMITTED
+                String.format(Constants.SUBMITTED_JOB_APPLICATION_TEXT_FORMAT, job.getTitle())
         );
     }
 
@@ -107,19 +108,19 @@ public class JobApplicationService implements IJobApplicationService {
             jobApplicationRepository.save(jobApplication);
 
             // todo extract constant
+            Job job = databaseService.getJob(jobApplication.getJobId());
+            Company company = databaseService.getCompany(job.getCompanyId());
             if (status.getName().equals("WITHDRAWN")) {
-                Job job = databaseService.getJob(jobApplication.getJobId());
-
                 buildAndSendNotification(
                         job.getRecruiterId(),
                         jobApplication.getId(),
-                        NotificationType.JOB_APPLICATION_WITHDRAWN
+                        String.format(Constants.WITHDRAWN_JOB_APPLICATION_TEXT_FORMAT, job.getTitle())
                 );
             } else {
                 buildAndSendNotification(
                         jobApplication.getUserId(),
                         jobApplication.getId(),
-                        NotificationType.JOB_APPLICATION_UPDATED
+                        String.format(Constants.UPDATED_JOB_APPLICATION_TEXT_FORMAT, job.getTitle(), company.getName())
                 );
             }
         }
@@ -157,12 +158,12 @@ public class JobApplicationService implements IJobApplicationService {
         databaseService.getJob(jobId);
     }
 
-    private void buildAndSendNotification(Long userId, Long jobApplicationId, NotificationType type) {
+    private void buildAndSendNotification(Long userId, Long jobApplicationId, String text) {
         Notification notification = Notification.builder()
                 .userId(userId)
                 .jobApplicationId(jobApplicationId)
-                .type(type)
-                .timestamp(LocalDateTime.now().toString())
+                .text(text)
+                .timestamp(LocalDateTime.now())
                 .build();
 
         notificationService.sendNotification(notification);

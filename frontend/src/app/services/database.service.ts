@@ -14,8 +14,18 @@ import {
   JobQueryResponse,
   JobResponse,
   JobType,
+  UserDetails,
   WorkType,
 } from "../models";
+import { UserEducationalExperience } from "../models/user_educational_experience";
+import { EducationalInstitution } from "../models/educational_institution";
+import { UserProfessionalExperience } from "../models/user_professional_experience";
+import { UserSkill } from "../models/user_skill";
+import { Skill } from "../models/skill";
+import { UserLanguage } from "../models/user_language";
+import { Language } from "../models/language";
+import { UserProject } from "../models/user_project";
+import { LanguageLevel } from "../models/language_level";
 
 @Injectable({
   providedIn: "root",
@@ -23,10 +33,180 @@ import {
 export class DatabaseService {
   constructor(private http: HttpClient) {}
 
+  getUserDetails(userId: number): Observable<UserDetails> {
+    return this.http.get(
+      `${environment.databaseApiURL}/users/${userId}/details`
+    ) as Observable<UserDetails>;
+  }
+
+  getUserEducationalExperience(
+    userId: number
+  ): Observable<UserEducationalExperience[]> {
+    return this.http.get(
+      `${environment.databaseApiURL}/users/${userId}/educational-experience`
+    ) as Observable<UserEducationalExperience[]>;
+  }
+
+  getUserProfessionalExperience(
+    userId: number
+  ): Observable<UserProfessionalExperience[]> {
+    return this.http.get(
+      `${environment.databaseApiURL}/users/${userId}/professional-experience`
+    ) as Observable<UserProfessionalExperience[]>;
+  }
+
+  getUserSkills(userId: number): Observable<UserSkill[]> {
+    return this.http.get(
+      `${environment.databaseApiURL}/users/${userId}/skills`
+    ) as Observable<UserSkill[]>;
+  }
+
+  getUserProjects(userId: number): Observable<UserProject[]> {
+    return this.http.get(
+      `${environment.databaseApiURL}/users/${userId}/projects`
+    ) as Observable<UserProject[]>;
+  }
+
+  getUserLanguages(userId: number): Observable<UserLanguage[]> {
+    return this.http.get(
+      `${environment.databaseApiURL}/users/${userId}/languages`
+    ) as Observable<UserLanguage[]>;
+  }
+
+  getEducationalInstitutionById(
+    id: number
+  ): Observable<EducationalInstitution> {
+    return this.http.get(
+      `${environment.databaseApiURL}/educational-institutions/${id}`
+    ) as Observable<EducationalInstitution>;
+  }
+
+  getSkillById(id: number): Observable<Skill> {
+    return this.http.get(
+      `${environment.databaseApiURL}/skills/${id}`
+    ) as Observable<Skill>;
+  }
+
+  getSkills(): Observable<Skill[]> {
+    return this.http.get(`${environment.databaseApiURL}/skills`) as Observable<
+      Skill[]
+    >;
+  }
+
+  getLanguageById(id: number): Observable<Language> {
+    return this.http.get(
+      `${environment.databaseApiURL}/languages/${id}`
+    ) as Observable<Language>;
+  }
+
+  getLanguages(): Observable<Language[]> {
+    return this.http.get(
+      `${environment.databaseApiURL}/languages`
+    ) as Observable<Language[]>;
+  }
+
+  getLanguageLevels(): Observable<LanguageLevel[]> {
+    return this.http.get(
+      `${environment.databaseApiURL}/language-levels`
+    ) as Observable<LanguageLevel[]>;
+  }
+
+  getLanguageLevelById(id: number): Observable<LanguageLevel> {
+    return this.http.get(
+      `${environment.databaseApiURL}/language-levels/${id}`
+    ) as Observable<LanguageLevel>;
+  }
+
+  deleteUserProfessionalExperience(
+    id: number
+  ): Observable<UserProfessionalExperience> {
+    return this.http.delete(
+      `${environment.databaseApiURL}/professional-experience/${id}`
+    ) as Observable<UserProfessionalExperience>;
+  }
+
+  deleteUserEducationalExperience(
+    id: number
+  ): Observable<UserEducationalExperience> {
+    return this.http.delete(
+      `${environment.databaseApiURL}/educational-experience/${id}`
+    ) as Observable<UserEducationalExperience>;
+  }
+
+  deleteUserSkill(userId: number, skillId: number): Observable<UserSkill> {
+    return this.http.delete(
+      `${environment.databaseApiURL}/users/${userId}/skills/${skillId}`
+    ) as Observable<UserSkill>;
+  }
+
+  deleteUserProject(id: number): Observable<UserProject> {
+    return this.http.delete(
+      `${environment.databaseApiURL}/projects/${id}`
+    ) as Observable<UserProject>;
+  }
+
+  deleteUserLanguage(
+    userId: number,
+    languageId: number
+  ): Observable<UserLanguage> {
+    return this.http.delete(
+      `${environment.databaseApiURL}/users/${userId}/languages/${languageId}`
+    ) as Observable<UserLanguage>;
+  }
+
+  addUserProfessionalExperience(
+    userId: number,
+    companyId: number,
+    jobTitle: string,
+    startDate: Date,
+    endDate: Date,
+    description: string
+  ) {
+    return this.http.post(
+      `${environment.databaseApiURL}/professional-experience`,
+      {
+        userId,
+        companyId,
+        jobTitle,
+        startDate,
+        endDate,
+        description,
+      }
+    );
+  }
+
+  addJob(
+    title: string,
+    recruiterId: number,
+    companyIndustryId: number,
+    cityId: number,
+    workTypeId: number,
+    jobTypeId: number,
+    experienceLevelId: number,
+    description: string
+  ) {
+    return this.http.post(`${environment.databaseApiURL}/jobs`, {
+      title,
+      recruiterId,
+      companyIndustryId,
+      cityId,
+      workTypeId,
+      jobTypeId,
+      experienceLevelId,
+      description,
+    });
+  }
+
   getCities(): Observable<City[]> {
     return this.http.get(`${environment.databaseApiURL}/cities`) as Observable<
       City[]
     >;
+  }
+
+  getCitiesByCountryId(countryId: number): Observable<City[]> {
+    return this.http.get(
+      `${environment.databaseApiURL}/countries/${countryId}/cities`
+    ) as Observable<City[]>;
   }
 
   getCityById(id: number): Observable<City> {
@@ -129,7 +309,8 @@ export class DatabaseService {
     industries?: Industry[],
     workTypes?: WorkType[],
     jobTypes?: JobType[],
-    experienceLevels?: ExperienceLevel[]
+    experienceLevels?: ExperienceLevel[],
+    cached?: boolean
   ): Observable<JobQueryResponse> {
     let URL = `${environment.searchApiURL}/jobs?page=${page}&size=${maxJobs}`;
 
@@ -151,7 +332,7 @@ export class DatabaseService {
 
     if (typeof industries !== "undefined") {
       const industryQueryParam = `&industryId=${industries
-        .map((industry) => industry.id)
+        .map((industry) => industry?.id)
         .join(",")}`;
 
       URL += industryQueryParam;
@@ -181,6 +362,12 @@ export class DatabaseService {
       URL += experienceLevelQueryParam;
     }
 
+    if (typeof cached !== "undefined") {
+      const cachedQueryParam = `&cached=${cached}`;
+
+      URL += cachedQueryParam;
+    }
+
     return this.http.get(URL) as Observable<JobQueryResponse>;
   }
 
@@ -188,6 +375,16 @@ export class DatabaseService {
     return this.http.get(
       `${environment.databaseApiURL}/jobs/${id}`
     ) as Observable<JobResponse>;
+  }
+
+  createCompanyIndustryFollower(userId: number, companyIndustryId: number) {
+    return this.http.post(
+      `${environment.databaseApiURL}/company-industry-followers`,
+      {
+        userId,
+        companyIndustryId,
+      }
+    );
   }
 
   toJob(jobResponse: JobResponse): Job {

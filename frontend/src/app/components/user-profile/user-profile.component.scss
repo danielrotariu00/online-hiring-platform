@@ -1,0 +1,43 @@
+.profilePicture {
+  height: 12em;
+  width: 12em;
+}
+
+.flex-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.logo {
+  margin-left: 5%;
+  float: left;
+  height: 4em;
+  width: 4em;
+  cursor: pointer;
+}
+
+.experience-text {
+  padding-left: 8em;
+}
+
+:host ::ng-deep .p-button {
+  margin-right: 10em;
+  float: right;
+}
+
+.add {
+  float: left;
+  margin-left: 2em;
+}
+
+.edit {
+  margin-right: 2em;
+}
+
+h3 {
+  float: left;
+}
+
+.tabbed {
+  margin-left: 5%;
+}

@@ -19,4 +19,5 @@ public class CompanyResponse {
     private String photo;
     private String description;
     private Integer cityId;
+    private String website;
 }

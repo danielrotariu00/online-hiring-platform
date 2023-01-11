@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 
 
@@ -22,6 +23,8 @@ public class CreateCompanyRequest {
     private String photo;
     @NotEmpty
     private String description;
-    @NotEmpty
+    @Min(1)
     private Integer cityId;
+    @NotEmpty
+    private String website;
 }

@@ -25,5 +25,5 @@ public class SaveUserDetailsRequest {
     @NotEmpty
     private String profileDescription;
     @NotEmpty
-    private String profilePicture;
+    private String profilePictureUrl;
 }

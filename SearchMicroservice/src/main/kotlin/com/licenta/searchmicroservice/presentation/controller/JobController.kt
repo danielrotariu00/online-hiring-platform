@@ -19,6 +19,7 @@ class JobController {
 
     @GetMapping
     fun getNewsfeed(
+        @RequestParam(defaultValue = "true") cached: Boolean,
         @RequestParam(defaultValue = "") title: List<String>,
         @RequestParam(defaultValue = "") cityId: List<Int>,
         @RequestParam(defaultValue = "") countryId: List<Int>,
@@ -50,6 +51,6 @@ class JobController {
             jobStatusIdList
         )
 
-        return jobFilterService.getFilteredJobs(jobQuery, page, size)
+        return jobFilterService.getFilteredJobs(jobQuery, cached, page, size)
     }
 }

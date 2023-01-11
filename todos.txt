@@ -1,0 +1,20 @@
+TODO:
+
+*
+- saved jobs
+- finish filters for jobs
+- pagination and filtering for companies, industries
+- fix angular version
+- refactor dto classes
+
+**
+- my profile page, user experience, skills, education
+- notifications
+- refactor pos idm
+- create python api gateway
+- deploy all on docker
+- angular ui for recruiter
+- react ui for manager/admin
+
+***
+- messages

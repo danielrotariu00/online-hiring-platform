@@ -1,0 +1,17 @@
+<p-toast></p-toast>
+<p-fieldset legend="Job details" [toggleable]="true">
+  <app-job-details [job]="jobApplication?.job"></app-job-details>
+</p-fieldset>
+<h4>Last updated on {{ jobApplication?.formattedUpdatedAt }}</h4>
+<h4>Current Status: {{ jobApplication?.status?.name }}</h4>
+<p-confirmDialog
+  [style]="{ width: '25vw' }"
+  [baseZIndex]="10000"
+></p-confirmDialog>
+<p-button
+  (click)="onClickWithdraw()"
+  icon="pi pi-times"
+  label="Withdraw"
+></p-button>
+<p>Files...</p>
+<p>Chat...</p>

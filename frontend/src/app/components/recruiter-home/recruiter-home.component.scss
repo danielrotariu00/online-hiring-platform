@@ -1,0 +1,12 @@
+.companyLogo {
+  margin-left: 5%;
+  float: left;
+  height: 8em;
+  width: 8em;
+}
+
+#filters,
+#job-list {
+  min-height: 90vh;
+  overflow-y: scroll;
+}

@@ -22,10 +22,28 @@ export class JobApplicationService {
     );
   }
 
+  getJobApplicationById(id: number): Observable<JobApplication> {
+    return this.http.get(
+      `${environment.jobApplicationApiURL}/job-applications/${id}`
+    ) as Observable<JobApplication>;
+  }
+
   getJobApplicationsByUserId(userId: number): Observable<JobApplication[]> {
     return this.http.get(
       `${environment.jobApplicationApiURL}/users/${userId}/job-applications`
     ) as Observable<JobApplication[]>;
+  }
+
+  getJobApplicationsByJobId(jobId: number): Observable<JobApplication[]> {
+    return this.http.get(
+      `${environment.jobApplicationApiURL}/jobs/${jobId}/job-applications`
+    ) as Observable<JobApplication[]>;
+  }
+
+  getStatus(): Observable<JobApplicationStatus[]> {
+    return this.http.get(
+      `${environment.jobApplicationApiURL}/job-applications/status`
+    ) as Observable<JobApplicationStatus[]>;
   }
 
   getStatusById(statusId: number): Observable<JobApplicationStatus> {

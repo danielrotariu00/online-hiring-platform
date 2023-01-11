@@ -1,0 +1,17 @@
+<h2>{{ job?.title }}</h2>
+<h4>
+  {{ job?.company?.name }} - {{ job?.city?.name }}, {{ job?.country?.name }}
+</h4>
+<br />
+<h4>{{ job?.workType?.name }}</h4>
+<p>...</p>
+<p-button label="Apply" (click)="onClickApply()" icon="pi pi-plus"></p-button>
+<p-button
+  label="Save"
+  icon="pi pi-check"
+  styleClass="p-button-secondary"
+  [style]="{ 'margin-left': '.5em' }"
+></p-button>
+<div>{{ job?.description }}</div>
+<p>Recruiter ...</p>
+<button>Send message</button>

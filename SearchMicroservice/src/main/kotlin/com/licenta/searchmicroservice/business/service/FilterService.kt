@@ -15,6 +15,7 @@ import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
+import javax.transaction.Transactional
 
 @Service
 class FilterService: IFilterService {
@@ -26,8 +27,13 @@ class FilterService: IFilterService {
     @Autowired
     private lateinit var jobRepository: JobRepository
 
-    override fun getFilteredJobs(jobQuery: JobQuery, page: Int, size: Int) : JobQueryResponse {
+    @Transactional
+    override fun getFilteredJobs(jobQuery: JobQuery, cached: Boolean, page: Int, size: Int) : JobQueryResponse {
         val queryId = jobQuery.hash()
+
+        if(!cached) {
+            jobRepository.deleteAllByQueryId(queryId)
+        }
 
         if (!jobQueryIsCached(queryId)) {
             val jobList = databaseClient.getJobs()

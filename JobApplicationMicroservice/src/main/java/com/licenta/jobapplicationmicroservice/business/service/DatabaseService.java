@@ -2,6 +2,7 @@ package com.licenta.jobapplicationmicroservice.business.service;
 
 import com.google.gson.Gson;
 import com.licenta.jobapplicationmicroservice.business.interfaces.IDatabaseService;
+import com.licenta.jobapplicationmicroservice.business.model.Company;
 import com.licenta.jobapplicationmicroservice.business.model.Job;
 import com.licenta.jobapplicationmicroservice.business.util.errorhandler.RestTemplateResponseErrorHandler;
 import com.licenta.jobapplicationmicroservice.business.util.exception.ExceptionWithStatus;
@@ -42,5 +43,16 @@ public class DatabaseService implements IDatabaseService {
 
         Gson gson = new Gson();
         return gson.fromJson(response.getBody(), Job.class);
+    }
+
+    @Override
+    public Company getCompany(Long companyId) {
+        ResponseEntity<String> response = restTemplate.getForEntity(String.format(URL_FORMAT, "companies", companyId), String.class);
+
+        if(response.getStatusCode() != HttpStatus.OK)
+            throw new ExceptionWithStatus(response.getBody(), response.getStatusCode());
+
+        Gson gson = new Gson();
+        return gson.fromJson(response.getBody(), Company.class);
     }
 }

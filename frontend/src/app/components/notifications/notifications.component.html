@@ -1,0 +1,35 @@
+<div *ngIf="user" class="container-fluid text-white bg-dark">
+  <div class="row">
+    <div class="col-4"></div>
+    <div id="notification-list" class="col-4">
+      <h3>Notifications</h3>
+      <p-card
+        *ngFor="let notification of notifications"
+        [style]="{ 'margin-bottom': '1em' }"
+      >
+        <p>{{ notification.text }}</p>
+        <p>{{ notification.formattedTimestamp }}</p>
+        <ng-template pTemplate="footer">
+          <p-button
+            label="View Application"
+            icon="pi pi-external-link"
+            (onClick)="goToJobApplication(notification.jobApplicationId)"
+          ></p-button>
+          <p-button
+            label="Mark as read"
+            icon="pi pi-check"
+            styleClass="p-button-secondary"
+            [style]="{ 'margin-left': '.5em' }"
+          ></p-button>
+          <p-button
+            label="Delete"
+            icon="pi pi-times"
+            styleClass="p-button-secondary"
+            [style]="{ 'margin-left': '.5em' }"
+            (onClick)="deleteNotification(notification.id)"
+          ></p-button>
+        </ng-template>
+      </p-card>
+    </div>
+  </div>
+</div>

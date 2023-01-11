@@ -1,0 +1,10 @@
+.userProfilePicture {
+  margin-left: 5%;
+  float: left;
+  height: 8em;
+  width: 8em;
+}
+
+.userDetailsText {
+  padding-left: 11em;
+}

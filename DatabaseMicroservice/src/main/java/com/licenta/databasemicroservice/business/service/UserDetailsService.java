@@ -34,7 +34,7 @@ public class UserDetailsService implements IUserDetailsService {
         User user = userService.getUserOrElseThrowException(userId);
         City city = cityService.getCityOrElseThrowException(request.getCityId());
 
-        userDetails.setUser(user);
+        userDetails.setUserId(user.getId());
         userDetails.setCity(city);
 
         if (userDetailsRepository.findById(userId).isPresent()) {

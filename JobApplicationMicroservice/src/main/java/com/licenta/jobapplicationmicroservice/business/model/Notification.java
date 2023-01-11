@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @Builder
@@ -15,6 +17,6 @@ public class Notification {
 
     private Long userId;
     private Long jobApplicationId;
-    private NotificationType type;
-    private String timestamp;
+    private String text;
+    private LocalDateTime timestamp;
 }

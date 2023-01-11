@@ -25,13 +25,21 @@ export class AccountService {
 
   login(email: string, password: string) {
     return this.http
-      .post<User>(`${environment.apiUrl}/users/login`, {
+      .post<User>(`${environment.apiUrl}/login`, {
         email,
         password,
       })
       .pipe(
-        map((user) => {
+        map((user: User) => {
           // store user details and jwt token in local storage to keep user logged in between page refreshes
+          let regularUserId = 1;
+          let recruiterId = 2;
+
+          if (user.roles.find((role) => role == recruiterId)) {
+            user.isRecruiter = true;
+          } else {
+            user.isRecruiter = false;
+          }
           localStorage.setItem("user", JSON.stringify(user));
           this.userSubject.next(user);
           return user;

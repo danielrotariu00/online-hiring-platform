@@ -2,6 +2,7 @@ package com.licenta.newsfeedmicroservice.business.services
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.licenta.newsfeed.business.model.JobQueryResponse
 import com.licenta.newsfeedmicroservice.business.interfaces.ISearchService
 import com.licenta.newsfeedmicroservice.business.model.CompanyIndustry
 import com.licenta.newsfeedmicroservice.business.model.Job
@@ -20,8 +21,8 @@ class SearchService: ISearchService {
             throw ExceptionWithStatus(response.text, HttpStatus.valueOf(response.statusCode))
         }
 
-        val typeToken = object : TypeToken<List<Job>>() {}.type
-
-        return Gson().fromJson(response.text, typeToken)
+        val typeToken = object : TypeToken<JobQueryResponse>() {}.type
+        val jobQueryResponse: JobQueryResponse = Gson().fromJson(response.text, typeToken)
+        return jobQueryResponse.jobList
     }
 }

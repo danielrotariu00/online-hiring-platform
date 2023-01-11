@@ -1,0 +1,227 @@
+<div class="container-fluid text-white bg-dark">
+  <div class="row">
+    <div class="col-2"></div>
+    <div class="col-3">
+      <div id="industry-list">
+        <p-orderList
+          header="Company Industries"
+          [value]="companyIndustries"
+          (onSelectionChange)="onIndustrySelectionChange($event)"
+          [listStyle]="{ height: 'auto' }"
+          filterBy="name"
+          filterPlaceholder="Filter by name"
+        >
+          <ng-template let-companyIndustry pTemplate="item">
+            <div class="product-item">
+              <div class="product-list-detail">
+                <div>{{ companyIndustry?.industry?.name }}</div>
+              </div>
+            </div>
+          </ng-template>
+        </p-orderList>
+      </div>
+    </div>
+    <div class="col-5">
+      <h3>Company Jobs</h3>
+      <p-button
+        icon="pi pi-plus"
+        (click)="showJobForm()"
+        label="Add"
+        styleClass="p-button-text"
+      ></p-button>
+      <p-dialog
+        header="New Job"
+        [(visible)]="displayJobForm"
+        [style]="{ width: '50vw', height: '45vw' }"
+        [baseZIndex]="10000"
+      >
+        <h4>Title</h4>
+        <input type="text" pInputText [(ngModel)]="jobTitle" />
+        <br />
+        <br />
+        <h4>Country</h4>
+        <p-dropdown
+          [options]="countries"
+          [(ngModel)]="selectedCountry"
+          (onChange)="onCountryChange($event)"
+          optionLabel="name"
+          [filter]="true"
+          filterBy="name"
+          [showClear]="true"
+          placeholder="Select one"
+        >
+          <ng-template pTemplate="selectedItem">
+            <div
+              class="selectedCountry-item selectedCountry-item-value"
+              *ngIf="selectedCountry"
+            >
+              <div>{{ selectedCountry.name }}</div>
+            </div>
+          </ng-template>
+        </p-dropdown>
+        <br />
+        <br />
+        <h4>City</h4>
+        <p-dropdown
+          [options]="cities"
+          [(ngModel)]="selectedCity"
+          optionLabel="name"
+          [filter]="true"
+          filterBy="name"
+          [showClear]="true"
+          placeholder="Select one"
+        >
+          <ng-template pTemplate="selectedItem">
+            <div
+              class="selectedCity-item selectedCity-item-value"
+              *ngIf="selectedCity"
+            >
+              <div>{{ selectedCity.name }}</div>
+            </div>
+          </ng-template>
+        </p-dropdown>
+        <br />
+        <br />
+        <h4>Industry</h4>
+        <p-dropdown
+          [options]="companyIndustries"
+          [(ngModel)]="selectedFormCompanyIndustry"
+          optionLabel="industry.name"
+          [filter]="true"
+          filterBy="industry.name"
+          [showClear]="true"
+          placeholder="Select one"
+        >
+          <ng-template pTemplate="selectedItem">
+            <div
+              class="selectedFormCompanyIndustry-item selectedFormCompanyIndustry-item-value"
+              *ngIf="selectedFormCompanyIndustry"
+            >
+              <div>{{ selectedFormCompanyIndustry.industry.name }}</div>
+            </div>
+          </ng-template>
+        </p-dropdown>
+        <br />
+        <br />
+        <h4>Job Type</h4>
+        <p-dropdown
+          [options]="jobTypes"
+          [(ngModel)]="selectedJobType"
+          optionLabel="name"
+          [filter]="true"
+          filterBy="name"
+          [showClear]="true"
+          placeholder="Select one"
+        >
+          <ng-template pTemplate="selectedItem">
+            <div
+              class="selectedJobType-item selectedJobType-item-value"
+              *ngIf="selectedJobType"
+            >
+              <div>{{ selectedJobType.name }}</div>
+            </div>
+          </ng-template>
+        </p-dropdown>
+        <br />
+        <br />
+        <h4>Work Type</h4>
+        <p-dropdown
+          [options]="workTypes"
+          [(ngModel)]="selectedWorkType"
+          optionLabel="name"
+          [filter]="true"
+          filterBy="name"
+          [showClear]="true"
+          placeholder="Select one"
+        >
+          <ng-template pTemplate="selectedItem">
+            <div
+              class="selectedWorkType-item selectedWorkType-item-value"
+              *ngIf="selectedWorkType"
+            >
+              <div>{{ selectedWorkType.name }}</div>
+            </div>
+          </ng-template>
+        </p-dropdown>
+        <br />
+        <br />
+        <h4>Experience Level</h4>
+        <p-dropdown
+          [options]="experienceLevels"
+          [(ngModel)]="selectedExperienceLevel"
+          optionLabel="name"
+          [filter]="true"
+          filterBy="name"
+          [showClear]="true"
+          placeholder="Select one"
+        >
+          <ng-template pTemplate="selectedItem">
+            <div
+              class="selectedExperienceLevel-item selectedExperienceLevel-item-value"
+              *ngIf="selectedExperienceLevel"
+            >
+              <div>{{ selectedExperienceLevel.name }}</div>
+            </div>
+          </ng-template>
+        </p-dropdown>
+        <br />
+        <br />
+        <h4>Description</h4>
+        <textarea
+          rows="20"
+          cols="80"
+          pInputTextarea
+          [(ngModel)]="description"
+        ></textarea>
+        <ng-template pTemplate="footer">
+          <p-button
+            icon="pi pi-check"
+            (click)="addJob()"
+            label="Save"
+            styleClass="p-button-text"
+          ></p-button>
+          <p-button
+            icon="pi pi-times"
+            (click)="displayJobForm = false"
+            label="Cancel"
+          ></p-button>
+        </ng-template>
+      </p-dialog>
+      <div id="job-list">
+        <p-paginator
+          #paginator
+          [first]="maxJobs"
+          [rows]="maxJobs"
+          [totalRecords]="totalElements"
+          (onPageChange)="onPageChange($event)"
+          [showPageLinks]="true"
+        ></p-paginator>
+        <ng-template ngFor let-job [ngForOf]="jobs">
+          <div (click)="setSelectedJob(job)" class="job-preview">
+            <br />
+            <app-job-preview [job]="job"></app-job-preview>
+            <br />
+            <p-button
+              label="Edit"
+              (click)="editJob(job)"
+              icon="pi pi-pencil"
+              style="margin-left: 5%"
+            ></p-button>
+            <p-button
+              label="View Applications"
+              (click)="viewApplications(job)"
+              styleClass="p-button-secondary"
+              [style]="{ 'margin-left': '.5em' }"
+            ></p-button>
+            <p-button
+              label="Mark as closed"
+              (click)="markAsClosed(job)"
+              styleClass="p-button-secondary"
+              [style]="{ 'margin-left': '.5em' }"
+            ></p-button>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>
