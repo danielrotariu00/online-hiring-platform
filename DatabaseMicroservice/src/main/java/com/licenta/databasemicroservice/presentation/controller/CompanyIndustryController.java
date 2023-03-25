@@ -28,9 +28,9 @@ public class CompanyIndustryController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(value="/company-industries", method=RequestMethod.POST)
-    public void addCompanyIndustry(@Valid @RequestBody CompanyIndustryRequest request) {
+    public CompanyIndustryResponse addCompanyIndustry(@Valid @RequestBody CompanyIndustryRequest request) {
 
-        companyIndustryService.addCompanyIndustry(request);
+        return companyIndustryService.addCompanyIndustry(request);
     }
 
     @RequestMapping(value="/companies/{companyId}/company-industries", method=RequestMethod.GET)
@@ -45,9 +45,9 @@ public class CompanyIndustryController {
         return companyIndustryService.getCompaniesByIndustry(industryId);
     }
 
-    @RequestMapping(value="/company-industries", method=RequestMethod.DELETE)
-    public void deleteCompanyIndustry(@Valid @RequestBody CompanyIndustryRequest request) {
+    @RequestMapping(value="/companies/{companyId}/industries/{industryId}", method=RequestMethod.DELETE)
+    public void deleteCompanyIndustry(@PathVariable Long companyId, @PathVariable Integer industryId) {
 
-        companyIndustryService.deleteCompanyIndustry(request);
+        companyIndustryService.deleteCompanyIndustry(companyId, industryId);
     }
 }

@@ -11,11 +11,12 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class NotificationListener {
-    @Autowired
-    SimpMessagingTemplate template;
 
     @Autowired
     private INotificationService notificationService;
+
+    @Autowired
+    SimpMessagingTemplate simpMessagingTemplate;
 
     @KafkaListener(
             topics = KafkaConstants.NOTIFICATION_TOPIC,
@@ -23,7 +24,13 @@ public class NotificationListener {
     )
     public void listen(NotificationDTO notificationDTO) {
         notificationDTO.setIsRead(false);
-        notificationService.save(notificationDTO);
-        // template.convertAndSend("/topic/group", message);
+        NotificationDTO returnedNotification = notificationService.save(notificationDTO);
+        returnedNotification.setMessage(notificationDTO.getMessage());
+
+        simpMessagingTemplate.convertAndSendToUser(
+                String.valueOf(notificationDTO.getUserId()),
+                "/notifications",
+                returnedNotification
+        );
     }
 }

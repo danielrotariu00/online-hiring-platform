@@ -7,8 +7,8 @@
           [value]="jobApplications"
           (onSelectionChange)="onSelectionChange($event)"
           [listStyle]="{ height: 'auto' }"
-          filterBy="job.title"
-          filterPlaceholder="Filter by job title"
+          filterBy="userDetails.lastName"
+          filterPlaceholder="Filter by last name"
         >
           <ng-template let-jobApplication pTemplate="item">
             <div class="product-item">
@@ -24,11 +24,6 @@
       </div>
     </div>
     <div *ngIf="selectedJobApplication" class="col-7">
-      <h4>
-        {{ selectedJobApplication?.userDetails?.lastName }}
-        {{ selectedJobApplication?.userDetails?.firstName }} applied for this
-        job on ...
-      </h4>
       <p-button label="View Profile" (click)="viewProfile()"></p-button>
       <h4>
         This application was last updated on
@@ -36,6 +31,7 @@
       </h4>
       <h4>Current Status: {{ selectedJobApplication?.status?.name }}</h4>
       <p-splitButton
+        *ngIf="selectedJobApplication?.status?.name != 'WITHDRAWN'"
         label="Change Status"
         icon="pi pi-plus"
         [model]="statusItems"
@@ -45,7 +41,38 @@
         [style]="{ width: '25vw' }"
         [baseZIndex]="10000"
       ></p-confirmDialog>
-      <p>Chat...</p>
+      <br />
+      <br />
+      <div class="chat-box">
+        <div class="header">
+          <h4>&nbsp; Messages</h4>
+        </div>
+        <div #scrollMe class="message-box">
+          <li
+            *ngFor="
+              let message of selectedJobApplication.messageList;
+              let i = index
+            "
+          >
+            <strong *ngIf="user.id == message.userId"> You,</strong>
+            <strong *ngIf="user.id != message.userId">
+              {{ selectedJobApplication.userDetails?.lastName }}
+              {{ selectedJobApplication.userDetails?.firstName }},</strong
+            >
+            {{ message.formattedTimestamp }}
+            <br />
+            {{ message.content }}
+          </li>
+        </div>
+        <section>
+          <textarea
+            pInputTextarea
+            [(ngModel)]="textareaValue"
+            placeholder="write a message"
+          ></textarea>
+          <p-button (click)="sendMessage()" label="Send"></p-button>
+        </section>
+      </div>
     </div>
   </div>
 </div>

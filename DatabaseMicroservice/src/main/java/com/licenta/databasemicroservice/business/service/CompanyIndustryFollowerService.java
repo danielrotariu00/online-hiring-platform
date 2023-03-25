@@ -81,10 +81,7 @@ public class CompanyIndustryFollowerService implements ICompanyIndustryFollowerS
     }
 
     @Override
-    public void removeCompanyIndustryFollower(CompanyIndustryFollowerRequest request) {
-        Long userId = request.getUserId();
-        Long companyIndustryId = request.getCompanyIndustryId();
-
+    public void removeCompanyIndustryFollower(Long userId, Long companyIndustryId) {
         userService.getUserOrElseThrowException(userId);
         companyIndustryService.getCompanyIndustryOrElseThrowException(companyIndustryId);
 

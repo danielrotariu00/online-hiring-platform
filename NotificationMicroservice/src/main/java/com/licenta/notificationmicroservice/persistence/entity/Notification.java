@@ -30,7 +30,7 @@ public class Notification {
     private Long userId;
 
     @Column(nullable=false)
-    private Long jobApplicationId;
+    private String jobApplicationId;
 
     @Column(nullable=false)
     private String text;

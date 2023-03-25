@@ -1,5 +1,5 @@
-import { Component, OnInit, Input } from "@angular/core";
-import { Job, User } from "../../models";
+import { Component, OnInit, Input, OnChanges } from "@angular/core";
+import { Job, JobApplication, JobResponse, User } from "../../models";
 import { AccountService, JobApplicationService } from "../../services";
 import { first } from "rxjs/operators";
 
@@ -8,10 +8,13 @@ import { first } from "rxjs/operators";
   templateUrl: "./job-details.component.html",
   styleUrls: ["./job-details.component.css"],
 })
-export class JobDetailsComponent implements OnInit {
+export class JobDetailsComponent implements OnChanges {
   user?: User | null;
+
   @Input()
   job: Job;
+
+  applied: boolean = false;
 
   constructor(
     private accountService: AccountService,
@@ -20,7 +23,16 @@ export class JobDetailsComponent implements OnInit {
     this.accountService.user.subscribe((x) => (this.user = x));
   }
 
-  ngOnInit(): void {}
+  ngOnChanges() {
+    this.jobApplicationService
+      .getJobApplicationsByUserId(this.user.id)
+      .subscribe((jobApplications: JobApplication[]) => {
+        let jobIds = jobApplications.map(
+          (jobApplication) => jobApplication.job.id
+        );
+        this.applied = jobIds.includes(this.job.id);
+      });
+  }
 
   onClickApply() {
     this.jobApplicationService
@@ -29,6 +41,7 @@ export class JobDetailsComponent implements OnInit {
       .subscribe({
         next: () => {
           console.log("success");
+          this.applied = true;
         },
         error: (error) => {
           console.log("error");

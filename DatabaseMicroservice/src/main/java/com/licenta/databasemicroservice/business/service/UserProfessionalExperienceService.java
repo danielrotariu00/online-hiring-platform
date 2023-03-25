@@ -54,6 +54,33 @@ public class UserProfessionalExperienceService implements IUserProfessionalExper
     }
 
     @Override
+    public UserProfessionalExperienceDTO update(Long id, UserProfessionalExperienceDTO userProfessionalExperienceDTO) {
+        Long userId = userProfessionalExperienceDTO.getUserId();
+        Long CompanyId = userProfessionalExperienceDTO.getCompanyId();
+
+        userProfessionalExperienceRepository.findById(id).orElseThrow(
+                () -> new NotFoundException(String.format(USER_PROFESSIONAL_EXPERIENCE_NOT_FOUND_MESSAGE, id))
+        );
+
+        User user = userService.getUserOrElseThrowException(userId);
+        Company Company = companyService.getCompanyOrElseThrowException(CompanyId);
+
+
+        UserProfessionalExperience userProfessionalExperience = UserProfessionalExperience.builder()
+                .user(user)
+                .company(Company)
+                .jobTitle(userProfessionalExperienceDTO.getJobTitle())
+                .description(userProfessionalExperienceDTO.getDescription())
+                .startDate(userProfessionalExperienceDTO.getStartDate())
+                .endDate(userProfessionalExperienceDTO.getEndDate())
+                .build();
+
+        return userProfessionalExperienceMapper.toDTO(
+                userProfessionalExperienceRepository.save(userProfessionalExperience)
+        );
+    }
+
+    @Override
     public Iterable<UserProfessionalExperienceDTO> getByUserId(Long userId) {
         userService.getUserOrElseThrowException(userId);
 

@@ -31,7 +31,7 @@ public class UserEducationalExperienceService implements IUserEducationalExperie
 
     private static final String USER_EDUCATIONAL_EXPERIENCE_NOT_FOUND_MESSAGE = "Educational Experience with id <%d> does not exist.";
     @Override
-    public void add(UserEducationalExperienceDTO userEducationalExperienceDTO) {
+    public UserEducationalExperienceDTO add(UserEducationalExperienceDTO userEducationalExperienceDTO) {
         Long userId = userEducationalExperienceDTO.getUserId();
         Long educationalInstitutionId = userEducationalExperienceDTO.getEducationalInstitutionId();
 
@@ -48,7 +48,9 @@ public class UserEducationalExperienceService implements IUserEducationalExperie
                 .endDate(userEducationalExperienceDTO.getEndDate())
                 .build();
 
-        userEducationalExperienceRepository.save(newUserEducationalExperience);
+        return userEducationalExperienceMapper.toDTO(
+                userEducationalExperienceRepository.save(newUserEducationalExperience)
+        );
     }
 
     @Override

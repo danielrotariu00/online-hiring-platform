@@ -4,6 +4,8 @@ import com.licenta.jobapplicationmicroservice.business.interfaces.IJobApplicatio
 import com.licenta.jobapplicationmicroservice.business.model.CreateJobApplicationRequest;
 import com.licenta.jobapplicationmicroservice.business.model.JobApplicationResponse;
 import com.licenta.jobapplicationmicroservice.business.model.JobApplicationStatusResponse;
+import com.licenta.jobapplicationmicroservice.business.model.Message;
+import com.licenta.jobapplicationmicroservice.business.model.Review;
 import com.licenta.jobapplicationmicroservice.business.model.UpdateJobApplicationRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -32,7 +34,7 @@ public class JobApplicationController {
     }
 
     @RequestMapping(value = "/job-applications/{jobApplicationId}", method = RequestMethod.GET)
-    public JobApplicationResponse getById(@Min(1) @PathVariable Long jobApplicationId) {
+    public JobApplicationResponse getById(@PathVariable String jobApplicationId) {
 
         return jobApplicationService.getById(jobApplicationId);
     }
@@ -51,14 +53,14 @@ public class JobApplicationController {
 
     @RequestMapping(value = "/job-applications/{jobApplicationId}", method = RequestMethod.PUT)
     public void updateJobApplication(
-            @Min(1) @PathVariable Long jobApplicationId,
+            @PathVariable String jobApplicationId,
             @Valid @RequestBody UpdateJobApplicationRequest request) {
 
         jobApplicationService.update(jobApplicationId, request);
     }
 
     @RequestMapping(value = "/job-applications/{jobApplicationId}", method = RequestMethod.DELETE)
-    public void deleteJobApplication(@Min(1) @PathVariable Long jobApplicationId) {
+    public void deleteJobApplication(@PathVariable String jobApplicationId) {
 
         jobApplicationService.delete(jobApplicationId);
     }
@@ -73,5 +75,17 @@ public class JobApplicationController {
     public JobApplicationStatusResponse getStatusById(@Min(1) @PathVariable Integer statusId) {
 
         return jobApplicationService.getStatusById(statusId);
+    }
+
+    @RequestMapping(value = "/job-applications/{jobApplicationId}/messages", method = RequestMethod.POST)
+    public Message addMessage(@PathVariable String jobApplicationId, @RequestBody Message message) {
+
+        return jobApplicationService.addMessage(jobApplicationId, message);
+    }
+
+    @RequestMapping(value = "/job-applications/{jobApplicationId}/review", method = RequestMethod.PUT)
+    public Review updateReview(@PathVariable String jobApplicationId, @RequestBody Review review) {
+
+        return jobApplicationService.updateReview(jobApplicationId, review);
     }
 }

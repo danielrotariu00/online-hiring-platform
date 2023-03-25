@@ -9,6 +9,7 @@ import {
   Job,
   JobQueryResponse,
   JobResponse,
+  JobStatus,
   JobType,
   User,
   WorkType,
@@ -41,6 +42,7 @@ export class RecruiterHomeComponent implements OnInit {
   company: Company;
 
   displayJobForm: boolean = false;
+  edit: boolean = false;
   jobTitle: string;
   countries: Country[];
   selectedCountry: Country;
@@ -53,6 +55,8 @@ export class RecruiterHomeComponent implements OnInit {
   selectedWorkType: WorkType;
   experienceLevels: ExperienceLevel[];
   selectedExperienceLevel: ExperienceLevel;
+  jobStatusList: JobStatus[];
+  selectedJobStatus: JobStatus;
   description: string;
 
   constructor(
@@ -83,14 +87,17 @@ export class RecruiterHomeComponent implements OnInit {
               }
             );
 
-            this.selectedCompanyIndustry = companyIndustries[0];
-
             this.databaseService
               .getJobs(
                 0,
                 this.maxJobs,
+                false,
+                undefined,
+                undefined,
                 undefined,
                 [this.company],
+                undefined,
+                undefined,
                 undefined,
                 undefined,
                 undefined,
@@ -117,9 +124,14 @@ export class RecruiterHomeComponent implements OnInit {
       .getJobs(
         0,
         this.maxJobs,
+        false,
+        undefined,
+        undefined,
         undefined,
         [this.company],
         [this.selectedCompanyIndustry?.industry],
+        undefined,
+        undefined,
         undefined,
         undefined,
         undefined,
@@ -140,9 +152,14 @@ export class RecruiterHomeComponent implements OnInit {
       .getJobs(
         event.page,
         this.maxJobs,
+        false,
+        undefined,
+        undefined,
         undefined,
         [this.company],
         [this.selectedCompanyIndustry?.industry],
+        undefined,
+        undefined,
         undefined,
         undefined,
         undefined,
@@ -167,10 +184,9 @@ export class RecruiterHomeComponent implements OnInit {
     });
   }
 
-  markAsClosed(job) {}
-
-  showJobForm() {
+  showJobForm(job: Job) {
     this.displayJobForm = true;
+    this.edit = false;
 
     this.databaseService.getCountries().subscribe((countries: Country[]) => {
       this.countries = countries;
@@ -189,49 +205,128 @@ export class RecruiterHomeComponent implements OnInit {
       .subscribe((experienceLevels: ExperienceLevel[]) => {
         this.experienceLevels = experienceLevels;
       });
+
+    this.databaseService
+      .getJobStatus()
+      .subscribe((jobStatusList: JobStatus[]) => {
+        this.jobStatusList = jobStatusList;
+      });
+
+    if (job !== undefined) {
+      this.edit = true;
+      this.setSelectedJob(job);
+      this.jobTitle = job.title;
+      for (var companyIndustry of this.companyIndustries) {
+        if (companyIndustry.industryId == job.industry.id) {
+          this.selectedFormCompanyIndustry = companyIndustry;
+          break;
+        }
+      }
+      this.selectedCountry = job.country;
+      this.onCountryChange(undefined);
+      this.selectedCity = job.city;
+      this.selectedJobType = job.jobType;
+      this.selectedWorkType = job.workType;
+      this.selectedExperienceLevel = job.experienceLevel;
+      this.selectedJobStatus = job.jobStatus;
+      this.description = job.description;
+    }
   }
 
-  addJob() {
-    this.databaseService
-      .addJob(
-        this.jobTitle,
-        this.loggedUser.id,
-        this.selectedFormCompanyIndustry.id,
-        this.selectedCity.id,
-        this.selectedJobType.id,
-        this.selectedWorkType.id,
-        this.selectedExperienceLevel.id,
-        this.description
-      )
-      .pipe(first())
-      .subscribe({
-        next: () => {
-          console.log("success");
-          this.displayJobForm = false;
-          this.databaseService
-            .getJobs(
-              0,
-              this.maxJobs,
-              undefined,
-              [this.company],
-              undefined,
-              undefined,
-              undefined,
-              undefined,
-              false
-            )
-            .subscribe((jobQueryResponse: JobQueryResponse) => {
-              this.jobs = this.toJobList(jobQueryResponse.jobList);
-              this.totalElements = jobQueryResponse.totalElements;
-              this.totalPages = jobQueryResponse.totalPages;
-              this.selectedJob = this.jobs[0];
-              setTimeout(() => this.paginator.changePage(0));
-            });
-        },
-        error: (error) => {
-          console.log("error");
-        },
-      });
+  saveJob() {
+    if (this.edit) {
+      this.databaseService
+        .editJob(
+          this.selectedJob.id,
+          this.jobTitle,
+          this.loggedUser.id,
+          this.selectedFormCompanyIndustry.id,
+          this.selectedCity.id,
+          this.selectedJobType.id,
+          this.selectedWorkType.id,
+          this.selectedExperienceLevel.id,
+          this.description,
+          this.selectedJobStatus.id
+        )
+        .pipe(first())
+        .subscribe({
+          next: () => {
+            this.displayJobForm = false;
+            this.databaseService
+              .getJobs(
+                0,
+                this.maxJobs,
+                false,
+                undefined,
+                undefined,
+                undefined,
+                [this.company],
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                false
+              )
+              .subscribe((jobQueryResponse: JobQueryResponse) => {
+                this.jobs = this.toJobList(jobQueryResponse.jobList);
+                this.totalElements = jobQueryResponse.totalElements;
+                this.totalPages = jobQueryResponse.totalPages;
+                this.selectedJob = this.jobs[0];
+                setTimeout(() => this.paginator.changePage(0));
+              });
+          },
+          error: (error) => {
+            console.log("error");
+          },
+        });
+    } else {
+      this.databaseService
+        .addJob(
+          this.jobTitle,
+          this.loggedUser.id,
+          this.selectedFormCompanyIndustry.id,
+          this.selectedCity.id,
+          this.selectedJobType.id,
+          this.selectedWorkType.id,
+          this.selectedExperienceLevel.id,
+          this.description
+        )
+        .pipe(first())
+        .subscribe({
+          next: () => {
+            this.displayJobForm = false;
+            this.databaseService
+              .getJobs(
+                0,
+                this.maxJobs,
+                false,
+                undefined,
+                undefined,
+                undefined,
+                [this.company],
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                false
+              )
+              .subscribe((jobQueryResponse: JobQueryResponse) => {
+                this.jobs = this.toJobList(jobQueryResponse.jobList);
+                this.totalElements = jobQueryResponse.totalElements;
+                this.totalPages = jobQueryResponse.totalPages;
+                this.selectedJob = this.jobs[0];
+                setTimeout(() => this.paginator.changePage(0));
+              });
+          },
+          error: (error) => {
+            console.log("error");
+          },
+        });
+    }
   }
 
   onCountryChange(event) {

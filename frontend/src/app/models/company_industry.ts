@@ -5,4 +5,5 @@ export interface CompanyIndustry {
   companyId: number;
   industryId: number;
   industry?: Industry;
+  isFollowed?: boolean;
 }

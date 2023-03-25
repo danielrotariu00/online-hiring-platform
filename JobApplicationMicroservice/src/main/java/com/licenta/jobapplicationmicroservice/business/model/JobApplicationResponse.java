@@ -1,10 +1,13 @@
 package com.licenta.jobapplicationmicroservice.business.model;
 
+import com.licenta.jobapplicationmicroservice.persistence.document.JobApplicationStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -13,10 +16,12 @@ import lombok.Setter;
 @AllArgsConstructor
 public class JobApplicationResponse {
 
-    private Long id;
+    private String id;
     private Long userId;
-    private Long jobId;
-    private Integer statusId;
+    private Job job;
+    private JobApplicationStatus status;
+    private List<Message> messageList;
+    private Review review;
     private String updatedAt;
 }
 

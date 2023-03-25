@@ -63,15 +63,42 @@ export class CompanyDetailsComponent implements OnInit {
           return companyIndustry;
         });
       });
+
+    this.databaseService
+      .getCompanyIndustriesFollowedByUser(this.user.id)
+      .subscribe((companyIndustries: CompanyIndustry[]) => {
+        let ids = companyIndustries.map(
+          (companyIndustry) => companyIndustry.id
+        );
+        this.companyIndustries.forEach((companyIndustry) => {
+          companyIndustry.isFollowed = ids.includes(companyIndustry.id);
+        });
+      });
   }
 
-  onClickFollow(companyIndustryId: number) {
+  onClickFollow(companyIndustry: CompanyIndustry) {
     this.databaseService
-      .createCompanyIndustryFollower(this.user.id, companyIndustryId)
+      .createCompanyIndustryFollower(this.user.id, companyIndustry.id)
       .pipe(first())
       .subscribe({
         next: () => {
           console.log("success");
+          companyIndustry.isFollowed = true;
+        },
+        error: (error) => {
+          console.log("error");
+        },
+      });
+  }
+
+  onClickUnfollow(companyIndustry: CompanyIndustry) {
+    this.databaseService
+      .deleteCompanyIndustryFollower(this.user.id, companyIndustry.id)
+      .pipe(first())
+      .subscribe({
+        next: () => {
+          console.log("success");
+          companyIndustry.isFollowed = false;
         },
         error: (error) => {
           console.log("error");

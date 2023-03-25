@@ -27,9 +27,9 @@ public class UserLanguageController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(method=RequestMethod.POST)
-    public void add(@Min(1) @PathVariable Long userId, @Valid @RequestBody UserLanguageDTO userLanguageDTO) {
+    public UserLanguageDTO add(@Min(1) @PathVariable Long userId, @Valid @RequestBody UserLanguageDTO userLanguageDTO) {
 
-        userLanguageService.add(userId, userLanguageDTO);
+        return userLanguageService.add(userId, userLanguageDTO);
     }
 
     @RequestMapping(method=RequestMethod.GET)

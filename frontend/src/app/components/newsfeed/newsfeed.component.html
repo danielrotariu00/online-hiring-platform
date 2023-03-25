@@ -3,6 +3,7 @@
     <div class="col-2"></div>
     <div class="col-4">
       <h3>Recently posted jobs</h3>
+      <h5 *ngIf="jobs.length == 0">There are no new jobs.</h5>
       <div id="job-list" (scroll)="onScroll($event)">
         <ng-template ngFor let-job [ngForOf]="jobs">
           <div (click)="setSelectedJob(job)" class="job-preview">

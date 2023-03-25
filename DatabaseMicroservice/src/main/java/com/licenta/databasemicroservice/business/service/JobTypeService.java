@@ -37,4 +37,11 @@ public class JobTypeService implements IJobTypeService {
                 .map(jobTypeMapper::toResponse)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public JobTypeResponse getJobType(Integer jobTypeId) {
+        JobType jobType = getJobTypeOrElseThrowException(jobTypeId);
+
+        return jobTypeMapper.toResponse(jobType);
+    }
 }

@@ -13,7 +13,9 @@
           <ng-template let-jobApplication pTemplate="item">
             <div class="product-item">
               <div class="product-list-detail">
-                <app-job-preview [job]="jobApplication?.job"></app-job-preview>
+                <app-job-preview
+                  [job]="jobApplication?.jobDetails"
+                ></app-job-preview>
               </div>
               <h5>{{ jobApplication?.status?.name }}</h5>
             </div>

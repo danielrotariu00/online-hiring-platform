@@ -21,5 +21,6 @@ public class Job {
     private Integer companyIndustryId; // IT, etc
     private Integer industryId; // IT, etc
     private String description;
+    private Integer jobStatusId;
     private String postedAt;
 }

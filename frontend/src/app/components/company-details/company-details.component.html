@@ -41,9 +41,16 @@
             >
               <ng-template pTemplate="footer">
                 <p-button
+                  *ngIf="!companyIndustry.isFollowed"
                   label="Follow"
-                  (click)="onClickFollow(companyIndustry.id)"
+                  (click)="onClickFollow(companyIndustry)"
                   icon="pi pi-plus"
+                ></p-button>
+                <p-button
+                  *ngIf="companyIndustry.isFollowed"
+                  label="Unfollow"
+                  (click)="onClickUnfollow(companyIndustry)"
+                  icon="pi pi-times"
                 ></p-button>
                 <p-button
                   label="View Jobs"

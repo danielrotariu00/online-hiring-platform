@@ -3,33 +3,60 @@
     <div class="col-4"></div>
     <div id="notification-list" class="col-4">
       <h3>Notifications</h3>
-      <p-card
-        *ngFor="let notification of notifications"
-        [style]="{ 'margin-bottom': '1em' }"
-      >
-        <p>{{ notification.text }}</p>
-        <p>{{ notification.formattedTimestamp }}</p>
-        <ng-template pTemplate="footer">
-          <p-button
-            label="View Application"
-            icon="pi pi-external-link"
-            (onClick)="goToJobApplication(notification.jobApplicationId)"
-          ></p-button>
-          <p-button
-            label="Mark as read"
-            icon="pi pi-check"
-            styleClass="p-button-secondary"
-            [style]="{ 'margin-left': '.5em' }"
-          ></p-button>
-          <p-button
-            label="Delete"
-            icon="pi pi-times"
-            styleClass="p-button-secondary"
-            [style]="{ 'margin-left': '.5em' }"
-            (onClick)="deleteNotification(notification.id)"
-          ></p-button>
-        </ng-template>
-      </p-card>
+      <br />
+      <h5 *ngIf="notifications.length == 0">
+        You don't have any notifications at the moment.
+      </h5>
+      <div *ngFor="let notification of notifications">
+        <div *ngIf="notification.isRead">
+          <p-card
+            [style]="{
+              'margin-bottom': '1em',
+              backgroundColor: 'rgb(56,56,56)'
+            }"
+          >
+            <p>{{ notification.text }}</p>
+            <p>{{ notification.formattedTimestamp }}</p>
+            <ng-template pTemplate="footer">
+              <p-button
+                label="View Application"
+                styleClass="p-button-secondary"
+                (onClick)="goToJobApplication(notification)"
+              ></p-button>
+              <p-button
+                label="Delete"
+                icon="pi pi-times"
+                styleClass="p-button-secondary"
+                [style]="{ 'margin-left': '.5em' }"
+                (onClick)="deleteNotification(notification)"
+              ></p-button>
+            </ng-template>
+          </p-card>
+        </div>
+        <div *ngIf="!notification.isRead">
+          <p-card
+            [style]="{
+              'margin-bottom': '1em'
+            }"
+          >
+            <p>{{ notification.text }}</p>
+            <p>{{ notification.formattedTimestamp }}</p>
+            <ng-template pTemplate="footer">
+              <p-button
+                label="View Application"
+                (onClick)="goToJobApplication(notification)"
+              ></p-button>
+              <p-button
+                label="Delete"
+                icon="pi pi-times"
+                styleClass="p-button-secondary"
+                [style]="{ 'margin-left': '.5em' }"
+                (onClick)="deleteNotification(notification)"
+              ></p-button>
+            </ng-template>
+          </p-card>
+        </div>
+      </div>
     </div>
   </div>
 </div>

@@ -1,20 +1,11 @@
-TODO:
-
-*
-- saved jobs
-- finish filters for jobs
-- pagination and filtering for companies, industries
-- fix angular version
-- refactor dto classes
-
-**
-- my profile page, user experience, skills, education
-- notifications
+todo:
+- saved jobs?
+- manager ui(recruiter stats), administrator ui
+- job applications: files & chat & mongodb -- top priority
+- roles, angular auth guards
+- register in frontend and api gateway
 - refactor pos idm
-- create python api gateway
-- deploy all on docker
-- angular ui for recruiter
-- react ui for manager/admin
+- api gateway request authorization and forwarding
+- https between ui and api gateway
+- docker deployment
 
-***
-- messages

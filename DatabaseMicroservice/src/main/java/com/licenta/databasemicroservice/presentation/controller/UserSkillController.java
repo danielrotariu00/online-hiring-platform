@@ -27,9 +27,9 @@ public class UserSkillController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(method=RequestMethod.POST)
-    public void add(@Min(1) @PathVariable Long userId, @Valid @RequestBody UserSkillDTO userSkillDTO) {
+    public UserSkillDTO add(@Min(1) @PathVariable Long userId, @Valid @RequestBody UserSkillDTO userSkillDTO) {
 
-        userSkillService.add(userId, userSkillDTO);
+        return userSkillService.add(userId, userSkillDTO);
     }
 
     @RequestMapping(method=RequestMethod.GET)

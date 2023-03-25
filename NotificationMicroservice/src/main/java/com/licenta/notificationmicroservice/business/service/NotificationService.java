@@ -25,10 +25,10 @@ public class NotificationService implements INotificationService {
     public static final String NOTIFICATION_NOT_FOUND_MESSAGE = "Notification with id <%d> does not exist.";
 
     @Override
-    public void save(NotificationDTO notificationDTO) {
+    public NotificationDTO save(NotificationDTO notificationDTO) {
         Notification notification = notificationMapper.toEntity(notificationDTO);
 
-        notificationRepository.save(notification);
+        return notificationMapper.toDTO(notificationRepository.save(notification));
     }
 
     @Override

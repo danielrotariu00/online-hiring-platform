@@ -26,9 +26,9 @@ public class UserProjectController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(value="/projects", method=RequestMethod.POST)
-    public void add(@Valid @RequestBody UserProjectDTO userProjectDTO) {
+    public UserProjectDTO add(@Valid @RequestBody UserProjectDTO userProjectDTO) {
 
-        userProjectService.add(userProjectDTO);
+        return userProjectService.add(userProjectDTO);
     }
 
     @RequestMapping(value="/users/{userId}/projects", method=RequestMethod.GET)

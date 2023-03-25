@@ -26,9 +26,9 @@ public class UserEducationalExperienceController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(value="/educational-experience", method=RequestMethod.POST)
-    public void add(@Valid @RequestBody UserEducationalExperienceDTO userEducationalExperienceDTO) {
+    public UserEducationalExperienceDTO add(@Valid @RequestBody UserEducationalExperienceDTO userEducationalExperienceDTO) {
 
-        userEducationalExperienceService.add(userEducationalExperienceDTO);
+        return userEducationalExperienceService.add(userEducationalExperienceDTO);
     }
 
     @RequestMapping(value="/users/{userId}/educational-experience", method=RequestMethod.GET)

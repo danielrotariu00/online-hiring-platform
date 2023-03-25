@@ -21,7 +21,7 @@ class Job (
     @Column(nullable = false) val experienceLevelId: Int,
     @Column(nullable = false) val companyIndustryId: Long,
     @Column(nullable = false) val industryId: Int,
-    @Column(nullable = false) val description: String,
+    @Lob @Column(nullable = false) val description: String,
     @Column(nullable = false) val postedAt: String,
     @Column(nullable = false) val jobStatusId: Int
     ) {

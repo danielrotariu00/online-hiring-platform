@@ -7,4 +7,6 @@ public interface IExperienceLevelService {
 
     ExperienceLevel getExperienceLevelOrElseThrowException(Integer experienceLevelId);
     Iterable<ExperienceLevelResponse> getExperienceLevels();
+
+    ExperienceLevelResponse getExperienceLevel(Integer experienceLevelId);
 }

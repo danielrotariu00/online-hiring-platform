@@ -31,7 +31,7 @@ class JobController {
         @RequestParam(defaultValue = "") experienceLevelId: List<Int>,
         @RequestParam(defaultValue = "") descriptionKeyword: List<String>,
         @RequestParam(defaultValue = "2000-01-01 00:00:00") postedSince: String,
-        @RequestParam(defaultValue = "") jobStatusIdList: List<Int>,
+        @RequestParam(defaultValue = "") jobStatusId: List<Int>,
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "10") size: Int
     ): JobQueryResponse {
@@ -48,7 +48,7 @@ class JobController {
             experienceLevelId,
             descriptionKeyword,
             postedSince,
-            jobStatusIdList
+            jobStatusId
         )
 
         return jobFilterService.getFilteredJobs(jobQuery, cached, page, size)

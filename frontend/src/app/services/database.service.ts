@@ -13,6 +13,7 @@ import {
   Job,
   JobQueryResponse,
   JobResponse,
+  JobStatus,
   JobType,
   UserDetails,
   WorkType,
@@ -26,12 +27,38 @@ import { UserLanguage } from "../models/user_language";
 import { Language } from "../models/language";
 import { UserProject } from "../models/user_project";
 import { LanguageLevel } from "../models/language_level";
+import { FileUpload } from "primeng/fileupload";
 
 @Injectable({
   providedIn: "root",
 })
 export class DatabaseService {
   constructor(private http: HttpClient) {}
+
+  saveUserDetails(
+    userId: number,
+    firstName: string,
+    lastName: string,
+    phoneNumber: string,
+    cityId: number,
+    address: string,
+    profileDescription: string,
+    profilePictureUrl: string
+  ) {
+    return this.http.put(
+      `${environment.databaseApiURL}/users/${userId}/details`,
+      {
+        userId,
+        firstName,
+        lastName,
+        phoneNumber,
+        cityId,
+        address,
+        profileDescription,
+        profilePictureUrl,
+      }
+    );
+  }
 
   getUserDetails(userId: number): Observable<UserDetails> {
     return this.http.get(
@@ -71,6 +98,12 @@ export class DatabaseService {
     return this.http.get(
       `${environment.databaseApiURL}/users/${userId}/languages`
     ) as Observable<UserLanguage[]>;
+  }
+
+  getEducationalInstitutions(): Observable<EducationalInstitution[]> {
+    return this.http.get(
+      `${environment.databaseApiURL}/educational-institutions`
+    ) as Observable<EducationalInstitution[]>;
   }
 
   getEducationalInstitutionById(
@@ -154,6 +187,12 @@ export class DatabaseService {
     ) as Observable<UserLanguage>;
   }
 
+  uploadUserImage(userId: number, imageUpload: FileUpload): Observable<any> {
+    imageUpload.url = `${environment.databaseApiURL}/users/${userId}/details/image`;
+    imageUpload.upload();
+    return imageUpload.onUpload.asObservable();
+  }
+
   addUserProfessionalExperience(
     userId: number,
     companyId: number,
@@ -171,6 +210,64 @@ export class DatabaseService {
         startDate,
         endDate,
         description,
+      }
+    );
+  }
+
+  addUserEducationalExperience(
+    userId: number,
+    educationalInstitutionId: number,
+    speciality: string,
+    title: string,
+    startDate: Date,
+    endDate: Date,
+    description: string
+  ) {
+    return this.http.post(
+      `${environment.databaseApiURL}/educational-experience`,
+      {
+        userId,
+        educationalInstitutionId,
+        speciality,
+        title,
+        startDate,
+        endDate,
+        description,
+      }
+    );
+  }
+
+  addUserSkill(userId: number, skillId: number) {
+    return this.http.post(
+      `${environment.databaseApiURL}/users/${userId}/skills`,
+      {
+        skillId,
+      }
+    );
+  }
+
+  addUserProject(
+    userId: number,
+    name: string,
+    startDate: Date,
+    endDate: Date,
+    description: string
+  ) {
+    return this.http.post(`${environment.databaseApiURL}/projects`, {
+      userId,
+      name,
+      startDate,
+      endDate,
+      description,
+    });
+  }
+
+  addUserLanguage(userId: number, languageId: number, languageLevelId: number) {
+    return this.http.post(
+      `${environment.databaseApiURL}/users/${userId}/languages`,
+      {
+        languageId,
+        languageLevelId,
       }
     );
   }
@@ -194,6 +291,31 @@ export class DatabaseService {
       jobTypeId,
       experienceLevelId,
       description,
+    });
+  }
+
+  editJob(
+    jobId: number,
+    title: string,
+    recruiterId: number,
+    companyIndustryId: number,
+    cityId: number,
+    workTypeId: number,
+    jobTypeId: number,
+    experienceLevelId: number,
+    description: string,
+    jobStatusId: number
+  ) {
+    return this.http.put(`${environment.databaseApiURL}/jobs/${jobId}`, {
+      title,
+      recruiterId,
+      companyIndustryId,
+      cityId,
+      workTypeId,
+      jobTypeId,
+      experienceLevelId,
+      description,
+      jobStatusId,
     });
   }
 
@@ -233,12 +355,28 @@ export class DatabaseService {
     ) as Observable<Company[]>;
   }
 
+  addCompanyIndustry(companyId: number, industryId: number) {
+    return this.http.post(`${environment.databaseApiURL}/company-industries`, {
+      companyId,
+      industryId,
+    });
+  }
+
   getCompanyIndustriesByCompanyId(
     companyId: number
   ): Observable<CompanyIndustry[]> {
     return this.http.get(
       `${environment.databaseApiURL}/companies/${companyId}/company-industries`
     ) as Observable<CompanyIndustry[]>;
+  }
+
+  deleteCompanyIndustry(
+    companyId: number,
+    industryId: number
+  ): Observable<CompanyIndustry> {
+    return this.http.delete(
+      `${environment.databaseApiURL}/companies/${companyId}/industries/${industryId}`
+    ) as Observable<CompanyIndustry>;
   }
 
   getCountries(): Observable<Country[]> {
@@ -301,18 +439,45 @@ export class DatabaseService {
     ) as Observable<WorkType>;
   }
 
+  getJobStatus(): Observable<JobStatus[]> {
+    return this.http.get(
+      `${environment.databaseApiURL}/job-status`
+    ) as Observable<JobStatus[]>;
+  }
+
+  getJobStatusById(id: number): Observable<JobStatus> {
+    return this.http.get(
+      `${environment.databaseApiURL}/job-status/${id}`
+    ) as Observable<JobStatus>;
+  }
+
+  padTo2Digits(num: number) {
+    return num.toString().padStart(2, "0");
+  }
+
   getJobs(
     page: number,
     maxJobs: number,
+    open: boolean,
+    title?: String,
     countries?: Country[],
+    cities?: City[],
     companies?: Company[],
     industries?: Industry[],
     workTypes?: WorkType[],
     jobTypes?: JobType[],
     experienceLevels?: ExperienceLevel[],
+    description?: String,
+    postedSince?: Date,
     cached?: boolean
   ): Observable<JobQueryResponse> {
     let URL = `${environment.searchApiURL}/jobs?page=${page}&size=${maxJobs}`;
+
+    if (typeof title !== "undefined") {
+      const titleQueryParam = `&title=${title}`;
+
+      URL += titleQueryParam;
+    }
 
     if (typeof countries !== "undefined") {
       const countryQueryParam = `&countryId=${countries
@@ -320,6 +485,14 @@ export class DatabaseService {
         .join(",")}`;
 
       URL += countryQueryParam;
+    }
+
+    if (typeof cities !== "undefined") {
+      const cityQueryParam = `&cityId=${cities
+        .map((city) => city.id)
+        .join(",")}`;
+
+      URL += cityQueryParam;
     }
 
     if (typeof companies !== "undefined") {
@@ -362,10 +535,38 @@ export class DatabaseService {
       URL += experienceLevelQueryParam;
     }
 
+    if (typeof description !== "undefined") {
+      const descriptionQueryParam = `&descriptionKeyword=${description
+        .split(" ")
+        .join(",")}`;
+
+      URL += descriptionQueryParam;
+    }
+
+    if (typeof postedSince !== "undefined") {
+      console.log("3");
+      const postedSinceQueryParam = `&postedSince=${
+        [
+          postedSince.getFullYear(),
+          this.padTo2Digits(postedSince.getMonth() + 1),
+          this.padTo2Digits(postedSince.getDate()),
+        ].join("-") + " 00:00:00"
+      }`;
+
+      console.log(postedSinceQueryParam);
+      URL += postedSinceQueryParam;
+    }
+
     if (typeof cached !== "undefined") {
       const cachedQueryParam = `&cached=${cached}`;
 
       URL += cachedQueryParam;
+    }
+
+    if (open) {
+      const jobStatusQueryParam = `&jobStatusId=1`;
+
+      URL += jobStatusQueryParam;
     }
 
     return this.http.get(URL) as Observable<JobQueryResponse>;
@@ -377,6 +578,14 @@ export class DatabaseService {
     ) as Observable<JobResponse>;
   }
 
+  getCompanyIndustriesFollowedByUser(
+    userId: number
+  ): Observable<CompanyIndustry[]> {
+    return this.http.get(
+      `${environment.databaseApiURL}/users/${userId}/followed-company-industries`
+    ) as Observable<CompanyIndustry[]>;
+  }
+
   createCompanyIndustryFollower(userId: number, companyIndustryId: number) {
     return this.http.post(
       `${environment.databaseApiURL}/company-industry-followers`,
@@ -384,6 +593,12 @@ export class DatabaseService {
         userId,
         companyIndustryId,
       }
+    );
+  }
+
+  deleteCompanyIndustryFollower(userId: number, companyIndustryId: number) {
+    return this.http.delete(
+      `${environment.databaseApiURL}/users/${userId}/followed-company-industries/${companyIndustryId}`
     );
   }
 
@@ -408,6 +623,28 @@ export class DatabaseService {
     this.getWorkTypeById(jobResponse.workTypeId).subscribe(
       (workType: WorkType) => {
         job.workType = workType;
+      }
+    );
+
+    this.getJobTypeById(jobResponse.jobTypeId).subscribe((jobType: JobType) => {
+      job.jobType = jobType;
+    });
+
+    this.getExperienceLevelById(jobResponse.experienceLevelId).subscribe(
+      (experienceLevel: ExperienceLevel) => {
+        job.experienceLevel = experienceLevel;
+      }
+    );
+
+    this.getJobStatusById(jobResponse.jobStatusId).subscribe(
+      (jobStatus: JobStatus) => {
+        job.jobStatus = jobStatus;
+      }
+    );
+
+    this.getIndustryByID(jobResponse.industryId).subscribe(
+      (industry: Industry) => {
+        job.industry = industry;
       }
     );
 

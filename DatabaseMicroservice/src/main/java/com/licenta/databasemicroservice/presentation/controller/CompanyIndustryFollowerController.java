@@ -45,9 +45,9 @@ public class CompanyIndustryFollowerController {
         return companyIndustryFollowerService.getCompanyIndustryFollowers(companyIndustryId);
     }
 
-    @RequestMapping(value="/company-industry-followers", method=RequestMethod.DELETE)
-    public void removeCompanyIndustryFollower(@Valid @RequestBody CompanyIndustryFollowerRequest request) {
+    @RequestMapping(value="/users/{userId}/followed-company-industries/{companyIndustryId}", method=RequestMethod.DELETE)
+    public void removeCompanyIndustryFollower(@Min(1) @PathVariable Long userId, @Min(1) @PathVariable Long companyIndustryId) {
 
-        companyIndustryFollowerService.removeCompanyIndustryFollower(request);
+        companyIndustryFollowerService.removeCompanyIndustryFollower(userId, companyIndustryId);
     }
 }

@@ -1,0 +1,64 @@
+.chat-box {
+  margin: 0 auto;
+  height: 600px;
+  border-radius: 10px;
+  border: 2px solid rgb(130, 125, 125);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+}
+
+textarea::placeholder {
+  font-size: 16px;
+  opacity: 0.7;
+}
+
+.header {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: none;
+  justify-content: space-between;
+  background-color: rgb(125, 120, 120);
+  margin: 10;
+  width: 101%;
+  margin-left: -2px;
+  /* border-radius: 10px; */
+  box-sizing: border-box;
+  z-index: 2;
+}
+
+.message-box {
+  padding: 10px;
+  box-sizing: border-box;
+  background-color: transparent;
+  height: 100%;
+  overflow: scroll;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+textarea {
+  width: 70%;
+  height: 100px;
+  resize: none;
+}
+
+section {
+  width: 100%;
+  display: flex;
+  flex-wrap: none;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+li {
+  list-style-type: none;
+  padding: 10px;
+  border-top: 1px solid rgba(209, 201, 201, 0.7);
+  font-size: 18px;
+}

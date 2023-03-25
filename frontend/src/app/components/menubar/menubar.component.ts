@@ -1,9 +1,15 @@
 import { Component, OnInit } from "@angular/core";
-import { MenuItem } from "primeng/api";
-import { User } from "src/app/models";
+import { MenuItem, MessageService } from "primeng/api";
+import { distinctUntilChanged, first } from "rxjs";
+import { Notification, User } from "src/app/models";
 import { NotificationService } from "src/app/services/notification.service";
 
-import { AccountService } from "../../services";
+import {
+  AccountService,
+  JobApplicationService,
+  MenuItemsService,
+  WebSocketService,
+} from "../../services";
 
 @Component({
   selector: "app-menubar",
@@ -17,12 +23,55 @@ export class MenubarComponent implements OnInit {
 
   constructor(
     private accountService: AccountService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private jobApplicationService: JobApplicationService,
+    private menuItemsService: MenuItemsService,
+    private webSocketService: WebSocketService,
+    private messageService: MessageService
   ) {}
 
   ngOnInit() {
     this.accountService.user.subscribe((user) => {
       this.user = user;
+      let stompClient = this.webSocketService.connect();
+      stompClient.connect({}, (frame) => {
+        stompClient.subscribe(`/user/${this.user.id}/notifications`, (msg) => {
+          let notification: Notification = JSON.parse(msg.body);
+          if (
+            notification.jobApplicationId ===
+              this.jobApplicationService.selectedJobApplicationId &&
+            notification.message != null
+          ) {
+            this.jobApplicationService.updateNewMessage(notification.message);
+
+            this.notificationService
+              .deleteNotification(notification.id)
+              .pipe(first())
+              .subscribe({
+                next: () => {
+                  console.log("deleted");
+                },
+                error: (error) => {
+                  console.log("error");
+                },
+              });
+          } else {
+            this.messageService.add({
+              severity: "info",
+              summary: "Notification",
+              detail: notification.text,
+            });
+            this.menuItemsService.menuItems$
+              .pipe(distinctUntilChanged())
+              .subscribe((menuItems) => {
+                menuItems[menuItems.length - 2].badge = String(
+                  Number(menuItems[menuItems.length - 2].badge) + 1
+                );
+                this.menuItemsService.updateMenuItems(menuItems);
+              });
+          }
+        });
+      });
 
       this.notificationService
         .getUserNotifications(this.user.id)
@@ -54,15 +103,15 @@ export class MenubarComponent implements OnInit {
               routerLink: "/job-applications",
             },
             {
+              label: "Profile",
+              icon: "pi pi-fw pi-user",
+              routerLink: `/users/${this.user?.id}`,
+            },
+            {
               label: "Notifications",
               icon: "pi pi-fw pi-bell",
               routerLink: "/notifications",
               badge: `${this.unreadNotifications}`,
-            },
-            {
-              label: "Profile",
-              icon: "pi pi-fw pi-user",
-              routerLink: `/users/${this.user?.id}`,
             },
             {
               label: "Logout",
@@ -92,10 +141,13 @@ export class MenubarComponent implements OnInit {
           ];
 
           if (user.isRecruiter) {
-            this.items = recruiterItems;
+            this.menuItemsService.updateMenuItems(recruiterItems);
           } else {
-            this.items = regularUserItems;
+            this.menuItemsService.updateMenuItems(regularUserItems);
           }
+          this.menuItemsService.menuItems$.subscribe(
+            (menuItems) => (this.items = menuItems)
+          );
         });
     });
   }

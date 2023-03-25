@@ -1,7 +1,7 @@
 package com.licenta.jobapplicationmicroservice.business.util.mapper;
 
 import com.licenta.jobapplicationmicroservice.business.model.JobApplicationStatusResponse;
-import com.licenta.jobapplicationmicroservice.persistence.entity.JobApplicationStatus;
+import com.licenta.jobapplicationmicroservice.persistence.document.JobApplicationStatus;
 import org.mapstruct.Mapper;
 
 import java.time.LocalDateTime;

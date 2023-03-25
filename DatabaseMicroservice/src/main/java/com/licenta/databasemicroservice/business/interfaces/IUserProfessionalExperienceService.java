@@ -5,5 +5,6 @@ import com.licenta.databasemicroservice.business.model.UserProfessionalExperienc
 public interface IUserProfessionalExperienceService {
     UserProfessionalExperienceDTO add(UserProfessionalExperienceDTO userProfessionalExperienceDTO);
     void delete(Long userProfessionalExperienceId);
+    UserProfessionalExperienceDTO update(Long id, UserProfessionalExperienceDTO userProfessionalExperienceDTO);
     Iterable<UserProfessionalExperienceDTO> getByUserId(Long userId);
 }

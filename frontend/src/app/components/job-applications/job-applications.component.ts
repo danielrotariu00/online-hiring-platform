@@ -1,8 +1,7 @@
 import { formatDate } from "@angular/common";
 import { Component, Inject, LOCALE_ID, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { JobApplication, JobResponse, User } from "../../models";
-import { JobApplicationStatus } from "../../models/job_application_status";
+import { JobApplication, User } from "../../models";
 import {
   AccountService,
   JobApplicationService,
@@ -29,7 +28,7 @@ export class JobApplicationsComponent implements OnInit {
 
   ngOnInit(): void {
     this.accountService.user.subscribe((x) => (this.user = x));
-    let id: number;
+    let id: string;
     this.route.queryParams.subscribe((params) => {
       id = params.id;
     });
@@ -38,22 +37,23 @@ export class JobApplicationsComponent implements OnInit {
       .getJobApplicationsByUserId(this.user.id)
       .subscribe((jobApplications: JobApplication[]) => {
         this.jobApplications = jobApplications.map((jobApplication) => {
-          this.databaseService
-            .getJobById(jobApplication.jobId)
-            .subscribe((jobResponse: JobResponse) => {
-              jobApplication.job = this.databaseService.toJob(jobResponse);
-            });
-
-          this.jobApplicationService
-            .getStatusById(jobApplication.statusId)
-            .subscribe((status: JobApplicationStatus) => {
-              jobApplication.status = status;
-            });
+          jobApplication.jobDetails = this.databaseService.toJob(
+            jobApplication.job
+          );
 
           jobApplication.formattedUpdatedAt = formatDate(
             jobApplication.updatedAt,
             "d MMM y, h:mm:ss a",
             this.locale
+          );
+
+          jobApplication.messageList.forEach(
+            (message) =>
+              (message.formattedTimestamp = formatDate(
+                message.timestamp,
+                "d MMM y, h:mm:ss a",
+                this.locale
+              ))
           );
 
           return jobApplication;
@@ -62,15 +62,44 @@ export class JobApplicationsComponent implements OnInit {
         this.selectedJobApplication = this.jobApplications.find(
           (jobApplications) => jobApplications.id == id
         );
+        this.jobApplicationService.selectedJobApplicationId =
+          this.selectedJobApplication.id;
       });
   }
 
   onSelectionChange(event) {
     if (event.value.length === 1) {
-      this.selectedJobApplication = event.value[0];
+      let id = event.value[0].id;
+
+      this.jobApplicationService
+        .getJobApplicationById(id)
+        .subscribe((jobApplication: JobApplication) => {
+          jobApplication.jobDetails = this.databaseService.toJob(
+            jobApplication.job
+          );
+
+          jobApplication.formattedUpdatedAt = formatDate(
+            jobApplication.updatedAt,
+            "d MMM y, h:mm:ss a",
+            this.locale
+          );
+
+          jobApplication.messageList.forEach(
+            (message) =>
+              (message.formattedTimestamp = formatDate(
+                message.timestamp,
+                "d MMM y, h:mm:ss a",
+                this.locale
+              ))
+          );
+
+          this.selectedJobApplication = jobApplication;
+          console.log(jobApplication);
+          this.jobApplicationService.selectedJobApplicationId =
+            this.selectedJobApplication.id;
+        });
     } else {
       event.value = [this.selectedJobApplication];
     }
-    console.log(this.selectedJobApplication.job.title);
   }
 }

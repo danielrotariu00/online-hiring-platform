@@ -1,5 +1,14 @@
+import { formatDate } from "@angular/common";
 import { isNgTemplate } from "@angular/compiler";
-import { Component, OnInit } from "@angular/core";
+import {
+  Component,
+  ElementRef,
+  Inject,
+  LOCALE_ID,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import {
   MessageService,
@@ -8,9 +17,20 @@ import {
   MenuItem,
 } from "primeng/api";
 import { first } from "rxjs";
-import { Job, JobApplication, JobResponse, UserDetails } from "../../models";
+import {
+  Job,
+  JobApplication,
+  JobResponse,
+  User,
+  UserDetails,
+  JobApplicationMessage,
+} from "../../models";
 import { JobApplicationStatus } from "../../models/job_application_status";
-import { JobApplicationService, DatabaseService } from "../../services";
+import {
+  JobApplicationService,
+  DatabaseService,
+  AccountService,
+} from "../../services";
 
 @Component({
   selector: "app-recruiter-job-applications",
@@ -18,7 +38,12 @@ import { JobApplicationService, DatabaseService } from "../../services";
   styleUrls: ["./recruiter-job-applications.component.scss"],
   providers: [MessageService, ConfirmationService],
 })
-export class RecruiterJobApplicationsComponent implements OnInit {
+export class RecruiterJobApplicationsComponent implements OnInit, OnDestroy {
+  user?: User | null;
+
+  @ViewChild("scrollMe")
+  private myScrollContainer: ElementRef;
+
   job: Job;
   jobApplications: JobApplication[];
   selectedJobApplication: JobApplication;
@@ -26,16 +51,24 @@ export class RecruiterJobApplicationsComponent implements OnInit {
   msgs: Message[] = [];
   statusItems: MenuItem[];
 
+  textareaValue: string;
+
   constructor(
+    private accountService: AccountService,
     private jobApplicationService: JobApplicationService,
     private databaseService: DatabaseService,
     private router: Router,
     private route: ActivatedRoute,
     private messageService: MessageService,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
+    @Inject(LOCALE_ID) private locale: string
   ) {}
+  ngOnDestroy(): void {
+    this.jobApplicationService.selectedJobApplicationId = null;
+  }
 
   ngOnInit(): void {
+    this.accountService.user.subscribe((x) => (this.user = x));
     this.statusItems = [
       {
         label: "Update",
@@ -51,8 +84,24 @@ export class RecruiterJobApplicationsComponent implements OnInit {
       },
     ];
 
+    this.jobApplicationService.currentNewMessage.subscribe(
+      (msg: JobApplicationMessage) => {
+        msg.formattedTimestamp = formatDate(
+          msg.timestamp,
+          "d MMM y, h:mm:ss a",
+          this.locale
+        );
+        if (
+          this.jobApplicationService.selectedJobApplicationId ===
+          this.selectedJobApplication.id
+        ) {
+          this.selectedJobApplication.messageList.add(msg);
+        }
+      }
+    );
+
     let jobId: number;
-    let jobApplicationId: number;
+    let jobApplicationId: string;
     this.route.queryParams.subscribe((params) => {
       jobId = params.jobId;
       jobApplicationId = params.jobApplicationId;
@@ -68,18 +117,6 @@ export class RecruiterJobApplicationsComponent implements OnInit {
           .subscribe((jobApplications: JobApplication[]) => {
             this.jobApplications = jobApplications.map((jobApplication) => {
               this.databaseService
-                .getJobById(jobApplication.jobId)
-                .subscribe((jobResponse: JobResponse) => {
-                  jobApplication.job = this.databaseService.toJob(jobResponse);
-                });
-
-              this.jobApplicationService
-                .getStatusById(jobApplication.statusId)
-                .subscribe((status: JobApplicationStatus) => {
-                  jobApplication.status = status;
-                });
-
-              this.databaseService
                 .getUserDetails(jobApplication.userId)
                 .subscribe((userDetails: UserDetails) => {
                   jobApplication.userDetails = userDetails;
@@ -87,9 +124,18 @@ export class RecruiterJobApplicationsComponent implements OnInit {
 
               return jobApplication;
             });
-
             this.selectedJobApplication = this.jobApplications.find(
               (jobApplications) => jobApplications.id == jobApplicationId
+            );
+            this.jobApplicationService.selectedJobApplicationId =
+              this.selectedJobApplication.id;
+            this.selectedJobApplication.messageList.forEach(
+              (message) =>
+                (message.formattedTimestamp = formatDate(
+                  message.timestamp,
+                  "d MMM y, h:mm:ss a",
+                  this.locale
+                ))
             );
           });
       });
@@ -114,11 +160,44 @@ export class RecruiterJobApplicationsComponent implements OnInit {
 
   onSelectionChange(event) {
     if (event.value.length === 1) {
-      this.selectedJobApplication = event.value[0];
+      let id = event.value[0].id;
+
+      this.jobApplicationService
+        .getJobApplicationById(id)
+        .subscribe((jobApplication: JobApplication) => {
+          this.databaseService
+            .getUserDetails(jobApplication.userId)
+            .subscribe((userDetails: UserDetails) => {
+              jobApplication.userDetails = userDetails;
+            });
+
+          jobApplication.jobDetails = this.databaseService.toJob(
+            jobApplication.job
+          );
+
+          jobApplication.formattedUpdatedAt = formatDate(
+            jobApplication.updatedAt,
+            "d MMM y, h:mm:ss a",
+            this.locale
+          );
+
+          this.selectedJobApplication = jobApplication;
+          this.selectedJobApplication.messageList.forEach(
+            (message) =>
+              (message.formattedTimestamp = formatDate(
+                message.timestamp,
+                "d MMM y, h:mm:ss a",
+                this.locale
+              ))
+          );
+          this.scrollToBottom();
+
+          this.jobApplicationService.selectedJobApplicationId =
+            this.selectedJobApplication.id;
+        });
     } else {
       event.value = [this.selectedJobApplication];
     }
-    console.log(this.selectedJobApplication.job.title);
   }
 
   viewProfile() {
@@ -153,5 +232,47 @@ export class RecruiterJobApplicationsComponent implements OnInit {
           });
       },
     });
+  }
+
+  sendMessage() {
+    let content = this.textareaValue.trim();
+    if (content !== "") {
+      this.jobApplicationService
+        .addMessage(this.selectedJobApplication.id, {
+          userId: this.user.id,
+          content: content,
+        })
+        .pipe(first())
+        .subscribe({
+          next: (message: JobApplicationMessage) => {
+            message.formattedTimestamp = formatDate(
+              message.timestamp,
+              "d MMM y, h:mm:ss a",
+              this.locale
+            );
+            this.selectedJobApplication.messageList = new Set(
+              this.selectedJobApplication.messageList
+            );
+            this.selectedJobApplication.messageList.add(message);
+            this.textareaValue = "";
+          },
+          error: (error) => {
+            console.log("error");
+          },
+        });
+    }
+  }
+
+  ngAfterViewChecked() {
+    this.scrollToBottom();
+  }
+
+  scrollToBottom(): void {
+    try {
+      this.myScrollContainer.nativeElement.scroll({
+        top: this.myScrollContainer.nativeElement.scrollHeight,
+        left: 0,
+      });
+    } catch (err) {}
   }
 }

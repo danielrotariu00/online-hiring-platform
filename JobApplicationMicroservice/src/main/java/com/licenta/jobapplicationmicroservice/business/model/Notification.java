@@ -16,7 +16,8 @@ import java.time.LocalDateTime;
 public class Notification {
 
     private Long userId;
-    private Long jobApplicationId;
+    private String jobApplicationId;
     private String text;
+    private Message message;
     private LocalDateTime timestamp;
 }

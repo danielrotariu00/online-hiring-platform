@@ -34,7 +34,7 @@ public class UserSkillService implements IUserSkillService {
     private static final String USER_SKILL_ALREADY_EXISTS_MESSAGE = "Skill with id <%d> already exists for user with id <%d>.";
 
     @Override
-    public void add(Long userId, UserSkillDTO userSkillDTO) {
+    public UserSkillDTO add(Long userId, UserSkillDTO userSkillDTO) {
         Integer skillId = userSkillDTO.getSkillId();
 
         User user = userService.getUserOrElseThrowException(userId);
@@ -52,7 +52,9 @@ public class UserSkillService implements IUserSkillService {
                 .skill(skill)
                 .build();
 
-        userSkillRepository.save(newUserSkill);
+        return userSkillMapper.toDTO(
+                userSkillRepository.save(newUserSkill)
+        );
     }
 
     @Override

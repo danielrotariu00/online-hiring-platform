@@ -8,4 +8,6 @@ public interface IJobTypeService {
     JobType getJobTypeOrElseThrowException(Integer jobTypeId);
 
     Iterable<JobTypeResponse> getJobTypes();
+
+    JobTypeResponse getJobType(Integer jobTypeId);
 }

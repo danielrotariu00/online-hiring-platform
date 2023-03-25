@@ -25,7 +25,7 @@
       <h3>Company Jobs</h3>
       <p-button
         icon="pi pi-plus"
-        (click)="showJobForm()"
+        (click)="showJobForm(undefined)"
         label="Add"
         styleClass="p-button-text"
       ></p-button>
@@ -166,6 +166,27 @@
         </p-dropdown>
         <br />
         <br />
+        <h4>Status</h4>
+        <p-dropdown
+          [options]="jobStatusList"
+          [(ngModel)]="selectedJobStatus"
+          optionLabel="name"
+          [filter]="true"
+          filterBy="name"
+          [showClear]="true"
+          placeholder="Select one"
+        >
+          <ng-template pTemplate="selectedItem">
+            <div
+              class="selectedJobStatus-item selectedJobStatus-item-value"
+              *ngIf="selectedJobStatus"
+            >
+              <div>{{ selectedJobStatus.name }}</div>
+            </div>
+          </ng-template>
+        </p-dropdown>
+        <br />
+        <br />
         <h4>Description</h4>
         <textarea
           rows="20"
@@ -176,7 +197,7 @@
         <ng-template pTemplate="footer">
           <p-button
             icon="pi pi-check"
-            (click)="addJob()"
+            (click)="saveJob()"
             label="Save"
             styleClass="p-button-text"
           ></p-button>
@@ -206,16 +227,11 @@
               (click)="editJob(job)"
               icon="pi pi-pencil"
               style="margin-left: 5%"
+              (click)="showJobForm(job)"
             ></p-button>
             <p-button
               label="View Applications"
               (click)="viewApplications(job)"
-              styleClass="p-button-secondary"
-              [style]="{ 'margin-left': '.5em' }"
-            ></p-button>
-            <p-button
-              label="Mark as closed"
-              (click)="markAsClosed(job)"
               styleClass="p-button-secondary"
               [style]="{ 'margin-left': '.5em' }"
             ></p-button>

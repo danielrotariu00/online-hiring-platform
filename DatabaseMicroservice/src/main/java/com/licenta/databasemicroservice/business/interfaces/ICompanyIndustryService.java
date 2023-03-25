@@ -11,9 +11,9 @@ public interface ICompanyIndustryService {
 
     Iterable<CompanyResponse> getCompaniesByIndustry(Integer industryId);
 
-    void addCompanyIndustry(CompanyIndustryRequest request);
+    CompanyIndustryResponse addCompanyIndustry(CompanyIndustryRequest request);
 
-    void deleteCompanyIndustry(CompanyIndustryRequest request);
+    void deleteCompanyIndustry(Long companyId, Integer industryId);
 
     Iterable<CompanyIndustryResponse> getCompanyIndustriesByCompany(Long companyId);
 }

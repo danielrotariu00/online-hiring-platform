@@ -5,9 +5,12 @@ import com.licenta.databasemicroservice.business.model.experiencelevel.Experienc
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.constraints.Min;
 
 @Validated
 @RestController
@@ -22,5 +25,11 @@ public class ExperienceLevelController {
     public Iterable<ExperienceLevelResponse> getAllExperienceLevels() {
 
         return experienceLevelService.getExperienceLevels();
+    }
+
+    @RequestMapping(value="/{experienceLevelId}", method=RequestMethod.GET)
+    public ExperienceLevelResponse getJExperienceLevel(@Min(1) @PathVariable Integer experienceLevelId) {
+
+        return experienceLevelService.getExperienceLevel(experienceLevelId);
     }
 }

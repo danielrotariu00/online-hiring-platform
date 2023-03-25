@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Service
 public class ExperienceLevelService implements IExperienceLevelService {
@@ -33,8 +32,15 @@ public class ExperienceLevelService implements IExperienceLevelService {
 
     @Override
     public Iterable<ExperienceLevelResponse> getExperienceLevels() {
-        return StreamSupport.stream(experienceLevelRepository.findAll().spliterator(), false)
+        return experienceLevelRepository.findAll().stream()
                 .map(experienceLevelMapper::toResponse)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public ExperienceLevelResponse getExperienceLevel(Integer experienceLevelId) {
+        ExperienceLevel experienceLevel = getExperienceLevelOrElseThrowException(experienceLevelId);
+
+        return experienceLevelMapper.toResponse(experienceLevel);
     }
 }

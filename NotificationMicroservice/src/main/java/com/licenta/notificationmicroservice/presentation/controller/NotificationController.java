@@ -1,41 +1,25 @@
 package com.licenta.notificationmicroservice.presentation.controller;
 
-// import com.shubh.kafkachat.constants.KafkaConstants;
-// import com.shubh.kafkachat.model.Message;
+
 import com.licenta.notificationmicroservice.business.interfaces.INotificationService;
 import com.licenta.notificationmicroservice.business.model.NotificationDTO;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
-import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDateTime;
-import java.util.concurrent.ExecutionException;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
 public class NotificationController {
 
-    @Autowired
-    private INotificationService notificationService;
-//    @MessageMapping("/sendMessage")
-//    @SendTo("/topic/group")
-//    public Message broadcastGroupMessage(@Payload Message message) {
-//        //Sending this message to all the subscribers
-//        return message;
-//    }
-//
-//    @MessageMapping("/newUser")
-//    @SendTo("/topic/group")
-//    public Message addUser(@Payload Message message,
-//                           SimpMessageHeaderAccessor headerAccessor) {
-//        // Add user in web socket session
-//        headerAccessor.getSessionAttributes().put("username", message.getSender());
-//        return message;
-//    }
+    private final INotificationService notificationService;
+
+    public NotificationController(INotificationService notificationService, SimpMessagingTemplate simpMessagingTemplate){
+        this.notificationService = notificationService;
+    }
 
     @RequestMapping(value="/users/{userId}/notifications", method = RequestMethod.GET)
     public Iterable<NotificationDTO> getByUserId(@PathVariable Long userId) {

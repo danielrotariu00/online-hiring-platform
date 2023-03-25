@@ -5,12 +5,20 @@ import { BehaviorSubject, Observable } from "rxjs";
 import { map } from "rxjs/operators";
 
 import { environment } from "../../environments/environment";
-import { JobApplication } from "../models";
+import { JobApplication, JobApplicationMessage, Review } from "../models";
 import { JobApplicationStatus } from "../models/job_application_status";
 
 @Injectable({ providedIn: "root" })
 export class JobApplicationService {
+  public selectedJobApplicationId: string = null;
+  private newMessage = new BehaviorSubject(null);
+  currentNewMessage = this.newMessage.asObservable();
+
   constructor(private http: HttpClient) {}
+
+  updateNewMessage(message: JobApplicationMessage) {
+    this.newMessage.next(message);
+  }
 
   create(userId: number, jobId: number) {
     return this.http.post(
@@ -22,7 +30,7 @@ export class JobApplicationService {
     );
   }
 
-  getJobApplicationById(id: number): Observable<JobApplication> {
+  getJobApplicationById(id: string): Observable<JobApplication> {
     return this.http.get(
       `${environment.jobApplicationApiURL}/job-applications/${id}`
     ) as Observable<JobApplication>;
@@ -52,11 +60,28 @@ export class JobApplicationService {
     ) as Observable<JobApplicationStatus>;
   }
 
-  update(jobApplicationId: number, statusId: number) {
+  update(jobApplicationId: string, statusId: number) {
     return this.http.put(
       `${environment.jobApplicationApiURL}/job-applications/${jobApplicationId}`,
       {
         statusId: statusId,
+      }
+    );
+  }
+
+  addMessage(jobApplicationId: string, message: JobApplicationMessage) {
+    return this.http.post(
+      `${environment.jobApplicationApiURL}/job-applications/${jobApplicationId}/messages`,
+      message
+    );
+  }
+
+  updateReview(jobApplicationId: string, rating: number, description: string) {
+    return this.http.put(
+      `${environment.jobApplicationApiURL}/job-applications/${jobApplicationId}/review`,
+      {
+        rating,
+        description,
       }
     );
   }

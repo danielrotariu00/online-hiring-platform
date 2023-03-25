@@ -9,5 +9,5 @@ public interface ICompanyIndustryFollowerService {
     void addCompanyIndustryFollower(CompanyIndustryFollowerRequest request);
     Iterable<UserResponse> getCompanyIndustryFollowers(Long companyIndustryId);
     Iterable<CompanyIndustryResponse> getFollowedCompanyIndustries(Long userId);
-    void removeCompanyIndustryFollower(CompanyIndustryFollowerRequest request);
+    void removeCompanyIndustryFollower(Long userId, Long companyIndustryId);
 }

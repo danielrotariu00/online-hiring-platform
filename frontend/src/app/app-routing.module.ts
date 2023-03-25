@@ -12,6 +12,7 @@ import { UserProfileComponent } from "./components/user-profile/user-profile.com
 import { NotificationsComponent } from "./components/notifications/notifications.component";
 import { RecruiterHomeComponent } from "./components/recruiter-home/recruiter-home.component";
 import { RecruiterJobApplicationsComponent } from "./components/recruiter-job-applications/recruiter-job-applications.component";
+import { ManagerHomeComponent } from "./components/manager-home/manager-home.component";
 
 const accountModule = () =>
   import("./account/account.module").then((x) => x.AccountModule);
@@ -55,6 +56,12 @@ const routes: Routes = [
   {
     path: "recruiter-job-applications",
     component: RecruiterJobApplicationsComponent,
+    canActivate: [AuthGuard],
+  },
+  // manager
+  {
+    path: "manager-home",
+    component: ManagerHomeComponent,
     canActivate: [AuthGuard],
   },
 ];

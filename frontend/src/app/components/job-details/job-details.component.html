@@ -3,15 +3,31 @@
   {{ job?.company?.name }} - {{ job?.city?.name }}, {{ job?.country?.name }}
 </h4>
 <br />
+<h4>{{ job?.industry?.name }}</h4>
 <h4>{{ job?.workType?.name }}</h4>
-<p>...</p>
-<p-button label="Apply" (click)="onClickApply()" icon="pi pi-plus"></p-button>
+<h4>{{ job?.jobType?.name }}</h4>
+<h4>{{ job?.experienceLevel?.name }}</h4>
+<br />
 <p-button
+  *ngIf="applied"
+  label="Applied"
+  styleClass="p-button-secondary"
+  disabled="true"
+></p-button>
+<p-button
+  *ngIf="!applied"
+  label="Apply"
+  (click)="onClickApply()"
+  icon="pi pi-plus"
+></p-button>
+<!-- <p-button
   label="Save"
-  icon="pi pi-check"
+  icon="pi pi-bookmark"
   styleClass="p-button-secondary"
   [style]="{ 'margin-left': '.5em' }"
-></p-button>
+></p-button> -->
+
+<br />
+<br />
+<h4>Description</h4>
 <div>{{ job?.description }}</div>
-<p>Recruiter ...</p>
-<button>Send message</button>

@@ -8,14 +8,16 @@ import com.licenta.jobapplicationmicroservice.business.model.CreateJobApplicatio
 import com.licenta.jobapplicationmicroservice.business.model.Job;
 import com.licenta.jobapplicationmicroservice.business.model.JobApplicationResponse;
 import com.licenta.jobapplicationmicroservice.business.model.JobApplicationStatusResponse;
+import com.licenta.jobapplicationmicroservice.business.model.Message;
 import com.licenta.jobapplicationmicroservice.business.model.Notification;
+import com.licenta.jobapplicationmicroservice.business.model.Review;
 import com.licenta.jobapplicationmicroservice.business.model.UpdateJobApplicationRequest;
 import com.licenta.jobapplicationmicroservice.business.util.constants.Constants;
 import com.licenta.jobapplicationmicroservice.business.util.exception.ExceptionWithStatus;
 import com.licenta.jobapplicationmicroservice.business.util.exception.NotFoundException;
 import com.licenta.jobapplicationmicroservice.business.util.mapper.JobApplicationMapper;
-import com.licenta.jobapplicationmicroservice.persistence.entity.JobApplication;
-import com.licenta.jobapplicationmicroservice.persistence.entity.JobApplicationStatus;
+import com.licenta.jobapplicationmicroservice.persistence.document.JobApplication;
+import com.licenta.jobapplicationmicroservice.persistence.document.JobApplicationStatus;
 import com.licenta.jobapplicationmicroservice.persistence.repository.JobApplicationRepository;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +25,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import static com.licenta.jobapplicationmicroservice.business.util.constants.Constants.CLOSED_JOB_STATUS_ID;
 import static com.licenta.jobapplicationmicroservice.business.util.constants.Constants.INITIAL_STATUS_ID;
 import static com.licenta.jobapplicationmicroservice.business.util.constants.Constants.JOB_APPLICATION_NOT_FOUND_MESSAGE;
 
@@ -60,20 +64,32 @@ public class JobApplicationService implements IJobApplicationService {
 
         Job job = databaseService.getJob(request.getJobId());
         JobApplicationStatus status = jobApplicationStatusService.getStatusOrElseThrowException(INITIAL_STATUS_ID);
-        JobApplication jobApplication = jobApplicationMapper.toEntity(request);
 
-        jobApplication.setStatus(status);
+        if(job.getJobStatusId().equals(CLOSED_JOB_STATUS_ID)) {
+            throw new ExceptionWithStatus("This job is closed", HttpStatus.CONFLICT);
+        }
+
+        JobApplication jobApplication = JobApplication.builder()
+                .userId(request.getUserId())
+                .job(job)
+                .status(status)
+                .messageList(Collections.emptyList())
+                .review(null)
+                .updatedAt(LocalDateTime.now())
+                .build();
+
         jobApplicationRepository.save(jobApplication);
 
         buildAndSendNotification(
                 job.getRecruiterId(),
                 jobApplication.getId(),
-                String.format(Constants.SUBMITTED_JOB_APPLICATION_TEXT_FORMAT, job.getTitle())
+                String.format(Constants.SUBMITTED_JOB_APPLICATION_TEXT_FORMAT, job.getTitle()),
+                null
         );
     }
 
     @Override
-    public JobApplicationResponse getById(Long jobApplicationId) {
+    public JobApplicationResponse getById(String jobApplicationId) {
         JobApplication jobApplication = getJobApplicationOrElseThrowException(jobApplicationId);
 
         return jobApplicationMapper.toResponse(jobApplication);
@@ -98,7 +114,7 @@ public class JobApplicationService implements IJobApplicationService {
     }
 
     @Override
-    public void update(Long jobApplicationId, UpdateJobApplicationRequest request) {
+    public void update(String jobApplicationId, UpdateJobApplicationRequest request) {
         JobApplication jobApplication = getJobApplicationOrElseThrowException(jobApplicationId);
         JobApplicationStatus status = jobApplicationStatusService.getStatusOrElseThrowException(request.getStatusId());
 
@@ -108,26 +124,28 @@ public class JobApplicationService implements IJobApplicationService {
             jobApplicationRepository.save(jobApplication);
 
             // todo extract constant
-            Job job = databaseService.getJob(jobApplication.getJobId());
+            Job job = databaseService.getJob(jobApplication.getJob().getId());
             Company company = databaseService.getCompany(job.getCompanyId());
             if (status.getName().equals("WITHDRAWN")) {
                 buildAndSendNotification(
                         job.getRecruiterId(),
                         jobApplication.getId(),
-                        String.format(Constants.WITHDRAWN_JOB_APPLICATION_TEXT_FORMAT, job.getTitle())
+                        String.format(Constants.WITHDRAWN_JOB_APPLICATION_TEXT_FORMAT, job.getTitle()),
+                        null
                 );
             } else {
                 buildAndSendNotification(
                         jobApplication.getUserId(),
                         jobApplication.getId(),
-                        String.format(Constants.UPDATED_JOB_APPLICATION_TEXT_FORMAT, job.getTitle(), company.getName())
+                        String.format(Constants.UPDATED_JOB_APPLICATION_TEXT_FORMAT, job.getTitle(), company.getName()),
+                        null
                 );
             }
         }
     }
 
     @Override
-    public void delete(Long jobApplicationId) {
+    public void delete(String jobApplicationId) {
         getJobApplicationOrElseThrowException(jobApplicationId);
 
         jobApplicationRepository.deleteById(jobApplicationId);
@@ -143,7 +161,48 @@ public class JobApplicationService implements IJobApplicationService {
         return jobApplicationStatusService.getStatusById(statusId);
     }
 
-    private JobApplication getJobApplicationOrElseThrowException(Long jobApplicationId) {
+    @Override
+    public Message addMessage(String jobApplicationId, Message message) {
+        JobApplication jobApplication = getJobApplicationOrElseThrowException(jobApplicationId);
+        verifyUserExists(message.getUserId());
+
+        message.setTimestamp(LocalDateTime.now());
+        jobApplication.getMessageList().add(message);
+
+        jobApplicationRepository.save(jobApplication);
+
+        Job job = databaseService.getJob(jobApplication.getJob().getId());
+        Company company = databaseService.getCompany(job.getCompanyId());
+
+        if(jobApplication.getUserId().equals(message.getUserId())) {
+            buildAndSendNotification(
+                    job.getRecruiterId(),
+                    jobApplication.getId(),
+                    String.format(Constants.RECRUITER_NEW_MESSAGE_TEXT_FORMAT, job.getTitle()),
+                    message
+            );
+        } else {
+            buildAndSendNotification(
+                    jobApplication.getUserId(),
+                    jobApplication.getId(),
+                    String.format(Constants.USER_NEW_MESSAGE_TEXT_FORMAT, job.getTitle(), company.getName()),
+                    message
+            );
+        }
+        return message;
+    }
+
+    @Override
+    public Review updateReview(String jobApplicationId, Review review) {
+        JobApplication jobApplication = getJobApplicationOrElseThrowException(jobApplicationId);
+
+        jobApplication.setReview(review);
+        jobApplicationRepository.save(jobApplication);
+
+        return jobApplication.getReview();
+    }
+
+    private JobApplication getJobApplicationOrElseThrowException(String jobApplicationId) {
 
         return jobApplicationRepository.findById(jobApplicationId).orElseThrow(
                 () -> new NotFoundException(String.format(JOB_APPLICATION_NOT_FOUND_MESSAGE, jobApplicationId))
@@ -158,11 +217,12 @@ public class JobApplicationService implements IJobApplicationService {
         databaseService.getJob(jobId);
     }
 
-    private void buildAndSendNotification(Long userId, Long jobApplicationId, String text) {
+    private void buildAndSendNotification(Long userId, String jobApplicationId, String text, Message message) {
         Notification notification = Notification.builder()
                 .userId(userId)
                 .jobApplicationId(jobApplicationId)
                 .text(text)
+                .message(message)
                 .timestamp(LocalDateTime.now())
                 .build();
 

@@ -1,15 +1,19 @@
 import { Job } from "./job";
 import { JobApplicationStatus } from "./job_application_status";
+import { JobResponse } from "./job_response";
+import { JobApplicationMessage } from "./job_application_message";
 import { UserDetails } from "./user_details";
+import { Review } from "./review";
 
 export class JobApplication {
-  id?: number;
+  id?: string;
   userId?: number;
-  jobId?: number;
-  statusId?: number;
+  job?: JobResponse;
   updatedAt: Date;
-  job?: Job;
   status?: JobApplicationStatus;
   userDetails?: UserDetails;
+  jobDetails: Job;
+  messageList: Set<JobApplicationMessage>;
+  review: Review;
   formattedUpdatedAt: string;
 }

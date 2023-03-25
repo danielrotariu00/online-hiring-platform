@@ -38,7 +38,7 @@ public class UserLanguageService implements IUserLanguageService {
     private static final String USER_LANGUAGE_ALREADY_EXISTS_MESSAGE = "Language with id <%d> already exists for user with id <%d>.";
 
     @Override
-    public void add(Long userId, UserLanguageDTO userLanguageDTO) {
+    public UserLanguageDTO add(Long userId, UserLanguageDTO userLanguageDTO) {
         Integer languageId = userLanguageDTO.getLanguageId();
         Integer languageLevelId = userLanguageDTO.getLanguageLevelId();
 
@@ -59,7 +59,9 @@ public class UserLanguageService implements IUserLanguageService {
                 .languageLevel(languageLevel)
                 .build();
 
-        userLanguageRepository.save(newUserLanguage);
+        return userLanguageMapper.toDTO(
+                userLanguageRepository.save(newUserLanguage)
+        );
     }
 
     @Override

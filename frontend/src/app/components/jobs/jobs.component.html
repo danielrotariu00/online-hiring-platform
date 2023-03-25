@@ -3,13 +3,16 @@
     <div class="col-3">
       <h3>Filters</h3>
       <div id="filters">
-        <h5>Title...</h5>
+        <h5>Title</h5>
+        <input type="text" pInputText [(ngModel)]="title" />
+        <br />
         <br />
         <h5>Country</h5>
         <p-multiSelect
           [options]="countries"
           [showToggleAll]="false"
           [(ngModel)]="selectedCountries"
+          (onChange)="onChangeCountry($event)"
           optionLabel="name"
           [virtualScroll]="true"
           [filter]="true"
@@ -24,7 +27,23 @@
         </p-multiSelect>
         <br />
         <br />
-        <h5>City...</h5>
+        <h5>City</h5>
+        <p-multiSelect
+          [options]="cities"
+          [showToggleAll]="false"
+          [(ngModel)]="selectedCities"
+          optionLabel="name"
+          [virtualScroll]="true"
+          [filter]="true"
+          [itemSize]="34"
+          class="multiselect-custom-virtual-scroll"
+        >
+          <ng-template let-city pTemplate="item">
+            <div class="city-item">
+              <div>{{ city.name }}</div>
+            </div>
+          </ng-template>
+        </p-multiSelect>
         <br />
         <br />
         <h5>Company</h5>
@@ -122,16 +141,39 @@
         </p-multiSelect>
         <br />
         <br />
-        <h5>Description...</h5>
+        <h5>Description</h5>
+        <textarea
+          rows="5"
+          cols="30"
+          pInputTextarea
+          [(ngModel)]="description"
+        ></textarea>
         <br />
         <br />
-        <h5>Posted since...</h5>
+        <h5>Posted since</h5>
+        <p-calendar
+          inputId="basic"
+          dateFormat="d M yy"
+          [maxDate]="currentDate"
+          [readonlyInput]="true"
+          [(ngModel)]="postedSince"
+        ></p-calendar>
         <br />
         <br />
-        <button type="button" (click)="onClickFilter()">Filter</button>
-        <button type="button" (click)="onClickClearFilters()">
-          Clear Filters
-        </button>
+        <p-button
+          label="Filter"
+          icon="pi pi-search"
+          (onClick)="onClickFilter()"
+        ></p-button>
+        <p-button
+          label="Clear Filters"
+          icon="pi pi-times"
+          styleClass="p-button-secondary"
+          [style]="{ 'margin-left': '1em' }"
+          (onClick)="onClickClearFilters()"
+        ></p-button>
+        <br />
+        <br />
       </div>
     </div>
     <div class="col-4">

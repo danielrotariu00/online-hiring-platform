@@ -1,8 +1,6 @@
 import { Injectable } from "@angular/core";
-import { Router } from "@angular/router";
 import { HttpClient } from "@angular/common/http";
-import { BehaviorSubject, Observable } from "rxjs";
-import { map } from "rxjs/operators";
+import { Observable } from "rxjs";
 
 import { environment } from "../../environments/environment";
 import { Notification } from "../models";
@@ -15,6 +13,13 @@ export class NotificationService {
     return this.http.get(
       `${environment.notificationApiURL}/users/${userId}/notifications`
     ) as Observable<Notification[]>;
+  }
+
+  markNotificationAsRead(notificationId: number) {
+    return this.http.put(
+      `${environment.notificationApiURL}/notifications/${notificationId}`,
+      true
+    );
   }
 
   deleteNotification(notificationId: number): Observable<Notification> {

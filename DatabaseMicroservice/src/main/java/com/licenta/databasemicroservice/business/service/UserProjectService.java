@@ -27,7 +27,7 @@ public class UserProjectService implements IUserProjectService {
 
     private static final String USER_PROJECT_NOT_FOUND_MESSAGE = "Project with id <%d> does not exist.";
     @Override
-    public void add(UserProjectDTO userProjectDTO) {
+    public UserProjectDTO add(UserProjectDTO userProjectDTO) {
         Long userId = userProjectDTO.getUserId();
 
         User user = userService.getUserOrElseThrowException(userId);
@@ -40,7 +40,9 @@ public class UserProjectService implements IUserProjectService {
                 .endDate(userProjectDTO.getEndDate())
                 .build();
 
-        userProjectRepository.save(newUserProject);
+        return userProjectMapper.toDTO(
+                userProjectRepository.save(newUserProject)
+        );
     }
 
     @Override

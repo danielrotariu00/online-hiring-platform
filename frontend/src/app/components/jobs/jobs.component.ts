@@ -11,6 +11,8 @@ import {
   JobResponse,
   JobType,
   WorkType,
+  City,
+  JobStatus,
 } from "../../models";
 
 import { DatabaseService } from "../../services";
@@ -25,13 +27,18 @@ export class JobsComponent implements OnInit {
 
   jobs: Job[];
   selectedJob: Job;
+
   totalElements: number = 0;
   totalPages: number = 0;
-
   maxJobs: number = 5;
+
+  title: String;
 
   countries: Country[];
   selectedCountries: Country[] = [];
+
+  cities: City[];
+  selectedCities: City[] = [];
 
   companies: Company[];
   selectedCompanies: Company[] = [];
@@ -48,6 +55,11 @@ export class JobsComponent implements OnInit {
   experienceLevels: ExperienceLevel[];
   selectedExperienceLevels: ExperienceLevel[] = [];
 
+  description: String;
+
+  postedSince: Date;
+  currentDate: Date;
+
   queryParams: any;
 
   constructor(
@@ -56,14 +68,21 @@ export class JobsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.currentDate = new Date();
+
     this.route.queryParams.subscribe((params) => {
       this.queryParams = params;
+      console.log(this.queryParams);
     });
+
     this.databaseService
       .getJobs(
         0,
         this.maxJobs,
+        true,
+        undefined,
         this.selectedCountries,
+        this.selectedCities,
         this.selectedCompanies,
         this.selectedIndustries
       )
@@ -79,12 +98,18 @@ export class JobsComponent implements OnInit {
       this.countries = countries;
     });
 
+    this.databaseService.getCities().subscribe((cities: City[]) => {
+      this.cities = cities;
+    });
+
     this.databaseService.getCompanies().subscribe((companies: Company[]) => {
       this.companies = companies;
       this.selectedCompanies = this.companies.filter(
         (company) => company.id == this.queryParams.companyId
       );
-      this.onClickFilter();
+      if (this.queryParams.companyId) {
+        this.onClickFilter();
+      }
     });
 
     this.databaseService.getIndustries().subscribe((industries: Industry[]) => {
@@ -92,7 +117,9 @@ export class JobsComponent implements OnInit {
       this.selectedIndustries = this.industries.filter(
         (industry) => industry.id == this.queryParams.industryId
       );
-      this.onClickFilter();
+      if (this.queryParams.industryId) {
+        this.onClickFilter();
+      }
     });
 
     this.databaseService.getWorkTypes().subscribe((workTypes: WorkType[]) => {
@@ -120,12 +147,17 @@ export class JobsComponent implements OnInit {
       .getJobs(
         0,
         this.maxJobs,
+        true,
+        this.title,
         this.selectedCountries,
+        this.selectedCities,
         this.selectedCompanies,
         this.selectedIndustries,
         this.selectedWorkTypes,
         this.selectedJobTypes,
-        this.selectedExperienceLevels
+        this.selectedExperienceLevels,
+        this.description,
+        this.postedSince
       )
       .subscribe((jobQueryResponse: JobQueryResponse) => {
         this.jobs = this.toJobList(jobQueryResponse.jobList);
@@ -141,12 +173,17 @@ export class JobsComponent implements OnInit {
       .getJobs(
         event.page,
         this.maxJobs,
+        true,
+        this.title,
         this.selectedCountries,
+        this.selectedCities,
         this.selectedCompanies,
         this.selectedIndustries,
         this.selectedWorkTypes,
         this.selectedJobTypes,
-        this.selectedExperienceLevels
+        this.selectedExperienceLevels,
+        this.description,
+        this.postedSince
       )
       .subscribe((jobQueryResponse: JobQueryResponse) => {
         this.jobs = this.toJobList(jobQueryResponse.jobList);
@@ -154,15 +191,19 @@ export class JobsComponent implements OnInit {
   }
 
   onClickClearFilters() {
+    this.title = "";
     this.selectedCompanies = [];
     this.selectedCountries = [];
+    this.selectedCities = [];
     this.selectedIndustries = [];
     this.selectedWorkTypes = [];
     this.selectedJobTypes = [];
     this.selectedExperienceLevels = [];
+    this.description = "";
+    this.postedSince = undefined;
 
     this.databaseService
-      .getJobs(0, this.maxJobs)
+      .getJobs(0, this.maxJobs, true)
       .subscribe((jobQueryResponse: JobQueryResponse) => {
         this.jobs = this.toJobList(jobQueryResponse.jobList);
         this.totalElements = jobQueryResponse.totalElements;
@@ -170,6 +211,28 @@ export class JobsComponent implements OnInit {
         this.selectedJob = this.jobs[0];
         setTimeout(() => this.paginator.changePage(0));
       });
+
+    this.databaseService.getCities().subscribe((cities: City[]) => {
+      this.cities = cities;
+    });
+  }
+
+  onChangeCountry(event: any) {
+    this.cities = [];
+
+    if (this.selectedCountries.length != 0) {
+      this.selectedCountries.map((country) => {
+        this.databaseService
+          .getCitiesByCountryId(country.id)
+          .subscribe((cities: City[]) => {
+            this.cities.push(...cities);
+          });
+      });
+    } else {
+      this.databaseService.getCities().subscribe((cities: City[]) => {
+        this.cities = cities;
+      });
+    }
   }
 
   toJobList(jobResponseList: JobResponse[]) {

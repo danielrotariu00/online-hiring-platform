@@ -9,10 +9,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
+import java.io.IOException;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
@@ -23,14 +26,20 @@ public class UserDetailsController {
     private IUserDetailsService userDetailsService;
 
     @RequestMapping(method=RequestMethod.PUT)
-    public void saveUserDetails(@Min(1) @PathVariable Long userId, @Valid @RequestBody SaveUserDetailsRequest request) {
+    public UserDetailsResponse saveUserDetails(@Min(1) @PathVariable Long userId, @Valid @RequestBody SaveUserDetailsRequest request) {
 
-        userDetailsService.saveUserDetails(userId, request);
+        return userDetailsService.saveUserDetails(userId, request);
     }
 
     @RequestMapping(method=RequestMethod.GET)
     public UserDetailsResponse getUserDetails(@Min(1) @PathVariable Long userId) {
 
         return userDetailsService.getUserDetails(userId);
+    }
+
+    @RequestMapping(value = "/image", method=RequestMethod.PUT)
+    public void uploadImage(@PathVariable Long userId, @RequestParam("img") MultipartFile image) throws IOException {
+
+        userDetailsService.saveImage(userId, image);
     }
 }

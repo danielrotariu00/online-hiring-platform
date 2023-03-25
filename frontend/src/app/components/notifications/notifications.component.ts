@@ -1,15 +1,27 @@
 import { formatDate } from "@angular/common";
-import { Component, Inject, LOCALE_ID, OnInit } from "@angular/core";
+import {
+  Component,
+  Inject,
+  LOCALE_ID,
+  OnInit,
+  ViewEncapsulation,
+} from "@angular/core";
 import { Router } from "@angular/router";
-import { first } from "rxjs";
+import { MessageService } from "primeng/api";
+import { distinctUntilChanged, first } from "rxjs";
 import { Notification, User } from "src/app/models";
-import { AccountService, JobApplicationService } from "src/app/services";
+import {
+  AccountService,
+  JobApplicationService,
+  MenuItemsService,
+} from "src/app/services";
 import { NotificationService } from "src/app/services/notification.service";
 
 @Component({
   selector: "app-notifications",
   templateUrl: "./notifications.component.html",
   styleUrls: ["./notifications.component.css"],
+  encapsulation: ViewEncapsulation.None,
 })
 export class NotificationsComponent implements OnInit {
   user: User | null;
@@ -19,6 +31,8 @@ export class NotificationsComponent implements OnInit {
     private accountService: AccountService,
     private notificationService: NotificationService,
     private jobApplicationService: JobApplicationService,
+    private menuItemsService: MenuItemsService,
+    private messageService: MessageService,
     private router: Router,
     @Inject(LOCALE_ID) private locale: string
   ) {}
@@ -41,33 +55,67 @@ export class NotificationsComponent implements OnInit {
       });
   }
 
-  goToJobApplication(jobApplicationId: number) {
+  goToJobApplication(notification: Notification) {
     if (this.user.isRecruiter) {
       this.jobApplicationService
-        .getJobApplicationById(jobApplicationId)
+        .getJobApplicationById(notification.jobApplicationId)
         .subscribe((jobApplication) => {
           this.router.navigate(["/recruiter-job-applications"], {
             queryParams: {
-              jobId: `${jobApplication.jobId}`,
+              jobId: `${jobApplication.job.id}`,
+              jobApplicationId: `${jobApplication.id}`,
             },
           });
         });
     } else {
       this.router.navigate(["/job-applications"], {
         queryParams: {
-          id: `${jobApplicationId}`,
+          id: `${notification.jobApplicationId}`,
         },
       });
     }
+    if (!notification.isRead) {
+      this.notificationService
+        .markNotificationAsRead(notification.id)
+        .pipe(first())
+        .subscribe({
+          next: () => {
+            this.menuItemsService.menuItems$
+              .pipe(distinctUntilChanged())
+              .subscribe((menuItems) => {
+                menuItems[menuItems.length - 2].badge = String(
+                  Number(menuItems[menuItems.length - 2].badge) - 1
+                );
+                this.menuItemsService.updateMenuItems(menuItems);
+              });
+          },
+          error: (error) => {},
+        });
+    }
   }
 
-  deleteNotification(notificationId: number) {
+  deleteNotification(notification: Notification) {
+    let notificationId = notification.id;
     this.notificationService
       .deleteNotification(notificationId)
       .pipe(first())
       .subscribe({
         next: () => {
-          console.log("success");
+          if (!notification.isRead) {
+            this.menuItemsService.menuItems$
+              .pipe(distinctUntilChanged())
+              .subscribe((menuItems) => {
+                menuItems[menuItems.length - 2].badge = String(
+                  Number(menuItems[menuItems.length - 2].badge) - 1
+                );
+                this.menuItemsService.updateMenuItems(menuItems);
+              });
+          }
+          this.messageService.add({
+            severity: "success",
+            summary: "Succes",
+            detail: "Notification deleted succesfully.",
+          });
           this.notifications = this.notifications.filter(
             (notification) => notification.id != notificationId
           );

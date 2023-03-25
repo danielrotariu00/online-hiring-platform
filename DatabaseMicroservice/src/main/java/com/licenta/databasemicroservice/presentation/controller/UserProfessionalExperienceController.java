@@ -31,6 +31,14 @@ public class UserProfessionalExperienceController {
         return userProfessionalExperienceService.add(userProfessionalExperienceDTO);
     }
 
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(value="/professional-experience/{id}", method=RequestMethod.PUT)
+    public UserProfessionalExperienceDTO update(@PathVariable Long id,
+                                                @Valid @RequestBody UserProfessionalExperienceDTO userProfessionalExperienceDTO) {
+
+        return userProfessionalExperienceService.update(id, userProfessionalExperienceDTO);
+    }
+
     @RequestMapping(value="/users/{userId}/professional-experience", method=RequestMethod.GET)
     public Iterable<UserProfessionalExperienceDTO> getByUserId(@Min(1) @PathVariable Long userId) {
 

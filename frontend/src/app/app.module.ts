@@ -18,6 +18,8 @@ import { ToastModule } from "primeng/toast";
 import { RippleModule } from "primeng/ripple";
 import { CalendarModule } from "primeng/calendar";
 import { SplitButtonModule } from "primeng/splitbutton";
+import { FileUploadModule } from "primeng/fileupload";
+import { SliderModule } from "primeng/slider";
 
 import { AppRoutingModule } from "./app-routing.module";
 import { JwtInterceptor, ErrorInterceptor } from "./helpers";
@@ -38,6 +40,8 @@ import { NotificationsComponent } from "./components/notifications/notifications
 import { RecruiterHomeComponent } from "./components/recruiter-home/recruiter-home.component";
 import { RecruiterJobApplicationsComponent } from "./components/recruiter-job-applications/recruiter-job-applications.component";
 import { UserPreviewComponent } from "./components/user-preview/user-preview.component";
+import { MessageService } from "primeng/api";
+import { ManagerHomeComponent } from "./components/manager-home/manager-home.component";
 
 @NgModule({
   imports: [
@@ -62,6 +66,8 @@ import { UserPreviewComponent } from "./components/user-preview/user-preview.com
     RippleModule,
     CalendarModule,
     SplitButtonModule,
+    FileUploadModule,
+    SliderModule,
   ],
   declarations: [
     AppComponent,
@@ -81,10 +87,12 @@ import { UserPreviewComponent } from "./components/user-preview/user-preview.com
     RecruiterHomeComponent,
     RecruiterJobApplicationsComponent,
     UserPreviewComponent,
+    ManagerHomeComponent,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+    MessageService,
   ],
   bootstrap: [AppComponent],
 })

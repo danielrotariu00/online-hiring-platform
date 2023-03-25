@@ -4,7 +4,7 @@ import com.licenta.jobapplicationmicroservice.business.interfaces.IJobApplicatio
 import com.licenta.jobapplicationmicroservice.business.model.JobApplicationStatusResponse;
 import com.licenta.jobapplicationmicroservice.business.util.exception.NotFoundException;
 import com.licenta.jobapplicationmicroservice.business.util.mapper.JobApplicationStatusMapper;
-import com.licenta.jobapplicationmicroservice.persistence.entity.JobApplicationStatus;
+import com.licenta.jobapplicationmicroservice.persistence.document.JobApplicationStatus;
 import com.licenta.jobapplicationmicroservice.persistence.repository.JobApplicationStatusRepository;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;

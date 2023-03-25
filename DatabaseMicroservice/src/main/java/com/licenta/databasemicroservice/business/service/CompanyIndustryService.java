@@ -38,7 +38,7 @@ public class CompanyIndustryService implements ICompanyIndustryService {
 
 
     @Override
-    public void addCompanyIndustry(CompanyIndustryRequest request) {
+    public CompanyIndustryResponse addCompanyIndustry(CompanyIndustryRequest request) {
         Long companyId = request.getCompanyId();
         Integer industryId = request.getIndustryId();
 
@@ -57,7 +57,7 @@ public class CompanyIndustryService implements ICompanyIndustryService {
                 .industry(industry)
                 .build();
 
-        companyIndustryRepository.save(newCompanyIndustry);
+        return companyIndustryMapper.toResponse(companyIndustryRepository.save(newCompanyIndustry));
     }
 
     @Override
@@ -79,10 +79,7 @@ public class CompanyIndustryService implements ICompanyIndustryService {
     }
 
     @Override
-    public void deleteCompanyIndustry(CompanyIndustryRequest request) {
-        Long companyId = request.getCompanyId();
-        Integer industryId = request.getIndustryId();
-
+    public void deleteCompanyIndustry(Long companyId, Integer industryId) {
         companyService.getCompanyOrElseThrowException(companyId);
         industryService.getIndustryOrElseThrowException(industryId);
 

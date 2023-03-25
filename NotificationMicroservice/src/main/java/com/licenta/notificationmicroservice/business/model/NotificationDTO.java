@@ -17,9 +17,10 @@ public class NotificationDTO implements Comparable<NotificationDTO> {
 
     private Long id;
     private Long userId;
-    private Long jobApplicationId;
+    private String jobApplicationId;
     private String text;
     private Boolean isRead;
+    private MessageDTO message;
     private LocalDateTime timestamp;
 
     @Override
