@@ -7,6 +7,7 @@ import {
   City,
   Company,
   CompanyIndustry,
+  CompanyRecruiter,
   Country,
   ExperienceLevel,
   Industry,
@@ -349,16 +350,59 @@ export class DatabaseService {
     ) as Observable<Company>;
   }
 
+  updateCompany(
+    companyId: number,
+    name: string,
+    website: string,
+    cityId: number,
+    description: string,
+    photo: string
+  ) {
+    return this.http.put(
+      `${environment.databaseApiURL}/companies/${companyId}`,
+      {
+        name,
+        photo,
+        description,
+        cityId,
+        website,
+      }
+    );
+  }
+
+  uploadCompanyImage(
+    companyId: number,
+    imageUpload: FileUpload
+  ): Observable<any> {
+    imageUpload.url = `${environment.databaseApiURL}/companies/${companyId}/image`;
+    imageUpload.upload();
+    return imageUpload.onUpload.asObservable();
+  }
+
   getCompaniesByIndustryId(industryId: number): Observable<Company[]> {
     return this.http.get(
       `${environment.databaseApiURL}/industries/${industryId}/companies`
     ) as Observable<Company[]>;
   }
 
+  getRecruiterById(recruiterId: number): Observable<CompanyRecruiter> {
+    return this.http.get(
+      `${environment.apiUrl}/users/${recruiterId}`
+    ) as Observable<CompanyRecruiter>;
+  }
+
   addCompanyIndustry(companyId: number, industryId: number) {
     return this.http.post(`${environment.databaseApiURL}/company-industries`, {
       companyId,
       industryId,
+    });
+  }
+
+  addCompanyRecruiter(companyId: number, email: string, password: string) {
+    return this.http.post(`${environment.apiUrl}/company-recruiters`, {
+      companyId,
+      email,
+      password,
     });
   }
 
@@ -377,6 +421,23 @@ export class DatabaseService {
     return this.http.delete(
       `${environment.databaseApiURL}/companies/${companyId}/industries/${industryId}`
     ) as Observable<CompanyIndustry>;
+  }
+
+  getCompanyRecruitersByCompanyId(
+    companyId: number
+  ): Observable<CompanyRecruiter[]> {
+    return this.http.get(
+      `${environment.databaseApiURL}/companies/${companyId}/company-recruiters`
+    ) as Observable<CompanyRecruiter[]>;
+  }
+
+  deleteCompanyRecruiter(
+    companyId: number,
+    recruiterId: number
+  ): Observable<CompanyRecruiter> {
+    return this.http.delete(
+      `${environment.apiUrl}/companies/${companyId}/recruiters/${recruiterId}`
+    ) as Observable<CompanyRecruiter>;
   }
 
   getCountries(): Observable<Country[]> {

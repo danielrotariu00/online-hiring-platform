@@ -4,6 +4,7 @@ import com.licenta.jobapplicationmicroservice.persistence.document.JobApplicatio
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface JobApplicationRepository extends MongoRepository<JobApplication, String> {
@@ -16,4 +17,7 @@ public interface JobApplicationRepository extends MongoRepository<JobApplication
 
     @Query("{userId: ?0, 'job.id': ?1}")
     Optional<JobApplication> findByUserIdAndJobId(Long userId, Long jobId);
+
+    @Query("{'job.recruiterId': ?0}")
+    List<JobApplication> findAllByRecruiterId(Long recruiterId);
 }

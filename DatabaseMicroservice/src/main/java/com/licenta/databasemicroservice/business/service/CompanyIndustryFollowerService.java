@@ -3,7 +3,7 @@ package com.licenta.databasemicroservice.business.service;
 import com.licenta.databasemicroservice.business.interfaces.ICompanyIndustryFollowerService;
 import com.licenta.databasemicroservice.business.interfaces.ICompanyIndustryService;
 import com.licenta.databasemicroservice.business.interfaces.IUserService;
-import com.licenta.databasemicroservice.business.model.companyindustry.CompanyIndustryResponse;
+import com.licenta.databasemicroservice.business.model.companyindustry.CompanyIndustryDTO;
 import com.licenta.databasemicroservice.business.model.companyindustryfollower.CompanyIndustryFollowerRequest;
 import com.licenta.databasemicroservice.business.model.user.UserResponse;
 import com.licenta.databasemicroservice.business.util.exception.AlreadyExistsException;
@@ -70,7 +70,7 @@ public class CompanyIndustryFollowerService implements ICompanyIndustryFollowerS
     }
 
     @Override
-    public Iterable<CompanyIndustryResponse> getFollowedCompanyIndustries(Long userId) {
+    public Iterable<CompanyIndustryDTO> getFollowedCompanyIndustries(Long userId) {
 
         userService.getUserOrElseThrowException(userId);
 

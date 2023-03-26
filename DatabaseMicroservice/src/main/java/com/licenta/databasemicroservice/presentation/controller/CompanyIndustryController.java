@@ -1,9 +1,8 @@
 package com.licenta.databasemicroservice.presentation.controller;
 
 import com.licenta.databasemicroservice.business.interfaces.ICompanyIndustryService;
-import com.licenta.databasemicroservice.business.model.company.CompanyResponse;
-import com.licenta.databasemicroservice.business.model.companyindustry.CompanyIndustryRequest;
-import com.licenta.databasemicroservice.business.model.companyindustry.CompanyIndustryResponse;
+import com.licenta.databasemicroservice.business.model.company.CompanyDTO;
+import com.licenta.databasemicroservice.business.model.companyindustry.CompanyIndustryDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -28,19 +27,19 @@ public class CompanyIndustryController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(value="/company-industries", method=RequestMethod.POST)
-    public CompanyIndustryResponse addCompanyIndustry(@Valid @RequestBody CompanyIndustryRequest request) {
+    public CompanyIndustryDTO addCompanyIndustry(@Valid @RequestBody CompanyIndustryDTO request) {
 
         return companyIndustryService.addCompanyIndustry(request);
     }
 
     @RequestMapping(value="/companies/{companyId}/company-industries", method=RequestMethod.GET)
-    public Iterable<CompanyIndustryResponse> getCompanyIndustriesByCompany(@Min(1) @PathVariable Long companyId) {
+    public Iterable<CompanyIndustryDTO> getCompanyIndustriesByCompany(@Min(1) @PathVariable Long companyId) {
 
         return companyIndustryService.getCompanyIndustriesByCompany(companyId);
     }
 
     @RequestMapping(value="/industries/{industryId}/companies", method=RequestMethod.GET)
-    public Iterable<CompanyResponse> getCompaniesByIndustry(@Min(1) @PathVariable Integer industryId) {
+    public Iterable<CompanyDTO> getCompaniesByIndustry(@Min(1) @PathVariable Integer industryId) {
 
         return companyIndustryService.getCompaniesByIndustry(industryId);
     }

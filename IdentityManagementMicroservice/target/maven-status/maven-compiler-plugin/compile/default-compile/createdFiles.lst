@@ -11,6 +11,7 @@ com/licenta/idm/config/WebServiceConfig.class
 com/licenta/idm/AuthorizeRequest.class
 com/licenta/idm/LogoutRequest.class
 com/licenta/idm/config/CORSFilter.class
+com/licenta/idm/CreateUserResponse.class
 com/licenta/idm/persistence/entity/User.class
 com/licenta/idm/Role.class
 com/licenta/idm/UpdatePasswordRequest.class
@@ -26,6 +27,7 @@ com/licenta/idm/GetUserRequest.class
 com/licenta/idm/CreateUserRequest.class
 com/licenta/idm/UserResponse.class
 com/licenta/idm/AuthorizeResponse.class
+com/licenta/idm/GetUserResponse.class
 com/licenta/idm/DeleteUserRequest.class
 com/licenta/idm/GetRolesRequest.class
 com/licenta/idm/RolesResponse.class

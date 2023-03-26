@@ -1,7 +1,9 @@
 package com.licenta.idm.presentation.endpoint;
 
+import com.licenta.idm.CreateUserResponse;
 import com.licenta.idm.DeleteUserRequest;
 import com.licenta.idm.GetUserRequest;
+import com.licenta.idm.GetUserResponse;
 import com.licenta.idm.business.service.JwtProvider;
 import com.licenta.idm.business.service.UserService;
 import com.licenta.idm.AddRoleRequest;
@@ -49,7 +51,7 @@ public class UserEndpoint {
 
 	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "createUserRequest")
 	@ResponsePayload
-	public UserResponse createUser(@RequestPayload CreateUserRequest request) {
+	public CreateUserResponse createUser(@RequestPayload CreateUserRequest request) {
 		return userService.createUser(request);
 	}
 
@@ -85,12 +87,12 @@ public class UserEndpoint {
 
 	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "getUserRequest")
 	@ResponsePayload
-	public UserResponse getUser(@RequestPayload GetUserRequest request) throws MalformedClaimException {
-		if (jwtProvider.isAuthorized(request.getToken(), request.getUserId())) {
+	public GetUserResponse getUser(@RequestPayload GetUserRequest request) throws MalformedClaimException {
+		// if (jwtProvider.isAuthorized(request.getToken(), request.getUserId())) {
 			return userService.getUser(request);
-		} else {
-			throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-		}
+		// } else {
+		//	throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+		//}
 	}
 
 	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "getUsersRequest")
@@ -106,11 +108,11 @@ public class UserEndpoint {
 	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "deleteUserRequest")
 	@ResponsePayload
 	public UserResponse deleteUser(@RequestPayload DeleteUserRequest request) throws MalformedClaimException {
-		if (jwtProvider.isAuthorized(request.getToken(), request.getUserId())) {
+		// if (jwtProvider.isAuthorized(request.getToken(), request.getUserId())) {
 			return userService.deleteUser(request);
-		} else {
-			throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-		}
+		// } else {
+		//	throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+		// }
 	}
 
 

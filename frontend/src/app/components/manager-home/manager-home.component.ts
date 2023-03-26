@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import {
   City,
   Company,
@@ -10,6 +10,7 @@ import {
 import { AccountService, DatabaseService } from "../../services";
 import { Router } from "@angular/router";
 import { first } from "rxjs";
+import { FileUpload } from "primeng/fileupload";
 
 @Component({
   selector: "app-manager-home",
@@ -27,6 +28,16 @@ export class ManagerHomeComponent implements OnInit {
   displayIndustryForm: boolean = false;
   industries: Industry[];
   selectedIndustry: Industry;
+
+  displayCompanyDetailsForm: boolean = false;
+  companyName: string;
+  companyWebsite: string;
+  countries: Country[];
+  selectedCountry: Country;
+  cities: City[];
+  selectedCity: City;
+  companyDescription: string;
+  @ViewChild(FileUpload) imageUpload!: FileUpload;
 
   constructor(
     private router: Router,
@@ -110,5 +121,83 @@ export class ManagerHomeComponent implements OnInit {
           console.log("error");
         },
       });
+  }
+
+  showCompanyDetailsForm() {
+    this.displayCompanyDetailsForm = true;
+    this.databaseService.getCountries().subscribe((countries: Country[]) => {
+      this.countries = countries;
+    });
+    this.selectedCountry = this.company.country;
+    this.databaseService
+      .getCitiesByCountryId(this.selectedCountry.id)
+      .subscribe((cities: City[]) => {
+        this.cities = cities;
+        this.selectedCity = this.company.city;
+      });
+    this.companyName = this.company.name;
+    this.companyWebsite = this.company.website;
+    this.companyDescription = this.company.description;
+  }
+
+  saveCompanyDetails() {
+    this.databaseService
+      .updateCompany(
+        this.company.id,
+        this.companyName,
+        this.companyWebsite,
+        this.selectedCity.id,
+        this.companyDescription,
+        this.company.photo
+      )
+      .pipe(first())
+      .subscribe({
+        next: (company: Company) => {
+          this.displayCompanyDetailsForm = false;
+          this.databaseService
+            .getCityById(company.cityId)
+            .subscribe((city: City) => {
+              company.city = city;
+
+              this.databaseService
+                .getCountryById(company.city.countryId)
+                .subscribe((country: Country) => {
+                  company.country = country;
+                });
+            });
+          this.company.name = company.name;
+          this.company = company;
+        },
+        error: (error) => {
+          console.log("error");
+        },
+      });
+
+    if (this.imageUpload.hasFiles()) {
+      this.databaseService
+        .uploadCompanyImage(this.company.id, this.imageUpload)
+        .pipe(first())
+        .subscribe({
+          next: (event: any) => {
+            console.log("success");
+          },
+          error: (error) => {
+            console.log("error");
+          },
+        });
+    }
+  }
+
+  onChangeCountry(event: any) {
+    this.cities = [];
+
+    if (this.selectedCountry) {
+      this.databaseService
+        .getCitiesByCountryId(this.selectedCountry.id)
+        .subscribe((cities: City[]) => {
+          this.cities.push(...cities);
+        });
+    } else {
+    }
   }
 }

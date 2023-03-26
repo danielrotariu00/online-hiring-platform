@@ -10,3 +10,9 @@
   min-height: 90vh;
   overflow-y: scroll;
 }
+
+:host ::ng-deep {
+  .p-orderlist-controls {
+    display: none;
+  }
+}

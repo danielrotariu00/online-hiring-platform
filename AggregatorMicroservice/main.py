@@ -32,6 +32,57 @@ def login():
     return jsonify(data)
 
 
+@app.route("/api/company-recruiters", methods=['POST'])
+@cross_origin()
+def create_recruiter():
+    global idm_client
+    request_body = request.get_json()
+    company_id = request_body['companyId']
+    email = request_body['email']
+    password = request_body['password']
+
+    reply = idm_client.createUser(email, password)
+    user_id = reply['id']
+
+    data = {'companyId': company_id, 'recruiterId': user_id}
+
+    resp = requests.post(f"{DATABASE_MICROSERVICE_URL}company-recruiters", json=data,
+                         headers={'content-type': 'application/json'})
+    excluded_headers = ["content-encoding", "content-length", "transfer-encoding", "connection"]
+    headers = [(name, value) for (name, value) in resp.raw.headers.items() if name.lower() not in excluded_headers]
+    response = Response(resp.content, resp.status_code, headers)
+
+    return response
+
+
+@app.route("/api/companies/<company_id>/recruiters/<recruiter_id>", methods=['DELETE'])
+@cross_origin()
+def delete_recruiter(company_id, recruiter_id):
+    global idm_client
+
+    token = ""
+    idm_client.deleteUser(token, recruiter_id)
+
+    resp = requests.delete(f"{DATABASE_MICROSERVICE_URL}companies/{company_id}/recruiters/{recruiter_id}")
+    excluded_headers = ["content-encoding", "content-length", "transfer-encoding", "connection"]
+    headers = [(name, value) for (name, value) in resp.raw.headers.items() if name.lower() not in excluded_headers]
+    response = Response(resp.content, resp.status_code, headers)
+
+    return response
+
+
+@app.route("/api/users/<user_id>", methods=['GET'])
+@cross_origin()
+def get_user(user_id):
+    global idm_client
+    token = ""
+
+    reply = idm_client.getUser(token, user_id)
+    email = reply['email']
+
+    return {'email': email}
+
+
 @app.route("/<path:path>", methods=["GET", "POST"])
 def proxy(path):
     global DATABASE_MICROSERVICE_URL

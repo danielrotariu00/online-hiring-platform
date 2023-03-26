@@ -3,9 +3,8 @@ package com.licenta.databasemicroservice.business.service;
 import com.licenta.databasemicroservice.business.interfaces.ICompanyIndustryService;
 import com.licenta.databasemicroservice.business.interfaces.ICompanyService;
 import com.licenta.databasemicroservice.business.interfaces.IIndustryService;
-import com.licenta.databasemicroservice.business.model.company.CompanyResponse;
-import com.licenta.databasemicroservice.business.model.companyindustry.CompanyIndustryRequest;
-import com.licenta.databasemicroservice.business.model.companyindustry.CompanyIndustryResponse;
+import com.licenta.databasemicroservice.business.model.company.CompanyDTO;
+import com.licenta.databasemicroservice.business.model.companyindustry.CompanyIndustryDTO;
 import com.licenta.databasemicroservice.business.util.exception.AlreadyExistsException;
 import com.licenta.databasemicroservice.business.util.exception.NotFoundException;
 import com.licenta.databasemicroservice.business.util.mapper.CompanyIndustryMapper;
@@ -38,7 +37,7 @@ public class CompanyIndustryService implements ICompanyIndustryService {
 
 
     @Override
-    public CompanyIndustryResponse addCompanyIndustry(CompanyIndustryRequest request) {
+    public CompanyIndustryDTO addCompanyIndustry(CompanyIndustryDTO request) {
         Long companyId = request.getCompanyId();
         Integer industryId = request.getIndustryId();
 
@@ -61,7 +60,7 @@ public class CompanyIndustryService implements ICompanyIndustryService {
     }
 
     @Override
-    public Iterable<CompanyIndustryResponse> getCompanyIndustriesByCompany(Long companyId) {
+    public Iterable<CompanyIndustryDTO> getCompanyIndustriesByCompany(Long companyId) {
         companyService.getCompanyOrElseThrowException(companyId);
 
         return companyIndustryRepository.findCompanyIndustriesByCompanyId(companyId).stream()
@@ -70,7 +69,7 @@ public class CompanyIndustryService implements ICompanyIndustryService {
     }
 
     @Override
-    public Iterable<CompanyResponse> getCompaniesByIndustry(Integer industryId) {
+    public Iterable<CompanyDTO> getCompaniesByIndustry(Integer industryId) {
         industryService.getIndustryOrElseThrowException(industryId);
 
         return companyIndustryRepository.findCompanyIndustriesByIndustryId(industryId).stream()

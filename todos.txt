@@ -1,11 +1,9 @@
 todo:
-- saved jobs?
-- manager ui(recruiter stats), administrator ui
-- job applications: files & chat & mongodb -- top priority
 - roles, angular auth guards
 - register in frontend and api gateway
 - refactor pos idm
 - api gateway request authorization and forwarding
-- https between ui and api gateway
+- confirmation for buttons
+- https between ui and api gateway???
 - docker deployment
 

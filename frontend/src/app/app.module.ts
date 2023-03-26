@@ -6,7 +6,6 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { MenubarModule } from "primeng/menubar";
 import { InputTextModule } from "primeng/inputtext";
 import { InputTextareaModule } from "primeng/inputtextarea";
-import { ButtonModule } from "primeng/button";
 import { CardModule } from "primeng/card";
 import { MultiSelectModule } from "primeng/multiselect";
 import { PaginatorModule } from "primeng/paginator";
@@ -42,6 +41,7 @@ import { RecruiterJobApplicationsComponent } from "./components/recruiter-job-ap
 import { UserPreviewComponent } from "./components/user-preview/user-preview.component";
 import { MessageService } from "primeng/api";
 import { ManagerHomeComponent } from "./components/manager-home/manager-home.component";
+import { CompanyRecruitersComponent } from "./components/company-recruiters/company-recruiters.component";
 
 @NgModule({
   imports: [
@@ -54,7 +54,6 @@ import { ManagerHomeComponent } from "./components/manager-home/manager-home.com
     MenubarModule,
     InputTextModule,
     InputTextareaModule,
-    ButtonModule,
     CardModule,
     MultiSelectModule,
     PaginatorModule,
@@ -88,6 +87,7 @@ import { ManagerHomeComponent } from "./components/manager-home/manager-home.com
     RecruiterJobApplicationsComponent,
     UserPreviewComponent,
     ManagerHomeComponent,
+    CompanyRecruitersComponent,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },

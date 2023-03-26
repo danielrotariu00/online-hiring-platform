@@ -5,7 +5,12 @@ import { BehaviorSubject, Observable } from "rxjs";
 import { map } from "rxjs/operators";
 
 import { environment } from "../../environments/environment";
-import { JobApplication, JobApplicationMessage, Review } from "../models";
+import {
+  JobApplication,
+  JobApplicationMessage,
+  RecruiterStatistics,
+  Review,
+} from "../models";
 import { JobApplicationStatus } from "../models/job_application_status";
 
 @Injectable({ providedIn: "root" })
@@ -58,6 +63,12 @@ export class JobApplicationService {
     return this.http.get(
       `${environment.jobApplicationApiURL}/job-applications/status/${statusId}`
     ) as Observable<JobApplicationStatus>;
+  }
+
+  getRecruiterStatistics(recruiterId: number): Observable<RecruiterStatistics> {
+    return this.http.get(
+      `${environment.jobApplicationApiURL}/recruiters/${recruiterId}/statistics`
+    ) as Observable<RecruiterStatistics>;
   }
 
   update(jobApplicationId: string, statusId: number) {

@@ -13,6 +13,7 @@ import { NotificationsComponent } from "./components/notifications/notifications
 import { RecruiterHomeComponent } from "./components/recruiter-home/recruiter-home.component";
 import { RecruiterJobApplicationsComponent } from "./components/recruiter-job-applications/recruiter-job-applications.component";
 import { ManagerHomeComponent } from "./components/manager-home/manager-home.component";
+import { CompanyRecruitersComponent } from "./components/company-recruiters/company-recruiters.component";
 
 const accountModule = () =>
   import("./account/account.module").then((x) => x.AccountModule);
@@ -62,6 +63,12 @@ const routes: Routes = [
   {
     path: "manager-home",
     component: ManagerHomeComponent,
+    canActivate: [AuthGuard],
+  },
+
+  {
+    path: "company-recruiters",
+    component: CompanyRecruitersComponent,
     canActivate: [AuthGuard],
   },
 ];

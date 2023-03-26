@@ -4,6 +4,7 @@ import com.licenta.jobapplicationmicroservice.business.model.CreateJobApplicatio
 import com.licenta.jobapplicationmicroservice.business.model.JobApplicationResponse;
 import com.licenta.jobapplicationmicroservice.business.model.JobApplicationStatusResponse;
 import com.licenta.jobapplicationmicroservice.business.model.Message;
+import com.licenta.jobapplicationmicroservice.business.model.RecruiterStatistics;
 import com.licenta.jobapplicationmicroservice.business.model.Review;
 import com.licenta.jobapplicationmicroservice.business.model.UpdateJobApplicationRequest;
 
@@ -22,4 +23,6 @@ public interface IJobApplicationService {
     Message addMessage(String jobApplicationId, Message message);
 
     Review updateReview(String jobApplicationId, Review review);
+
+    RecruiterStatistics getRecruiterStatistics(Long recruiterId);
 }

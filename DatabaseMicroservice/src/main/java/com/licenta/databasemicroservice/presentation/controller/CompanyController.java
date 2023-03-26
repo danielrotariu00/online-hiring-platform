@@ -1,8 +1,7 @@
 package com.licenta.databasemicroservice.presentation.controller;
 
 import com.licenta.databasemicroservice.business.interfaces.ICompanyService;
-import com.licenta.databasemicroservice.business.model.company.CompanyResponse;
-import com.licenta.databasemicroservice.business.model.company.CreateCompanyRequest;
+import com.licenta.databasemicroservice.business.model.company.CompanyDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -11,11 +10,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
+import java.io.IOException;
 
 @Validated
 @RestController
@@ -28,19 +30,25 @@ public class CompanyController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(method=RequestMethod.POST)
-    public void createCompany (@Valid @RequestBody CreateCompanyRequest request) {
+    public void createCompany (@Valid @RequestBody CompanyDTO request) {
 
         companyService.createCompany(request);
     }
 
+    @RequestMapping(value="/{companyId}", method=RequestMethod.PUT)
+    public void updateCompany (@PathVariable Long companyId, @Valid @RequestBody CompanyDTO request) {
+
+        companyService.updateCompany(companyId, request);
+    }
+
     @RequestMapping(method=RequestMethod.GET)
-    public Iterable<CompanyResponse> getAllCompanies() {
+    public Iterable<CompanyDTO> getAllCompanies() {
 
         return companyService.getCompanies();
     }
 
     @RequestMapping(value="/{companyId}", method=RequestMethod.GET)
-    public CompanyResponse getCompany(@Min(1) @PathVariable Long companyId) {
+    public CompanyDTO getCompany(@Min(1) @PathVariable Long companyId) {
 
         return companyService.getCompany(companyId);
     }
@@ -49,5 +57,11 @@ public class CompanyController {
     public void deleteCompany(@Min(1) @PathVariable Long companyId) {
 
         companyService.deleteCompany(companyId);
+    }
+
+    @RequestMapping(value = "/{companyId}/image", method=RequestMethod.PUT)
+    public void uploadImage(@PathVariable Long companyId, @RequestParam("img") MultipartFile image) throws IOException {
+
+        companyService.saveImage(companyId, image);
     }
 }

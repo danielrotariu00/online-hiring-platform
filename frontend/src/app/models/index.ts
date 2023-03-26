@@ -19,3 +19,5 @@ export * from "./user_details";
 export * from "./notification";
 export * from "./job_application_message";
 export * from "./review";
+export * from "./company_recruiter";
+export * from "./recruiter_statistics";

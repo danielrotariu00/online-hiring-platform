@@ -2,9 +2,11 @@ package com.licenta.idm.business.service;
 
 import com.licenta.idm.AddRoleRequest;
 import com.licenta.idm.CreateUserRequest;
+import com.licenta.idm.CreateUserResponse;
 import com.licenta.idm.DeleteRoleRequest;
 import com.licenta.idm.DeleteUserRequest;
 import com.licenta.idm.GetUserRequest;
+import com.licenta.idm.GetUserResponse;
 import com.licenta.idm.LoginRequest;
 import com.licenta.idm.RolesResponse;
 import com.licenta.idm.UpdatePasswordRequest;
@@ -42,10 +44,10 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public UserResponse createUser(CreateUserRequest request) {
+    public CreateUserResponse createUser(CreateUserRequest request) {
         User user = toEntity(request);
 
-        return toUserResponse(userRepository.save(user));
+        return toCreateUserResponse(userRepository.save(user));
     }
 
     public UserResponse updatePassword(UpdatePasswordRequest request) {
@@ -80,10 +82,13 @@ public class UserService {
         throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 
-    public UserResponse getUser(GetUserRequest request) {
+    public GetUserResponse getUser(GetUserRequest request) {
         User user = findUserOrElseThrowException(request.getUserId());
+        GetUserResponse response = new GetUserResponse();
 
-        return toUserResponse(user);
+        response.setUser(toUserDTO(user));
+
+        return response;
     }
 
     public UsersResponse getUsers() {
@@ -131,6 +136,14 @@ public class UserService {
 
     private UserResponse toUserResponse(User user) {
         UserResponse response = new UserResponse();
+
+        response.setUser(toUserDTO(user));
+
+        return response;
+    }
+
+    private CreateUserResponse toCreateUserResponse(User user) {
+        CreateUserResponse response = new CreateUserResponse();
 
         response.setUser(toUserDTO(user));
 

@@ -5,6 +5,7 @@
 /home/daniel/Documents/licenta/IdentityManagementMicroservice/target/generated-sources/jaxb/com/licenta/idm/UpdatePasswordRequest.java
 /home/daniel/Documents/licenta/IdentityManagementMicroservice/src/main/java/com/licenta/idm/business/service/JwtProvider.java
 /home/daniel/Documents/licenta/IdentityManagementMicroservice/target/generated-sources/jaxb/com/licenta/idm/LoginRequest.java
+/home/daniel/Documents/licenta/IdentityManagementMicroservice/target/generated-sources/jaxb/com/licenta/idm/GetUserResponse.java
 /home/daniel/Documents/licenta/IdentityManagementMicroservice/src/main/java/com/licenta/idm/persistence/entity/User.java
 /home/daniel/Documents/licenta/IdentityManagementMicroservice/src/main/java/com/licenta/idm/persistence/entity/Role.java
 /home/daniel/Documents/licenta/IdentityManagementMicroservice/src/main/java/com/licenta/idm/presentation/endpoint/UserEndpoint.java
@@ -28,3 +29,4 @@
 /home/daniel/Documents/licenta/IdentityManagementMicroservice/target/generated-sources/jaxb/com/licenta/idm/GetUsersRequest.java
 /home/daniel/Documents/licenta/IdentityManagementMicroservice/target/generated-sources/jaxb/com/licenta/idm/GetUserRequest.java
 /home/daniel/Documents/licenta/IdentityManagementMicroservice/target/generated-sources/jaxb/com/licenta/idm/package-info.java
+/home/daniel/Documents/licenta/IdentityManagementMicroservice/target/generated-sources/jaxb/com/licenta/idm/CreateUserResponse.java

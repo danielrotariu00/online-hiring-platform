@@ -1,7 +1,7 @@
 package com.licenta.databasemicroservice.presentation.controller;
 
 import com.licenta.databasemicroservice.business.interfaces.ICompanyIndustryFollowerService;
-import com.licenta.databasemicroservice.business.model.companyindustry.CompanyIndustryResponse;
+import com.licenta.databasemicroservice.business.model.companyindustry.CompanyIndustryDTO;
 import com.licenta.databasemicroservice.business.model.companyindustryfollower.CompanyIndustryFollowerRequest;
 import com.licenta.databasemicroservice.business.model.user.UserResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +34,7 @@ public class CompanyIndustryFollowerController {
     }
 
     @RequestMapping(value="/users/{userId}/followed-company-industries", method=RequestMethod.GET)
-    public Iterable<CompanyIndustryResponse> getCompanyIndustriesFollowedByUser(@Min(1) @PathVariable Long userId) {
+    public Iterable<CompanyIndustryDTO> getCompanyIndustriesFollowedByUser(@Min(1) @PathVariable Long userId) {
 
         return companyIndustryFollowerService.getFollowedCompanyIndustries(userId);
     }

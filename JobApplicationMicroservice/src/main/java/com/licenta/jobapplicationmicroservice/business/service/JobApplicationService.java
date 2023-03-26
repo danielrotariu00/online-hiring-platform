@@ -10,6 +10,7 @@ import com.licenta.jobapplicationmicroservice.business.model.JobApplicationRespo
 import com.licenta.jobapplicationmicroservice.business.model.JobApplicationStatusResponse;
 import com.licenta.jobapplicationmicroservice.business.model.Message;
 import com.licenta.jobapplicationmicroservice.business.model.Notification;
+import com.licenta.jobapplicationmicroservice.business.model.RecruiterStatistics;
 import com.licenta.jobapplicationmicroservice.business.model.Review;
 import com.licenta.jobapplicationmicroservice.business.model.UpdateJobApplicationRequest;
 import com.licenta.jobapplicationmicroservice.business.util.constants.Constants;
@@ -24,8 +25,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.text.DecimalFormat;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.IntSummaryStatistics;
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -74,7 +80,10 @@ public class JobApplicationService implements IJobApplicationService {
                 .job(job)
                 .status(status)
                 .messageList(Collections.emptyList())
-                .review(null)
+                .review(Review.builder()
+                        .rating(5)
+                        .description("dummy description")
+                        .build())
                 .updatedAt(LocalDateTime.now())
                 .build();
 
@@ -200,6 +209,56 @@ public class JobApplicationService implements IJobApplicationService {
         jobApplicationRepository.save(jobApplication);
 
         return jobApplication.getReview();
+    }
+
+    @Override
+    public RecruiterStatistics getRecruiterStatistics(Long recruiterId) {
+        List<JobApplication> jobApplications = jobApplicationRepository.findAllByRecruiterId(recruiterId);
+        List<Review> reviews = jobApplications.stream()
+                .map(JobApplication::getReview)
+                .collect(Collectors.toList());
+        Integer ratingCount = Math.max(1, Math.toIntExact(reviews.stream()
+                .map(Review::getRating)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList())
+                .size()));
+        Integer ratingSum = reviews.stream()
+                .map(Review::getRating)
+                .filter(Objects::nonNull)
+                .reduce(0, Integer::sum);
+
+        Integer currentSubmittedJobApplications = getCountWithStatus(jobApplications, 1);
+        Integer currentReviewedJobApplications = getCountWithStatus(jobApplications, 2);
+        Integer currentInProgressJobApplications = getCountWithStatus(jobApplications, 3);
+        Integer currentOfferExtendedJobApplications = getCountWithStatus(jobApplications, 4);
+        Integer currentHiredJobApplications = getCountWithStatus(jobApplications, 5);
+        Integer currentOnHoldJobApplications = getCountWithStatus(jobApplications, 6);
+        Integer currentDeclinedJobApplications = getCountWithStatus(jobApplications, 7);
+        Integer currentWithdrawnJobApplications = getCountWithStatus(jobApplications, 8);
+
+        DecimalFormat decimalFormat = new DecimalFormat("0.00");
+
+        return RecruiterStatistics.builder()
+                .recruiterId(recruiterId)
+                .reviews(reviews)
+                .averageRating(Double.valueOf(decimalFormat.format(ratingSum * 1.0 / ratingCount)))
+                .totalJobApplications(jobApplications.size())
+                .currentSubmittedJobApplications(currentSubmittedJobApplications)
+                .currentReviewedJobApplications(currentReviewedJobApplications)
+                .currentInProgressJobApplications(currentInProgressJobApplications)
+                .currentOfferExtendedJobApplications(currentOfferExtendedJobApplications)
+                .currentHiredJobApplications(currentHiredJobApplications)
+                .currentOnHoldJobApplications(currentOnHoldJobApplications)
+                .currentDeclinedJobApplications(currentDeclinedJobApplications)
+                .currentWithdrawnJobApplications(currentWithdrawnJobApplications)
+                .build();
+    }
+
+    private Integer getCountWithStatus(List<JobApplication> jobApplications, Integer jobApplicationStatusId) {
+        return Math.toIntExact(jobApplications.stream()
+                .map(jobApplication -> jobApplication.getStatus().getId())
+                .filter(id -> Objects.equals(id, jobApplicationStatusId))
+                .count());
     }
 
     private JobApplication getJobApplicationOrElseThrowException(String jobApplicationId) {

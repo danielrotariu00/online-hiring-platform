@@ -5,6 +5,7 @@ import com.licenta.jobapplicationmicroservice.business.model.CreateJobApplicatio
 import com.licenta.jobapplicationmicroservice.business.model.JobApplicationResponse;
 import com.licenta.jobapplicationmicroservice.business.model.JobApplicationStatusResponse;
 import com.licenta.jobapplicationmicroservice.business.model.Message;
+import com.licenta.jobapplicationmicroservice.business.model.RecruiterStatistics;
 import com.licenta.jobapplicationmicroservice.business.model.Review;
 import com.licenta.jobapplicationmicroservice.business.model.UpdateJobApplicationRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,5 +88,11 @@ public class JobApplicationController {
     public Review updateReview(@PathVariable String jobApplicationId, @RequestBody Review review) {
 
         return jobApplicationService.updateReview(jobApplicationId, review);
+    }
+
+    @RequestMapping(value = "/recruiters/{recruiterId}/statistics", method = RequestMethod.GET)
+    public RecruiterStatistics getRecruiterStatistics(@PathVariable Long recruiterId) {
+
+        return jobApplicationService.getRecruiterStatistics(recruiterId);
     }
 }
