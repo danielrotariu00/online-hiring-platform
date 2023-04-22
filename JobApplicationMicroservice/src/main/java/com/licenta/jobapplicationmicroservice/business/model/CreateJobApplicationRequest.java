@@ -16,8 +16,6 @@ import javax.validation.constraints.Min;
 public class CreateJobApplicationRequest {
 
     @Min(1)
-    private Long userId;
-    @Min(1)
     private Long jobId;
 }
 

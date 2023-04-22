@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
+@RequestMapping(value="/api/users/{userId}/notifications")
 public class NotificationController {
 
     private final INotificationService notificationService;
@@ -21,22 +22,18 @@ public class NotificationController {
         this.notificationService = notificationService;
     }
 
-    @RequestMapping(value="/users/{userId}/notifications", method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET)
     public Iterable<NotificationDTO> getByUserId(@PathVariable Long userId) {
-
         return notificationService.getAllByUserId(userId);
     }
 
-    @RequestMapping(value = "/notifications/{notificationId}", method = RequestMethod.PUT)
-    public void updateIsRead(@PathVariable Long notificationId, @RequestBody Boolean isRead) {
-
-        notificationService.updateIsRead(notificationId, isRead);
+    @RequestMapping(value = "/{notificationId}", method = RequestMethod.PUT)
+    public void updateIsRead(@PathVariable Long userId, @PathVariable Long notificationId, @RequestBody Boolean isRead) {
+        notificationService.updateIsRead(userId, notificationId, isRead);
     }
 
-    @RequestMapping(value = "/notifications/{notificationId}", method = RequestMethod.DELETE)
-    public void delete(@PathVariable Long notificationId) {
-
-        notificationService.delete(notificationId);
+    @RequestMapping(value = "/{notificationId}", method = RequestMethod.DELETE)
+    public void delete(@PathVariable Long userId, @PathVariable Long notificationId) {
+        notificationService.delete(userId, notificationId);
     }
-
 }

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*
 @Validated
 @RestController
 @CrossOrigin(origins = ["http://localhost:4200"], maxAge = 3600)
-@RequestMapping(value = ["/jobs"])
+@RequestMapping(value = ["/api/jobs"])
 class JobController {
 
     @Autowired

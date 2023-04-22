@@ -1,13 +1,13 @@
 package com.licenta.databasemicroservice.business.interfaces;
 
-import com.licenta.databasemicroservice.business.model.country.CountryResponse;
+import com.licenta.databasemicroservice.business.model.CountryDTO;
 import com.licenta.databasemicroservice.persistence.entity.Country;
 
 public interface ICountryService {
 
     Country getCountryOrElseThrowException(Integer countryId);
 
-    Iterable<CountryResponse> getCountries();
+    Iterable<CountryDTO> getCountries();
 
-    CountryResponse getCountry(Integer countryId);
+    CountryDTO getCountry(Integer countryId);
 }

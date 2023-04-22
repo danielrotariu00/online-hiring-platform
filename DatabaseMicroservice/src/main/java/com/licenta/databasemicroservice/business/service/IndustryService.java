@@ -1,7 +1,7 @@
 package com.licenta.databasemicroservice.business.service;
 
 import com.licenta.databasemicroservice.business.interfaces.IIndustryService;
-import com.licenta.databasemicroservice.business.model.industry.IndustryResponse;
+import com.licenta.databasemicroservice.business.model.IndustryDTO;
 import com.licenta.databasemicroservice.business.util.exception.NotFoundException;
 import com.licenta.databasemicroservice.business.util.mapper.IndustryMapper;
 import com.licenta.databasemicroservice.persistence.entity.Industry;
@@ -24,7 +24,7 @@ public class IndustryService implements IIndustryService {
     static final String INDUSTRY_NOT_FOUND_MESSAGE = "Industry with id <%s> does not exist.";
 
     @Override
-    public IndustryResponse getIndustry(Integer industryId) {
+    public IndustryDTO getIndustry(Integer industryId) {
         Industry industry = getIndustryOrElseThrowException(industryId);
 
         return industryMapper.toResponse(industry);
@@ -39,7 +39,7 @@ public class IndustryService implements IIndustryService {
     }
 
     @Override
-    public Iterable<IndustryResponse> getIndustries() {
+    public Iterable<IndustryDTO> getIndustries() {
 
         return StreamSupport.stream(industryRepository.findAll().spliterator(), false)
                 .map(industryMapper::toResponse)

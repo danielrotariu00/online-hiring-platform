@@ -1,0 +1,130 @@
+<div class="container-fluid text-white bg-dark">
+  <div class="row">
+    <div class="col-2"></div>
+    <div class="col-3">
+      <div id="recruiter-list">
+        <p-orderList
+          header="Company Recruiters"
+          [value]="companyRecruiters"
+          (onSelectionChange)="onRecruiterSelectionChange($event)"
+          [listStyle]="{ height: 'auto' }"
+          filterBy="email"
+          filterPlaceholder="Filter by email"
+        >
+          <ng-template let-companyRecruiter pTemplate="item">
+            <div class="product-item">
+              <div class="product-list-detail">
+                <div>{{ companyRecruiter?.email }}</div>
+              </div>
+            </div>
+          </ng-template>
+        </p-orderList>
+      </div>
+    </div>
+    <div id="statistics" class="col-5">
+      <p-button
+        icon="pi pi-plus"
+        (click)="showRecruiterForm()"
+        label="Add Recruiter"
+        styleClass="p-button-text"
+      ></p-button>
+      <p-dialog
+        header="New Recruiter"
+        [(visible)]="displayRecruiterForm"
+        [style]="{ width: '20vw', height: '20vw' }"
+        [baseZIndex]="10000"
+      >
+        <h4>Email</h4>
+        <input type="text" pInputText [(ngModel)]="email" />
+        <br />
+        <br />
+        <h4>Password</h4>
+        <input type="password" pInputText [(ngModel)]="password" />
+        <br />
+        <br />
+        <ng-template pTemplate="footer">
+          <p-button
+            icon="pi pi-check"
+            (click)="addRecruiter()"
+            label="Save"
+            styleClass="p-button-text"
+          ></p-button>
+          <p-button
+            icon="pi pi-times"
+            (click)="displayRecruiterForm = false"
+            label="Cancel"
+          ></p-button>
+        </ng-template>
+      </p-dialog>
+      <div *ngIf="selectedCompanyRecruiter">
+        <h3>{{ selectedCompanyRecruiter.email }}</h3>
+        <p-button
+          icon="pi pi-times"
+          (click)="deleteRecruiter()"
+          label="Delete recruiter"
+        ></p-button>
+        <br />
+        <br />
+        <p-fieldset
+          legend="Current statistics for job applications"
+          [toggleable]="true"
+          collapsed="true"
+        >
+          <h5>
+            Total:
+            {{ recruiterStatistics?.totalJobApplications }}
+          </h5>
+          <h5>
+            Submitted:
+            {{ recruiterStatistics?.currentSubmittedJobApplications }}
+          </h5>
+          <h5>
+            Reviewed:
+            {{ recruiterStatistics?.currentReviewedJobApplications }}
+          </h5>
+          <h5>
+            In progress:
+            {{ recruiterStatistics?.currentInProgressJobApplications }}
+          </h5>
+          <h5>
+            Offer extended:
+            {{ recruiterStatistics?.currentOfferExtendedJobApplications }}
+          </h5>
+          <h5>
+            Hired:
+            {{ recruiterStatistics?.currentHiredJobApplications }}
+          </h5>
+          <h5>
+            On hold:
+            {{ recruiterStatistics?.currentOnHoldJobApplications }}
+          </h5>
+          <h5>
+            Declined:
+            {{ recruiterStatistics?.currentDeclinedJobApplications }}
+          </h5>
+          <h5>
+            Withdrawn:
+            {{ recruiterStatistics?.currentWithdrawnJobApplications }}
+          </h5>
+        </p-fieldset>
+        <br />
+        <h4>Average rating: {{ recruiterStatistics?.averageRating }} / 5</h4>
+        <br />
+        <div class="reviews-box">
+          <div class="header">
+            <h4>&nbsp; Reviews</h4>
+          </div>
+          <div class="review-box">
+            <li
+              *ngFor="let review of recruiterStatistics?.reviews; let i = index"
+            >
+              <strong> Rating: {{ review?.rating }} / 5</strong>
+              <br />
+              {{ review?.description }}
+            </li>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

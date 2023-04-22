@@ -1,0 +1,22 @@
+[
+  {
+    "id": 1,
+    "name": "Full-time"
+  },
+  {
+    "id": 2,
+    "name": "Part-time"
+  },
+  {
+    "id": 3,
+    "name": "Seasonal"
+  },
+  {
+    "id": 4,
+    "name": "Temporary"
+  },
+  {
+    "id": 5,
+    "name": "Contract"
+  }
+]

@@ -50,15 +50,13 @@ public class JwtProvider {
         JwtClaims claims = new JwtClaims();
         claims.setIssuer("Issuer");
         claims.setAudience("Audience");
-        claims.setExpirationTimeMinutesInTheFuture(30);
+        claims.setExpirationTimeMinutesInTheFuture(60);
         claims.setGeneratedJwtId();
         claims.setIssuedAtToNow();
         claims.setNotBeforeMinutesInThePast(2);
         claims.setSubject(String.valueOf(user.getId()));
-        List<String> roles = user.getRoles().stream()
-                .map(role -> String.valueOf(role.getId()))
-                .collect(Collectors.toList());
-        claims.setStringListClaim("roleIds", roles);
+        claims.setStringClaim("roleId", String.valueOf(user.getUserRole().getRole().getId()));
+        claims.setStringClaim("companyId", String.valueOf(user.getUserRole().getCompanyId()));
 
         JsonWebSignature jws = new JsonWebSignature();
         jws.setPayload(claims.toJson());
@@ -103,12 +101,10 @@ public class JwtProvider {
     }
 
     private boolean hasAdminRights(JwtClaims claims) throws MalformedClaimException {
-        Integer adminRoleId = 4;
-        List<Integer> roleIds = claims.getStringListClaimValue("roleIds").stream()
-                .map(Integer::valueOf)
-                .collect(Collectors.toList());
+        int adminRoleId = 4;
+        int roleId = Integer.parseInt(claims.getStringClaimValue("roleId"));
 
-        return roleIds.contains(adminRoleId);
+        return roleId == adminRoleId;
     }
 
     private boolean isOwner(JwtClaims claims, Long userId) throws MalformedClaimException {
@@ -126,5 +122,18 @@ public class JwtProvider {
                 }
             }
         }
+    }
+
+    public boolean hasManagerRights(String token) throws MalformedClaimException {
+        JwtClaims claims = validate(token);
+
+        return hasManagerRights(claims);
+    }
+
+    private boolean hasManagerRights(JwtClaims claims) throws MalformedClaimException {
+        int managerRoleId = 3;
+        int roleId = Integer.parseInt(claims.getStringClaimValue("roleId"));
+
+        return roleId == managerRoleId;
     }
 }

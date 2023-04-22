@@ -1,14 +1,12 @@
 package com.licenta.databasemicroservice.business.service;
 
 import com.licenta.databasemicroservice.business.interfaces.ISkillService;
-import com.licenta.databasemicroservice.business.interfaces.IUserService;
 import com.licenta.databasemicroservice.business.interfaces.IUserSkillService;
 import com.licenta.databasemicroservice.business.model.UserSkillDTO;
 import com.licenta.databasemicroservice.business.util.exception.AlreadyExistsException;
 import com.licenta.databasemicroservice.business.util.exception.NotFoundException;
 import com.licenta.databasemicroservice.business.util.mapper.UserSkillMapper;
 import com.licenta.databasemicroservice.persistence.entity.Skill;
-import com.licenta.databasemicroservice.persistence.entity.User;
 import com.licenta.databasemicroservice.persistence.entity.UserSkill;
 import com.licenta.databasemicroservice.persistence.repository.UserSkillRepository;
 import org.mapstruct.factory.Mappers;
@@ -20,8 +18,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserSkillService implements IUserSkillService {
-    @Autowired
-    private IUserService userService;
     @Autowired
     private ISkillService skillService;
 
@@ -37,7 +33,6 @@ public class UserSkillService implements IUserSkillService {
     public UserSkillDTO add(Long userId, UserSkillDTO userSkillDTO) {
         Integer skillId = userSkillDTO.getSkillId();
 
-        User user = userService.getUserOrElseThrowException(userId);
         Skill skill = skillService.getOrElseThrowException(skillId);
 
         Optional<UserSkill> userSkill =
@@ -48,7 +43,7 @@ public class UserSkillService implements IUserSkillService {
         }
 
         UserSkill newUserSkill = UserSkill.builder()
-                .user(user)
+                .userId(userId)
                 .skill(skill)
                 .build();
 
@@ -59,8 +54,6 @@ public class UserSkillService implements IUserSkillService {
 
     @Override
     public Iterable<UserSkillDTO> getByUserId(Long userId) {
-        userService.getUserOrElseThrowException(userId);
-
         return userSkillRepository.findAllByUserId(userId).stream()
                 .map(userSkillMapper::toDTO)
                 .collect(Collectors.toList());
@@ -68,7 +61,6 @@ public class UserSkillService implements IUserSkillService {
 
     @Override
     public void delete(Long userId, Integer skillId) {
-        userService.getUserOrElseThrowException(userId);
         skillService.getOrElseThrowException(skillId);
 
         Optional<UserSkill> userSkill = userSkillRepository.findByUserIdAndSkillId(userId, skillId);

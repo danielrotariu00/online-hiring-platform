@@ -15,7 +15,7 @@ class SearchService: ISearchService {
 
     override fun getJobs(companyIndustry: CompanyIndustry, postedSince: String): List<Job> {
         // TODO: replace localhost with env variable
-        val response = khttp.get("http://localhost:23051/jobs?companyIndustryId=${companyIndustry.id}&postedSince=$postedSince")
+        val response = khttp.get("http://localhost:23051/api/jobs?companyIndustryId=${companyIndustry.id}&postedSince=$postedSince")
 
         if (response.statusCode != 200) {
             throw ExceptionWithStatus(response.text, HttpStatus.valueOf(response.statusCode))

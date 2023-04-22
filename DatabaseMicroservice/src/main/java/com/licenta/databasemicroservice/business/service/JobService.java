@@ -6,7 +6,6 @@ import com.licenta.databasemicroservice.business.interfaces.IExperienceLevelServ
 import com.licenta.databasemicroservice.business.interfaces.IJobService;
 import com.licenta.databasemicroservice.business.interfaces.IJobStatusService;
 import com.licenta.databasemicroservice.business.interfaces.IJobTypeService;
-import com.licenta.databasemicroservice.business.interfaces.IUserService;
 import com.licenta.databasemicroservice.business.interfaces.IWorkTypeService;
 import com.licenta.databasemicroservice.business.model.job.JobRequest;
 import com.licenta.databasemicroservice.business.model.job.JobResponse;
@@ -19,7 +18,6 @@ import com.licenta.databasemicroservice.persistence.entity.ExperienceLevel;
 import com.licenta.databasemicroservice.persistence.entity.Job;
 import com.licenta.databasemicroservice.persistence.entity.JobStatus;
 import com.licenta.databasemicroservice.persistence.entity.JobType;
-import com.licenta.databasemicroservice.persistence.entity.User;
 import com.licenta.databasemicroservice.persistence.entity.WorkType;
 import com.licenta.databasemicroservice.persistence.repository.JobRepository;
 import org.mapstruct.factory.Mappers;
@@ -33,8 +31,6 @@ import java.util.stream.StreamSupport;
 @Service
 public class JobService implements IJobService {
 
-    @Autowired
-    private IUserService userService;
     @Autowired
     private ICityService cityService;
     @Autowired
@@ -59,7 +55,6 @@ public class JobService implements IJobService {
     public void createJob(JobRequest request) {
         Job job = jobMapper.toModel(request);
 
-        User recruiter = userService.getUserOrElseThrowException(request.getRecruiterId());
         CompanyIndustry companyIndustry = companyIndustryService.getCompanyIndustryOrElseThrowException(request.getCompanyIndustryId());
         City city = cityService.getCityOrElseThrowException(request.getCityId());
         WorkType workType = workTypeService.getWorkTypeOrElseThrowException(request.getWorkTypeId());
@@ -67,7 +62,7 @@ public class JobService implements IJobService {
         ExperienceLevel experienceLevel = experienceLevelService.getExperienceLevelOrElseThrowException(request.getExperienceLevelId());
         JobStatus jobStatus = jobStatusService.getJobStatusOrElseThrowException(Constants.INITIAL_JOB_STATUS_ID);
 
-        job.setRecruiter(recruiter);
+        job.setRecruiterId(request.getRecruiterId());
         job.setCompanyIndustry(companyIndustry);
         job.setCity(city);
         job.setWorkType(workType);
@@ -108,7 +103,6 @@ public class JobService implements IJobService {
         Job job = getJobOrElseThrowException(jobId);
         Job newJob = jobMapper.toModel(request);
 
-        User recruiter = userService.getUserOrElseThrowException(request.getRecruiterId());
         City city = cityService.getCityOrElseThrowException(request.getCityId());
         JobType jobType = jobTypeService.getJobTypeOrElseThrowException(request.getJobTypeId());
         WorkType workType = workTypeService.getWorkTypeOrElseThrowException(request.getWorkTypeId());
@@ -118,7 +112,7 @@ public class JobService implements IJobService {
 
         newJob.setId(jobId);
         newJob.setPostedAt(job.getPostedAt());
-        newJob.setRecruiter(recruiter);
+        newJob.setRecruiterId(request.getRecruiterId());
         newJob.setCity(city);
         newJob.setJobType(jobType);
         newJob.setWorkType(workType);

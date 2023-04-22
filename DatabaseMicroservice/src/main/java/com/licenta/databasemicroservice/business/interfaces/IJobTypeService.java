@@ -1,13 +1,13 @@
 package com.licenta.databasemicroservice.business.interfaces;
 
-import com.licenta.databasemicroservice.business.model.jobtype.JobTypeResponse;
+import com.licenta.databasemicroservice.business.model.JobTypeDTO;
 import com.licenta.databasemicroservice.persistence.entity.JobType;
 
 public interface IJobTypeService {
 
     JobType getJobTypeOrElseThrowException(Integer jobTypeId);
 
-    Iterable<JobTypeResponse> getJobTypes();
+    Iterable<JobTypeDTO> getJobTypes();
 
-    JobTypeResponse getJobType(Integer jobTypeId);
+    JobTypeDTO getJobType(Integer jobTypeId);
 }

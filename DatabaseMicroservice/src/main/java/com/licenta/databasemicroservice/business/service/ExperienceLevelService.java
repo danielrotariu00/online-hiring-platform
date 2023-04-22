@@ -1,7 +1,7 @@
 package com.licenta.databasemicroservice.business.service;
 
 import com.licenta.databasemicroservice.business.interfaces.IExperienceLevelService;
-import com.licenta.databasemicroservice.business.model.experiencelevel.ExperienceLevelResponse;
+import com.licenta.databasemicroservice.business.model.ExperienceLevelDTO;
 import com.licenta.databasemicroservice.business.util.exception.NotFoundException;
 import com.licenta.databasemicroservice.business.util.mapper.ExperienceLevelMapper;
 import com.licenta.databasemicroservice.persistence.entity.ExperienceLevel;
@@ -31,14 +31,14 @@ public class ExperienceLevelService implements IExperienceLevelService {
     }
 
     @Override
-    public Iterable<ExperienceLevelResponse> getExperienceLevels() {
+    public Iterable<ExperienceLevelDTO> getExperienceLevels() {
         return experienceLevelRepository.findAll().stream()
                 .map(experienceLevelMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public ExperienceLevelResponse getExperienceLevel(Integer experienceLevelId) {
+    public ExperienceLevelDTO getExperienceLevel(Integer experienceLevelId) {
         ExperienceLevel experienceLevel = getExperienceLevelOrElseThrowException(experienceLevelId);
 
         return experienceLevelMapper.toResponse(experienceLevel);

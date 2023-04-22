@@ -10,7 +10,7 @@ import javax.validation.constraints.Min
 @Validated
 @RestController
 @CrossOrigin(origins = ["http://localhost:4200"], maxAge = 3600)
-@RequestMapping(value = ["/users/{userId}/newsfeed"])
+@RequestMapping(value = ["/api/users/{userId}/newsfeed"])
 class NewsfeedController {
 
     @Autowired

@@ -1,7 +1,7 @@
 package com.licenta.databasemicroservice.business.service;
 
 import com.licenta.databasemicroservice.business.interfaces.ICityService;
-import com.licenta.databasemicroservice.business.model.city.CityResponse;
+import com.licenta.databasemicroservice.business.model.CityDTO;
 import com.licenta.databasemicroservice.business.util.exception.NotFoundException;
 import com.licenta.databasemicroservice.business.util.mapper.CityMapper;
 import com.licenta.databasemicroservice.persistence.entity.City;
@@ -31,21 +31,21 @@ public class CityService implements ICityService {
     }
 
     @Override
-    public Iterable<CityResponse> getCities() {
+    public Iterable<CityDTO> getCities() {
         return StreamSupport.stream(cityRepository.findAll().spliterator(), false)
                 .map(cityMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Iterable<CityResponse> getCitiesByCountry(Integer countryId) {
+    public Iterable<CityDTO> getCitiesByCountry(Integer countryId) {
         return StreamSupport.stream(cityRepository.findCitiesByCountryId(countryId).spliterator(), false)
                 .map(cityMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public CityResponse getCity(Integer cityId) {
+    public CityDTO getCity(Integer cityId) {
         City city = getCityOrElseThrowException(cityId);
 
         return cityMapper.toResponse(city);

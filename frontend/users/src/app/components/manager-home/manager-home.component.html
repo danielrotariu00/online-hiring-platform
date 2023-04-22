@@ -1,0 +1,204 @@
+<div *ngIf="company">
+  <div id="company-profile" class="container-fluid text-white bg-dark">
+    <div class="row">
+      <div class="col-3"></div>
+      <div class="col-6">
+        <br />
+        <div class="row">
+          <div class="col-3">
+            <img
+              src="{{ company.photo }}"
+              class="companyLogo"
+              alt="companyLogo"
+            />
+          </div>
+        </div>
+        <br />
+        <div class="row">
+          <div class="col-6">
+            <button
+              pButton
+              pRipple
+              type="button"
+              icon="pi pi-pencil"
+              class="p-button-rounded p-button-outlined edit"
+              (click)="showCompanyDetailsForm()"
+            ></button>
+            <h1>{{ company.name }}</h1>
+            <h3>{{ company.city?.name }}, {{ company.country?.name }}</h3>
+          </div>
+        </div>
+        <a href="https://{{ company.website }}">Visit Website</a>
+        <br />
+        <br />
+        <p-fieldset legend="About" [toggleable]="true" collapsed="true">
+          <p>{{ company.description }}</p>
+        </p-fieldset>
+        <br />
+        <p-dialog
+          [(visible)]="displayCompanyDetailsForm"
+          [style]="{ width: '50vw', height: '45vw' }"
+          [baseZIndex]="10000"
+        >
+          <h4>Name</h4>
+          <input type="text" pInputText [(ngModel)]="companyName" />
+          <br />
+          <br />
+          <h4>Website</h4>
+          <input type="text" pInputText [(ngModel)]="companyWebsite" />
+          <br />
+          <br />
+          <h4>Country</h4>
+          <p-dropdown
+            [options]="countries"
+            [(ngModel)]="selectedCountry"
+            (onChange)="onChangeCountry($event)"
+            optionLabel="name"
+            [filter]="true"
+            filterBy="name"
+            [showClear]="true"
+            placeholder="Select a Country"
+          >
+            <ng-template pTemplate="selectedItem">
+              <div
+                class="country-item country-item-value"
+                *ngIf="selectedCountry"
+              >
+                <div>{{ selectedCountry.name }}</div>
+              </div>
+            </ng-template>
+            <ng-template let-country pTemplate="item">
+              <div class="country-item">
+                <div>{{ country.name }}</div>
+              </div>
+            </ng-template>
+          </p-dropdown>
+          <br />
+          <br />
+          <h4>City</h4>
+          <p-dropdown
+            [options]="cities"
+            [(ngModel)]="selectedCity"
+            optionLabel="name"
+            [filter]="true"
+            filterBy="name"
+            [showClear]="true"
+            placeholder="Select a City"
+          >
+            <ng-template pTemplate="selectedItem">
+              <div class="country-item country-item-value" *ngIf="selectedCity">
+                <div>{{ selectedCity.name }}</div>
+              </div>
+            </ng-template>
+            <ng-template let-city pTemplate="item">
+              <div class="country-item">
+                <div>{{ city.name }}</div>
+              </div>
+            </ng-template>
+          </p-dropdown>
+          <br />
+          <br />
+          <h4>About</h4>
+          <textarea
+            rows="5"
+            cols="60"
+            pInputTextarea
+            [(ngModel)]="companyDescription"
+          ></textarea>
+          <ng-template pTemplate="footer">
+            <p-button
+              icon="pi pi-check"
+              (click)="saveCompanyDetails()"
+              label="Save"
+              styleClass="p-button-text"
+            ></p-button>
+            <p-button
+              icon="pi pi-times"
+              (click)="displayCompanyDetailsForm = false"
+              label="Cancel"
+            ></p-button>
+          </ng-template>
+
+          <p-fileUpload
+            [fileLimit]="1"
+            [showUploadButton]="false"
+            accept="image/*"
+            [maxFileSize]="1000000"
+            method="put"
+            name="img"
+          >
+          </p-fileUpload>
+        </p-dialog>
+        <h3>Industries</h3>
+        <button
+          pButton
+          pRipple
+          type="button"
+          icon="pi pi-plus"
+          class="p-button-rounded p-button-outlined add"
+          (click)="showIndustryForm()"
+        ></button>
+        <p-dialog
+          [(visible)]="displayIndustryForm"
+          [style]="{ width: '20vw', height: '25vw' }"
+          [baseZIndex]="10000"
+        >
+          <h4>Industry</h4>
+          <p-dropdown
+            [options]="industries"
+            [(ngModel)]="selectedIndustry"
+            optionLabel="name"
+            [filter]="true"
+            filterBy="name"
+            [showClear]="true"
+            placeholder="Select an industry"
+          >
+            <ng-template pTemplate="selectedItem">
+              <div
+                class="industry-item industry-item-value"
+                *ngIf="selectedIndustry"
+              >
+                <div>{{ selectedIndustry.name }}</div>
+              </div>
+            </ng-template>
+            <ng-template let-selectedIndustry pTemplate="item">
+              <div class="industry-item">
+                <div>{{ selectedIndustry.name }}</div>
+              </div>
+            </ng-template>
+          </p-dropdown>
+          <ng-template pTemplate="footer">
+            <p-button
+              icon="pi pi-check"
+              (click)="addCompanyIndustry()"
+              label="Save"
+              styleClass="p-button-text"
+            ></p-button>
+            <p-button
+              icon="pi pi-times"
+              (click)="displayIndustryForm = false"
+              label="Cancel"
+            ></p-button>
+          </ng-template>
+        </p-dialog>
+        <br />
+        <br />
+        <ng-template ngFor let-companyIndustry [ngForOf]="companyIndustries">
+          <br />
+          <button
+            pButton
+            pRipple
+            type="button"
+            icon="pi pi-times"
+            class="p-button-rounded p-button-danger p-button-outlined"
+            (click)="deleteCompanyIndustry(companyIndustry.industry.id)"
+          ></button>
+          <h4 class="tabbed">{{ companyIndustry?.industry?.name }}</h4>
+          <br />
+        </ng-template>
+        <br />
+        <br />
+      </div>
+    </div>
+  </div>
+</div>

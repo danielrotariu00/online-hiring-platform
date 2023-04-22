@@ -1,7 +1,7 @@
 package com.licenta.databasemicroservice.presentation.controller;
 
 import com.licenta.databasemicroservice.business.interfaces.IJobTypeService;
-import com.licenta.databasemicroservice.business.model.jobtype.JobTypeResponse;
+import com.licenta.databasemicroservice.business.model.JobTypeDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -15,20 +15,20 @@ import javax.validation.constraints.Min;
 @Validated
 @RestController
 @CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
-@RequestMapping(value="/job-types")
+@RequestMapping(value="/api/job-types")
 public class JobTypeController {
 
     @Autowired
     private IJobTypeService jobTypeService;
 
     @RequestMapping(method= RequestMethod.GET)
-    public Iterable<JobTypeResponse> getAllJobTypes() {
+    public Iterable<JobTypeDTO> getAllJobTypes() {
 
         return jobTypeService.getJobTypes();
     }
 
     @RequestMapping(value="/{jobTypeId}", method=RequestMethod.GET)
-    public JobTypeResponse getJobType(@Min(1) @PathVariable Integer jobTypeId) {
+    public JobTypeDTO getJobType(@Min(1) @PathVariable Integer jobTypeId) {
 
         return jobTypeService.getJobType(jobTypeId);
     }

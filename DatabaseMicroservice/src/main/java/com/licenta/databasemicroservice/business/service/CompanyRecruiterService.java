@@ -12,6 +12,7 @@ import com.licenta.databasemicroservice.persistence.repository.CompanyRecruiterR
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -31,10 +32,7 @@ public class CompanyRecruiterService implements ICompanyRecruiterService {
 
 
     @Override
-    public CompanyRecruiterDTO addCompanyRecruiter(CompanyRecruiterDTO request) {
-        Long companyId = request.getCompanyId();
-        Long recruiterId = request.getRecruiterId();
-
+    public CompanyRecruiterDTO addCompanyRecruiter(@PathVariable Long companyId, @PathVariable Long recruiterId) {
         Company company = companyService.getCompanyOrElseThrowException(companyId);
 
         Optional<CompanyRecruiter> companyRecruiter =

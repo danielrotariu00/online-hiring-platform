@@ -2,12 +2,10 @@ package com.licenta.databasemicroservice.business.service;
 
 import com.licenta.databasemicroservice.business.interfaces.ICompanyService;
 import com.licenta.databasemicroservice.business.interfaces.IUserProfessionalExperienceService;
-import com.licenta.databasemicroservice.business.interfaces.IUserService;
 import com.licenta.databasemicroservice.business.model.UserProfessionalExperienceDTO;
 import com.licenta.databasemicroservice.business.util.exception.NotFoundException;
 import com.licenta.databasemicroservice.business.util.mapper.UserProfessionalExperienceMapper;
 import com.licenta.databasemicroservice.persistence.entity.Company;
-import com.licenta.databasemicroservice.persistence.entity.User;
 import com.licenta.databasemicroservice.persistence.entity.UserProfessionalExperience;
 import com.licenta.databasemicroservice.persistence.repository.UserProfessionalExperienceRepository;
 import org.mapstruct.factory.Mappers;
@@ -20,8 +18,6 @@ import java.util.stream.Collectors;
 @Service
 public class UserProfessionalExperienceService implements IUserProfessionalExperienceService {
     @Autowired
-    private IUserService userService;
-    @Autowired
     private ICompanyService companyService;
 
     @Autowired
@@ -31,16 +27,14 @@ public class UserProfessionalExperienceService implements IUserProfessionalExper
 
     private static final String USER_PROFESSIONAL_EXPERIENCE_NOT_FOUND_MESSAGE = "Professional Experience with id <%d> does not exist.";
     @Override
-    public UserProfessionalExperienceDTO add(UserProfessionalExperienceDTO userProfessionalExperienceDTO) {
-        Long userId = userProfessionalExperienceDTO.getUserId();
+    public UserProfessionalExperienceDTO add(Long userId, UserProfessionalExperienceDTO userProfessionalExperienceDTO) {
         Long CompanyId = userProfessionalExperienceDTO.getCompanyId();
 
-        User user = userService.getUserOrElseThrowException(userId);
         Company Company = companyService.getCompanyOrElseThrowException(CompanyId);
 
 
         UserProfessionalExperience newUserProfessionalExperience = UserProfessionalExperience.builder()
-                .user(user)
+                .userId(userId)
                 .company(Company)
                 .jobTitle(userProfessionalExperienceDTO.getJobTitle())
                 .description(userProfessionalExperienceDTO.getDescription())
@@ -54,20 +48,18 @@ public class UserProfessionalExperienceService implements IUserProfessionalExper
     }
 
     @Override
-    public UserProfessionalExperienceDTO update(Long id, UserProfessionalExperienceDTO userProfessionalExperienceDTO) {
-        Long userId = userProfessionalExperienceDTO.getUserId();
+    public UserProfessionalExperienceDTO update(Long userId, Long id, UserProfessionalExperienceDTO userProfessionalExperienceDTO) {
         Long CompanyId = userProfessionalExperienceDTO.getCompanyId();
 
-        userProfessionalExperienceRepository.findById(id).orElseThrow(
+        userProfessionalExperienceRepository.findByUserIdAndId(userId, id).orElseThrow(
                 () -> new NotFoundException(String.format(USER_PROFESSIONAL_EXPERIENCE_NOT_FOUND_MESSAGE, id))
         );
 
-        User user = userService.getUserOrElseThrowException(userId);
         Company Company = companyService.getCompanyOrElseThrowException(CompanyId);
 
 
         UserProfessionalExperience userProfessionalExperience = UserProfessionalExperience.builder()
-                .user(user)
+                .userId(userId)
                 .company(Company)
                 .jobTitle(userProfessionalExperienceDTO.getJobTitle())
                 .description(userProfessionalExperienceDTO.getDescription())
@@ -82,18 +74,16 @@ public class UserProfessionalExperienceService implements IUserProfessionalExper
 
     @Override
     public Iterable<UserProfessionalExperienceDTO> getByUserId(Long userId) {
-        userService.getUserOrElseThrowException(userId);
-
         return userProfessionalExperienceRepository.findAllByUserId(userId).stream()
                 .map(userProfessionalExperienceMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public void delete(Long professionalExperienceId) {
+    public void delete(Long userId, Long professionalExperienceId) {
 
         Optional<UserProfessionalExperience> userProfessionalExperience =
-                userProfessionalExperienceRepository.findById(professionalExperienceId);
+                userProfessionalExperienceRepository.findByUserIdAndId(userId, professionalExperienceId);
 
         userProfessionalExperienceRepository.delete(userProfessionalExperience.orElseThrow(
                 () -> new NotFoundException(String.format(USER_PROFESSIONAL_EXPERIENCE_NOT_FOUND_MESSAGE, professionalExperienceId)))

@@ -19,7 +19,7 @@ import javax.validation.constraints.Min;
 @Validated
 @RestController
 @CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
-@RequestMapping(value="/users/{userId}/languages")
+@RequestMapping(value="/api/users/{userId}/languages")
 public class UserLanguageController {
 
     @Autowired

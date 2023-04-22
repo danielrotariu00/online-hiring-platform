@@ -3,14 +3,12 @@ package com.licenta.databasemicroservice.business.service;
 import com.licenta.databasemicroservice.business.interfaces.ILanguageLevelService;
 import com.licenta.databasemicroservice.business.interfaces.ILanguageService;
 import com.licenta.databasemicroservice.business.interfaces.IUserLanguageService;
-import com.licenta.databasemicroservice.business.interfaces.IUserService;
 import com.licenta.databasemicroservice.business.model.UserLanguageDTO;
 import com.licenta.databasemicroservice.business.util.exception.AlreadyExistsException;
 import com.licenta.databasemicroservice.business.util.exception.NotFoundException;
 import com.licenta.databasemicroservice.business.util.mapper.UserLanguageMapper;
 import com.licenta.databasemicroservice.persistence.entity.Language;
 import com.licenta.databasemicroservice.persistence.entity.LanguageLevel;
-import com.licenta.databasemicroservice.persistence.entity.User;
 import com.licenta.databasemicroservice.persistence.entity.UserLanguage;
 import com.licenta.databasemicroservice.persistence.repository.UserLanguageRepository;
 import org.mapstruct.factory.Mappers;
@@ -22,8 +20,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserLanguageService implements IUserLanguageService {
-    @Autowired
-    private IUserService userService;
     @Autowired
     private ILanguageService languageService;
     @Autowired
@@ -42,7 +38,6 @@ public class UserLanguageService implements IUserLanguageService {
         Integer languageId = userLanguageDTO.getLanguageId();
         Integer languageLevelId = userLanguageDTO.getLanguageLevelId();
 
-        User user = userService.getUserOrElseThrowException(userId);
         Language language = languageService.getOrElseThrowException(languageId);
         LanguageLevel languageLevel = languageLevelService.getOrElseThrowException(languageLevelId);
 
@@ -54,7 +49,7 @@ public class UserLanguageService implements IUserLanguageService {
         }
 
         UserLanguage newUserLanguage = UserLanguage.builder()
-                .user(user)
+                .userId(userId)
                 .language(language)
                 .languageLevel(languageLevel)
                 .build();
@@ -66,8 +61,6 @@ public class UserLanguageService implements IUserLanguageService {
 
     @Override
     public Iterable<UserLanguageDTO> getByUserId(Long userId) {
-        userService.getUserOrElseThrowException(userId);
-
         return userLanguageRepository.findAllByUserId(userId).stream()
                 .map(userLanguageMapper::toDTO)
                 .collect(Collectors.toList());
@@ -75,7 +68,6 @@ public class UserLanguageService implements IUserLanguageService {
 
     @Override
     public void delete(Long userId, Integer languageId) {
-        userService.getUserOrElseThrowException(userId);
         languageService.getOrElseThrowException(languageId);
 
         Optional<UserLanguage> userLanguage = userLanguageRepository.findByUserIdAndLanguageId(userId, languageId);

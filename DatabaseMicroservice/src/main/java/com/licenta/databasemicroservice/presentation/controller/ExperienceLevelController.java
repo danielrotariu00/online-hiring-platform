@@ -1,7 +1,7 @@
 package com.licenta.databasemicroservice.presentation.controller;
 
 import com.licenta.databasemicroservice.business.interfaces.IExperienceLevelService;
-import com.licenta.databasemicroservice.business.model.experiencelevel.ExperienceLevelResponse;
+import com.licenta.databasemicroservice.business.model.ExperienceLevelDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -15,20 +15,20 @@ import javax.validation.constraints.Min;
 @Validated
 @RestController
 @CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
-@RequestMapping(value="/experience-levels")
+@RequestMapping(value="/api/experience-levels")
 public class ExperienceLevelController {
 
     @Autowired
     private IExperienceLevelService experienceLevelService;
 
     @RequestMapping(method= RequestMethod.GET)
-    public Iterable<ExperienceLevelResponse> getAllExperienceLevels() {
+    public Iterable<ExperienceLevelDTO> getAllExperienceLevels() {
 
         return experienceLevelService.getExperienceLevels();
     }
 
     @RequestMapping(value="/{experienceLevelId}", method=RequestMethod.GET)
-    public ExperienceLevelResponse getJExperienceLevel(@Min(1) @PathVariable Integer experienceLevelId) {
+    public ExperienceLevelDTO getJExperienceLevel(@Min(1) @PathVariable Integer experienceLevelId) {
 
         return experienceLevelService.getExperienceLevel(experienceLevelId);
     }

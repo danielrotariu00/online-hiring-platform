@@ -1,7 +1,7 @@
 package com.licenta.databasemicroservice.business.service;
 
 import com.licenta.databasemicroservice.business.interfaces.IWorkTypeService;
-import com.licenta.databasemicroservice.business.model.worktype.WorkTypeResponse;
+import com.licenta.databasemicroservice.business.model.WorkTypeDTO;
 import com.licenta.databasemicroservice.business.util.exception.NotFoundException;
 import com.licenta.databasemicroservice.business.util.mapper.WorkTypeMapper;
 import com.licenta.databasemicroservice.persistence.entity.WorkType;
@@ -32,14 +32,14 @@ public class WorkTypeService implements IWorkTypeService {
     }
 
     @Override
-    public Iterable<WorkTypeResponse> getWorkTypes() {
+    public Iterable<WorkTypeDTO> getWorkTypes() {
         return StreamSupport.stream(workTypeRepository.findAll().spliterator(), false)
                 .map(workTypeMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public WorkTypeResponse getWorkType(Integer workTypeId) {
+    public WorkTypeDTO getWorkType(Integer workTypeId) {
         WorkType workType = getWorkTypeOrElseThrowException(workTypeId);
 
         return workTypeMapper.toResponse(workType);

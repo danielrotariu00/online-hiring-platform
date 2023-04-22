@@ -2,7 +2,7 @@ package com.licenta.databasemicroservice.business.service;
 
 import com.licenta.databasemicroservice.business.interfaces.ICityService;
 import com.licenta.databasemicroservice.business.interfaces.ICompanyService;
-import com.licenta.databasemicroservice.business.model.company.CompanyDTO;
+import com.licenta.databasemicroservice.business.model.CompanyDTO;
 import com.licenta.databasemicroservice.business.util.exception.AlreadyExistsException;
 import com.licenta.databasemicroservice.business.util.exception.NotFoundException;
 import com.licenta.databasemicroservice.business.util.mapper.CompanyMapper;
@@ -53,10 +53,12 @@ public class CompanyService implements ICompanyService {
             throw new AlreadyExistsException(String.format(NAME_ALREADY_IN_USE_MESSAGE, name));
         }
 
-        City city = cityService.getCityOrElseThrowException(request.getCityId());
-
         Company company = companyMapper.toModel(request);
-        company.setCity(city);
+
+        if(request.getCityId() != null) {
+            City city = cityService.getCityOrElseThrowException(request.getCityId());
+            company.setCityId(city.getId());
+        }
 
         companyRepository.save(company);
     }
@@ -65,11 +67,13 @@ public class CompanyService implements ICompanyService {
     public CompanyDTO updateCompany(Long companyId, CompanyDTO request) {
         getCompanyOrElseThrowException(companyId);
 
-        City city = cityService.getCityOrElseThrowException(request.getCityId());
-
         Company company = companyMapper.toModel(request);
-        company.setCity(city);
         company.setId(companyId);
+
+        if(request.getCityId() != null) {
+            City city = cityService.getCityOrElseThrowException(request.getCityId());
+            company.setCityId(city.getId());
+        }
 
         return companyMapper.toResponse(companyRepository.save(company));
     }
@@ -121,11 +125,13 @@ public class CompanyService implements ICompanyService {
 
         String extension = mimeContentService.getExtensionFromMimeType(type);
 
-        String[] arr = company.getPhoto().split("/");
-        String currentImagePath = arr[arr.length - 1];
-        String oldPath = companiesImagesPath + "/" + currentImagePath;
-        File file = new File(oldPath);
-        file.delete();
+        if(company.getPhoto() != null) {
+            String[] arr = company.getPhoto().split("/");
+            String currentImagePath = arr[arr.length - 1];
+            String oldPath = companiesImagesPath + "/" + currentImagePath;
+            File file = new File(oldPath);
+            file.delete();
+        }
 
         String imageName = companyId + "." + extension;
         String path = companiesImagesPath + "/" + imageName;

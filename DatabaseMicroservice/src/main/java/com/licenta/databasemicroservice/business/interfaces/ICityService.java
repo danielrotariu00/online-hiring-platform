@@ -1,15 +1,15 @@
 package com.licenta.databasemicroservice.business.interfaces;
 
-import com.licenta.databasemicroservice.business.model.city.CityResponse;
+import com.licenta.databasemicroservice.business.model.CityDTO;
 import com.licenta.databasemicroservice.persistence.entity.City;
 
 public interface ICityService {
 
     City getCityOrElseThrowException(Integer cityId);
 
-    Iterable<CityResponse> getCities();
+    Iterable<CityDTO> getCities();
 
-    Iterable<CityResponse> getCitiesByCountry(Integer countryId);
+    Iterable<CityDTO> getCitiesByCountry(Integer countryId);
 
-    CityResponse getCity(Integer cityId);
+    CityDTO getCity(Integer cityId);
 }

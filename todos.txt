@@ -1,9 +1,11 @@
 todo:
-- roles, angular auth guards
-- register in frontend and api gateway
-- refactor pos idm
-- api gateway request authorization and forwarding
-- confirmation for buttons
-- https between ui and api gateway???
+- job application file upload and delete
+- recruiter job application file download
 - docker deployment
+- admin ui, role name instead of id
+- update data on company profile when edit
+- view jobs bug
+- filter jobs spinner and no results found
+- confirmation for buttons
+- admin login unauthorized
 

@@ -19,7 +19,7 @@ import java.io.IOException;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
-@RequestMapping(value="/users/{userId}/details")
+@RequestMapping(value="/api/users/{userId}/details")
 public class UserDetailsController {
 
     @Autowired
@@ -35,6 +35,12 @@ public class UserDetailsController {
     public UserDetailsResponse getUserDetails(@Min(1) @PathVariable Long userId) {
 
         return userDetailsService.getUserDetails(userId);
+    }
+
+    @RequestMapping(method=RequestMethod.DELETE)
+    public void deleteUserDetails(@Min(1) @PathVariable Long userId) {
+
+        userDetailsService.deleteUserDetails(userId);
     }
 
     @RequestMapping(value = "/image", method=RequestMethod.PUT)

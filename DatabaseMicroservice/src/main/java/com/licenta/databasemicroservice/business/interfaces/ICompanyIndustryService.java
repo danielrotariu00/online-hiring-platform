@@ -1,7 +1,7 @@
 package com.licenta.databasemicroservice.business.interfaces;
 
-import com.licenta.databasemicroservice.business.model.company.CompanyDTO;
-import com.licenta.databasemicroservice.business.model.companyindustry.CompanyIndustryDTO;
+import com.licenta.databasemicroservice.business.model.CompanyDTO;
+import com.licenta.databasemicroservice.business.model.CompanyIndustryDTO;
 import com.licenta.databasemicroservice.persistence.entity.CompanyIndustry;
 
 public interface ICompanyIndustryService {
@@ -10,7 +10,7 @@ public interface ICompanyIndustryService {
 
     Iterable<CompanyDTO> getCompaniesByIndustry(Integer industryId);
 
-    CompanyIndustryDTO addCompanyIndustry(CompanyIndustryDTO request);
+    CompanyIndustryDTO addCompanyIndustry(Long companyId, Integer industryId);
 
     void deleteCompanyIndustry(Long companyId, Integer industryId);
 

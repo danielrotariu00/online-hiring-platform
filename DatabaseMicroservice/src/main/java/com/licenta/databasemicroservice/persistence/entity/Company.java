@@ -6,14 +6,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Column;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 
 @Getter
@@ -30,19 +31,20 @@ public class Company {
     private Long id;
 
     @NotEmpty
-    @Column(unique=true)
     private String name;
-
-    @NotEmpty
     private String photo;
-
-    @NotEmpty
     private String description;
-
-    @NotEmpty
     private String website;
+    private Integer cityId;
 
-    @ManyToOne
-    @JoinColumn(name="city_id")
-    private City city;
+    // child entities
+
+    @OneToMany(mappedBy = "company", cascade = CascadeType.REMOVE)
+    private Set<CompanyIndustry> companyIndustries = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "company", cascade = CascadeType.REMOVE)
+    private Set<CompanyManager> companyManagers = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "company", cascade = CascadeType.REMOVE)
+    private Set<CompanyRecruiter> companyRecruiters = new LinkedHashSet<>();
 }

@@ -1,6 +1,6 @@
 package com.licenta.databasemicroservice.business.interfaces;
 
-import com.licenta.databasemicroservice.business.model.company.CompanyDTO;
+import com.licenta.databasemicroservice.business.model.CompanyDTO;
 import com.licenta.databasemicroservice.persistence.entity.Company;
 import org.springframework.web.multipart.MultipartFile;
 

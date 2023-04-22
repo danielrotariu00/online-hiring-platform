@@ -30,7 +30,6 @@ class NewsfeedService: INewsfeedService {
             jobs.addAll(searchService.getJobs(it, lastCall))
         }
 
-        // todo: mapper/converter
         jobs.map { job -> job.toEntry(userId) }
             .forEach { entry -> entryService.saveEntry(entry) }
 

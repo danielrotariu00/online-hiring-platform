@@ -3,8 +3,8 @@ package com.licenta.databasemicroservice.business.service;
 import com.licenta.databasemicroservice.business.interfaces.ICompanyIndustryService;
 import com.licenta.databasemicroservice.business.interfaces.ICompanyService;
 import com.licenta.databasemicroservice.business.interfaces.IIndustryService;
-import com.licenta.databasemicroservice.business.model.company.CompanyDTO;
-import com.licenta.databasemicroservice.business.model.companyindustry.CompanyIndustryDTO;
+import com.licenta.databasemicroservice.business.model.CompanyDTO;
+import com.licenta.databasemicroservice.business.model.CompanyIndustryDTO;
 import com.licenta.databasemicroservice.business.util.exception.AlreadyExistsException;
 import com.licenta.databasemicroservice.business.util.exception.NotFoundException;
 import com.licenta.databasemicroservice.business.util.mapper.CompanyIndustryMapper;
@@ -37,10 +37,7 @@ public class CompanyIndustryService implements ICompanyIndustryService {
 
 
     @Override
-    public CompanyIndustryDTO addCompanyIndustry(CompanyIndustryDTO request) {
-        Long companyId = request.getCompanyId();
-        Integer industryId = request.getIndustryId();
-
+    public CompanyIndustryDTO addCompanyIndustry(Long companyId, Integer industryId) {
         Company company = companyService.getCompanyOrElseThrowException(companyId);
         Industry industry = industryService.getIndustryOrElseThrowException(industryId);
 

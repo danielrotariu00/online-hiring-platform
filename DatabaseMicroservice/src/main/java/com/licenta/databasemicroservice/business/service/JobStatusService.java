@@ -1,7 +1,7 @@
 package com.licenta.databasemicroservice.business.service;
 
 import com.licenta.databasemicroservice.business.interfaces.IJobStatusService;
-import com.licenta.databasemicroservice.business.model.jobstatus.JobStatusResponse;
+import com.licenta.databasemicroservice.business.model.JobStatusDTO;
 import com.licenta.databasemicroservice.business.util.exception.NotFoundException;
 import com.licenta.databasemicroservice.business.util.mapper.JobStatusMapper;
 import com.licenta.databasemicroservice.persistence.entity.JobStatus;
@@ -32,14 +32,14 @@ public class JobStatusService implements IJobStatusService {
     }
 
     @Override
-    public Iterable<JobStatusResponse> getJobStatusList() {
+    public Iterable<JobStatusDTO> getJobStatusList() {
         return StreamSupport.stream(jobStatusRepository.findAll().spliterator(), false)
                 .map(jobStatusMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public JobStatusResponse getJobStatus(Integer jobStatusId) {
+    public JobStatusDTO getJobStatus(Integer jobStatusId) {
         JobStatus jobStatus = getJobStatusOrElseThrowException(jobStatusId);
 
         return jobStatusMapper.toResponse(jobStatus);

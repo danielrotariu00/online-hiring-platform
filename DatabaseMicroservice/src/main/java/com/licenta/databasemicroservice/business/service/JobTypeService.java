@@ -1,7 +1,7 @@
 package com.licenta.databasemicroservice.business.service;
 
 import com.licenta.databasemicroservice.business.interfaces.IJobTypeService;
-import com.licenta.databasemicroservice.business.model.jobtype.JobTypeResponse;
+import com.licenta.databasemicroservice.business.model.JobTypeDTO;
 import com.licenta.databasemicroservice.business.util.exception.NotFoundException;
 import com.licenta.databasemicroservice.business.util.mapper.JobTypeMapper;
 import com.licenta.databasemicroservice.persistence.entity.JobType;
@@ -32,14 +32,14 @@ public class JobTypeService implements IJobTypeService {
     }
 
     @Override
-    public Iterable<JobTypeResponse> getJobTypes() {
+    public Iterable<JobTypeDTO> getJobTypes() {
         return StreamSupport.stream(jobTypeRepository.findAll().spliterator(), false)
                 .map(jobTypeMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public JobTypeResponse getJobType(Integer jobTypeId) {
+    public JobTypeDTO getJobType(Integer jobTypeId) {
         JobType jobType = getJobTypeOrElseThrowException(jobTypeId);
 
         return jobTypeMapper.toResponse(jobType);

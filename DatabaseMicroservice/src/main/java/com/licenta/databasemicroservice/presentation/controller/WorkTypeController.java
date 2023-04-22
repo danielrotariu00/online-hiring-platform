@@ -1,7 +1,7 @@
 package com.licenta.databasemicroservice.presentation.controller;
 
 import com.licenta.databasemicroservice.business.interfaces.IWorkTypeService;
-import com.licenta.databasemicroservice.business.model.worktype.WorkTypeResponse;
+import com.licenta.databasemicroservice.business.model.WorkTypeDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -15,20 +15,20 @@ import javax.validation.constraints.Min;
 @Validated
 @RestController
 @CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
-@RequestMapping(value="/work-types")
+@RequestMapping(value="/api/work-types")
 public class WorkTypeController {
 
     @Autowired
     private IWorkTypeService workTypeService;
 
     @RequestMapping(method= RequestMethod.GET)
-    public Iterable<WorkTypeResponse> getAllWorkTypes() {
+    public Iterable<WorkTypeDTO> getAllWorkTypes() {
 
         return workTypeService.getWorkTypes();
     }
 
     @RequestMapping(value="/{workTypeId}", method=RequestMethod.GET)
-    public WorkTypeResponse getWorkType(@Min(1) @PathVariable Integer workTypeId) {
+    public WorkTypeDTO getWorkType(@Min(1) @PathVariable Integer workTypeId) {
 
         return workTypeService.getWorkType(workTypeId);
     }

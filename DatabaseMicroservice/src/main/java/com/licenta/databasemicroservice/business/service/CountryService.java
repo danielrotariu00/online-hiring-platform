@@ -1,7 +1,7 @@
 package com.licenta.databasemicroservice.business.service;
 
 import com.licenta.databasemicroservice.business.interfaces.ICountryService;
-import com.licenta.databasemicroservice.business.model.country.CountryResponse;
+import com.licenta.databasemicroservice.business.model.CountryDTO;
 import com.licenta.databasemicroservice.business.util.exception.NotFoundException;
 import com.licenta.databasemicroservice.business.util.mapper.CountryMapper;
 import com.licenta.databasemicroservice.persistence.entity.Country;
@@ -32,14 +32,14 @@ public class CountryService implements ICountryService {
     }
 
     @Override
-    public Iterable<CountryResponse> getCountries() {
+    public Iterable<CountryDTO> getCountries() {
         return StreamSupport.stream(countryRepository.findAll().spliterator(), false)
                 .map(countryMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public CountryResponse getCountry(Integer countryId) {
+    public CountryDTO getCountry(Integer countryId) {
         Country country = getCountryOrElseThrowException(countryId);
 
         return countryMapper.toResponse(country);

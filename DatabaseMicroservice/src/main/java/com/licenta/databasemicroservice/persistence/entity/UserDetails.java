@@ -8,8 +8,6 @@ import lombok.Setter;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 
@@ -29,16 +27,10 @@ public class UserDetails {
     private String firstName;
     @NotEmpty
     private String lastName;
-    @NotEmpty
-    private String phoneNumber;
-    @NotEmpty
-    private String address;
-    @NotEmpty
-    private String profileDescription;
-    @NotEmpty
-    private String profilePictureUrl;
 
-    @ManyToOne
-    @JoinColumn(name = "city_id", nullable=false)
-    private City city;
+    private String phoneNumber;
+    private String address;
+    private String profileDescription;
+    private String profilePictureUrl;
+    private Integer cityId;
 }

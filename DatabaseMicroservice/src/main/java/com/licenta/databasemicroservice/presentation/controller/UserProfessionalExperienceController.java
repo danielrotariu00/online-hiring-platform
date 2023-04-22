@@ -19,35 +19,38 @@ import javax.validation.constraints.Min;
 @Validated
 @RestController
 @CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
+@RequestMapping(value="/api/users/{userId}/professional-experience")
 public class UserProfessionalExperienceController {
 
     @Autowired
     private IUserProfessionalExperienceService userProfessionalExperienceService;
 
     @ResponseStatus(HttpStatus.CREATED)
-    @RequestMapping(value="/professional-experience", method=RequestMethod.POST)
-    public UserProfessionalExperienceDTO add(@Valid @RequestBody UserProfessionalExperienceDTO userProfessionalExperienceDTO) {
+    @RequestMapping(method=RequestMethod.POST)
+    public UserProfessionalExperienceDTO add(@Min(1) @PathVariable Long userId,
+                                             @Valid @RequestBody UserProfessionalExperienceDTO userProfessionalExperienceDTO) {
 
-        return userProfessionalExperienceService.add(userProfessionalExperienceDTO);
+        return userProfessionalExperienceService.add(userId, userProfessionalExperienceDTO);
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value="/professional-experience/{id}", method=RequestMethod.PUT)
-    public UserProfessionalExperienceDTO update(@PathVariable Long id,
+    @RequestMapping(value="/{professionalExperienceId}", method=RequestMethod.PUT)
+    public UserProfessionalExperienceDTO update(@Min(1) @PathVariable Long userId,
+                                                @PathVariable Long professionalExperienceId,
                                                 @Valid @RequestBody UserProfessionalExperienceDTO userProfessionalExperienceDTO) {
 
-        return userProfessionalExperienceService.update(id, userProfessionalExperienceDTO);
+        return userProfessionalExperienceService.update(userId, professionalExperienceId, userProfessionalExperienceDTO);
     }
 
-    @RequestMapping(value="/users/{userId}/professional-experience", method=RequestMethod.GET)
+    @RequestMapping(method=RequestMethod.GET)
     public Iterable<UserProfessionalExperienceDTO> getByUserId(@Min(1) @PathVariable Long userId) {
 
         return userProfessionalExperienceService.getByUserId(userId);
     }
 
-    @RequestMapping(value="/professional-experience/{professionalExperienceId}", method=RequestMethod.DELETE)
-    public void delete(@Min(1) @PathVariable Long professionalExperienceId) {
+    @RequestMapping(value="/{professionalExperienceId}", method=RequestMethod.DELETE)
+    public void delete(@Min(1) @PathVariable Long userId, @Min(1) @PathVariable Long professionalExperienceId) {
 
-        userProfessionalExperienceService.delete(professionalExperienceId);
+        userProfessionalExperienceService.delete(userId, professionalExperienceId);
     }
 }

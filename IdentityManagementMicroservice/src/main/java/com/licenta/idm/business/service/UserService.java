@@ -1,209 +1,282 @@
 package com.licenta.idm.business.service;
 
-import com.licenta.idm.AddRoleRequest;
-import com.licenta.idm.CreateUserRequest;
-import com.licenta.idm.CreateUserResponse;
-import com.licenta.idm.DeleteRoleRequest;
+import com.licenta.idm.CreateCandidateRequest;
+import com.licenta.idm.CreateCandidateResponse;
+import com.licenta.idm.CreateManagerRequest;
+import com.licenta.idm.CreateManagerResponse;
+import com.licenta.idm.CreateRecruiterRequest;
+import com.licenta.idm.CreateRecruiterResponse;
 import com.licenta.idm.DeleteUserRequest;
 import com.licenta.idm.GetUserRequest;
 import com.licenta.idm.GetUserResponse;
+import com.licenta.idm.GetUsersResponse;
 import com.licenta.idm.LoginRequest;
-import com.licenta.idm.RolesResponse;
 import com.licenta.idm.UpdatePasswordRequest;
 import com.licenta.idm.UserResponse;
-import com.licenta.idm.UsersResponse;
 import com.licenta.idm.persistence.entity.Role;
 import com.licenta.idm.persistence.entity.User;
+import com.licenta.idm.persistence.entity.UserRole;
 import com.licenta.idm.persistence.repository.RoleRepository;
 import com.licenta.idm.persistence.repository.UserRepository;
+import com.licenta.idm.persistence.repository.UserRoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Collections;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final UserRoleRepository userRoleRepository;
     private final PasswordEncoder passwordEncoder;
 
 
     @Autowired
     public UserService(UserRepository userRepository,
                        RoleRepository roleRepository,
+                       UserRoleRepository userRoleRepository,
                        PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.userRoleRepository = userRoleRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
-    public CreateUserResponse createUser(CreateUserRequest request) {
+    public CreateCandidateResponse createCandidate(CreateCandidateRequest request) {
         User user = toEntity(request);
 
-        return toCreateUserResponse(userRepository.save(user));
+        Role candidateRole = roleRepository.findById(1).orElseThrow(
+                RuntimeException::new
+        );
+
+        UserRole userRole = UserRole.builder()
+                .user(user)
+                .role(candidateRole)
+                .companyId(0L)
+                .build();
+
+        User savedUser = userRepository.save(user);
+        UserRole savedUserRole = userRoleRepository.save(userRole);
+
+        return toCreateCandidateResponse(savedUser, savedUserRole);
+    }
+
+    public CreateRecruiterResponse createRecruiter(CreateRecruiterRequest request) {
+        User user = toEntity(request);
+
+        Role recruiterRole = roleRepository.findById(2).orElseThrow(
+                RuntimeException::new
+        );
+
+        UserRole userRole = UserRole.builder()
+                .user(user)
+                .role(recruiterRole)
+                .companyId(request.getCompanyId())
+                .build();
+
+        User savedUser = userRepository.save(user);
+        UserRole savedUserRole = userRoleRepository.save(userRole);
+
+        return toCreateRecruiterResponse(savedUser, savedUserRole);
+    }
+
+    public CreateManagerResponse createManager(CreateManagerRequest request) {
+        User user = toEntity(request);
+
+        Role managerRole = roleRepository.findById(3).orElseThrow(
+                RuntimeException::new
+        );
+
+        UserRole userRole = UserRole.builder()
+                .user(user)
+                .role(managerRole)
+                .companyId(request.getCompanyId())
+                .build();
+
+        User savedUser = userRepository.save(user);
+        UserRole savedUserRole = userRoleRepository.save(userRole);
+
+        return toCreateManagerResponse(savedUser, savedUserRole);
+    }
+
+    public void createAdmin(User user) {
+        Role adminRole = roleRepository.findById(4).orElseThrow(
+                RuntimeException::new
+        );
+
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        User savedUser = userRepository.save(user);
+
+        UserRole userRole = UserRole.builder()
+                .user(savedUser)
+                .role(adminRole)
+                .companyId(0L)
+                .build();
+
+        userRoleRepository.save(userRole);
     }
 
     public UserResponse updatePassword(UpdatePasswordRequest request) {
         User user = findUserOrElseThrowException(request.getUserId());
+        UserRole role = userRoleRepository.findByUserId(user.getId());
 
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
-        return toUserResponse(userRepository.save(user));
-    }
-
-    public UserResponse addRole(AddRoleRequest request) {
-        User user = findUserOrElseThrowException(request.getUserId());
-        Role role = findRoleOrElseThrowException(request.getRoleId());
-
-
-        user.getRoles().add(role);
-
-        return toUserResponse(userRepository.save(user));
-    }
-
-    public UserResponse deleteRole(DeleteRoleRequest request) {
-        User user = findUserOrElseThrowException(request.getUserId());
-
-        for (Role role : user.getRoles()) {
-            if (role.getId() == request.getRoleId()) {
-                user.getRoles().remove(role);
-
-                return toUserResponse(userRepository.save(user));
-            }
-        }
-
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return toUserResponse(userRepository.save(user), role);
     }
 
     public GetUserResponse getUser(GetUserRequest request) {
         User user = findUserOrElseThrowException(request.getUserId());
+        UserRole role = userRoleRepository.findByUserId(user.getId());
         GetUserResponse response = new GetUserResponse();
 
-        response.setUser(toUserDTO(user));
+        response.setUser(toUserDTO(user, role));
 
         return response;
     }
 
-    public UsersResponse getUsers() {
+    public GetUsersResponse getUsers() {
         List<User> users = userRepository.findAll();
 
-        return toUsersResponse(users);
+        return toGetUsersResponse(users);
     }
 
     public UserResponse deleteUser(DeleteUserRequest request) {
         User user = findUserOrElseThrowException(request.getUserId());
 
+        UserRole role = userRoleRepository.findByUserId(user.getId());
+        userRoleRepository.delete(role);
         userRepository.deleteById(request.getUserId());
 
-        return toUserResponse(user);
-    }
-
-    public RolesResponse getRoles() {
-        List<Role> roles = roleRepository.findAll();
-
-        return toRolesResponse(roles);
+        return toUserResponse(user, role);
     }
 
     public com.licenta.idm.User login(LoginRequest request) {
         User user = userRepository.findByEmail(request.getEmail()).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.UNAUTHORIZED)
         );
-// TODO: uncomment this
-//        if (!passwordEncoder.matches(request.getPassword(), user.getPassword()))
-//            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
 
-        return toUserDTO(user);
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword()))
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+
+        UserRole userRole = userRoleRepository.findByUserId(user.getId());
+
+        return toUserDTO(user, userRole);
     }
 
-    private User toEntity(CreateUserRequest request) {
-        Role regularUserRole = roleRepository.findById(1).orElseThrow(
-                RuntimeException::new
-        );
+    private User toEntity(CreateCandidateRequest request) {
 
         return User.builder()
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .roles(new HashSet<>(Collections.singletonList(regularUserRole)))
                 .build();
     }
 
-    private UserResponse toUserResponse(User user) {
+    private User toEntity(CreateRecruiterRequest request) {
+
+        return User.builder()
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .build();
+    }
+
+    private User toEntity(CreateManagerRequest request) {
+
+        return User.builder()
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .build();
+    }
+
+    private UserResponse toUserResponse(User user, UserRole role) {
         UserResponse response = new UserResponse();
 
-        response.setUser(toUserDTO(user));
+        response.setUser(toUserDTO(user, role));
 
         return response;
     }
 
-    private CreateUserResponse toCreateUserResponse(User user) {
-        CreateUserResponse response = new CreateUserResponse();
+    private CreateCandidateResponse toCreateCandidateResponse(User user, UserRole userRole) {
+        CreateCandidateResponse response = new CreateCandidateResponse();
 
-        response.setUser(toUserDTO(user));
-
-        return response;
-    }
-
-    private UsersResponse toUsersResponse(List<User> users) {
-        UsersResponse response = new UsersResponse();
-
-        response.getUsers().addAll(users.stream()
-                .map(this::toUserDTO)
-                .collect(Collectors.toList())
-        );
+        com.licenta.idm.User userDTO = toUserDTO(user, userRole);
+        response.setUser(userDTO);
 
         return response;
     }
 
-    private RolesResponse toRolesResponse(List<Role> roles) {
-        RolesResponse response = new RolesResponse();
+    private CreateRecruiterResponse toCreateRecruiterResponse(User user, UserRole userRole) {
+        CreateRecruiterResponse response = new CreateRecruiterResponse();
 
-        response.getRoles().addAll(roles.stream()
-                .map(this::toRoleDTO)
-                .collect(Collectors.toList())
-        );
+        com.licenta.idm.User userDTO = toUserDTO(user, userRole);
+        response.setUser(userDTO);
 
         return response;
     }
 
-    private com.licenta.idm.User toUserDTO(User user) {
-        List<com.licenta.idm.Role> roles = user.getRoles().stream()
-                .map(this::toRoleDTO)
-                .collect(Collectors.toList());
+    private CreateManagerResponse toCreateManagerResponse(User user, UserRole userRole) {
+        CreateManagerResponse response = new CreateManagerResponse();
 
+        com.licenta.idm.User userDTO = toUserDTO(user, userRole);
+        response.setUser(userDTO);
+
+        return response;
+    }
+
+    private GetUsersResponse toGetUsersResponse(List<User> users) {
+        GetUsersResponse response = new GetUsersResponse();
+
+        List<com.licenta.idm.User> userList = new ArrayList<>();
+
+        for (User user: users) {
+            UserRole userRole = userRoleRepository.findByUserId(user.getId());
+
+            userList.add(toUserDTO(user, userRole));
+        }
+        response.getUsers().addAll(userList);
+
+        return response;
+    }
+
+    private com.licenta.idm.User toUserDTO(User user, UserRole userRole) {
         com.licenta.idm.User userDTO = new com.licenta.idm.User();
+        com.licenta.idm.UserRole userRoleDTO = toUserRoleDTO(userRole);
 
         userDTO.setId(user.getId());
         userDTO.setEmail(user.getEmail());
-        userDTO.getRoles().addAll(roles);
+        userDTO.setUserRole(userRoleDTO);
 
         return userDTO;
     }
 
     private com.licenta.idm.Role toRoleDTO(Role role) {
-        com.licenta.idm.Role roleResponse = new com.licenta.idm.Role();
+        com.licenta.idm.Role roleDTO = new com.licenta.idm.Role();
 
-        roleResponse.setId(role.getId());
-        roleResponse.setName(role.getName());
+        roleDTO.setId(role.getId());
+        roleDTO.setName(role.getName());
 
-        return roleResponse;
+        return roleDTO;
+    }
+
+    private com.licenta.idm.UserRole toUserRoleDTO(UserRole userRole) {
+        com.licenta.idm.Role roleDTO = toRoleDTO(userRole.getRole());
+        com.licenta.idm.UserRole userRoleDTO = new com.licenta.idm.UserRole();
+
+        userRoleDTO.setRole(roleDTO);
+        userRoleDTO.setCompanyId(userRole.getCompanyId());
+
+        return userRoleDTO;
     }
 
 
     private User findUserOrElseThrowException(Long userId) {
         return userRepository.findById(userId).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND)
-        );
-    }
-
-    private Role findRoleOrElseThrowException(Integer roleId) {
-        return roleRepository.findById(roleId).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND)
         );
     }

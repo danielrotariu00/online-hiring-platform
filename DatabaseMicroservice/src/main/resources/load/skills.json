@@ -1,0 +1,42 @@
+[
+  {
+    "id": 1,
+    "name": "Management"
+  },
+  {
+    "id": 2,
+    "name": "Communication"
+  },
+  {
+    "id": 3,
+    "name": "Leadership"
+  },
+  {
+    "id": 4,
+    "name": "Teamwork"
+  },
+  {
+    "id": 5,
+    "name": "Software Development"
+  },
+  {
+    "id": 6,
+    "name": "SQL"
+  },
+  {
+    "id": 7,
+    "name": "Finance"
+  },
+  {
+    "id": 8,
+    "name": "Python"
+  },
+  {
+    "id": 9,
+    "name": "Java"
+  },
+  {
+    "id": 10,
+    "name": "Data Analysis"
+  }
+]

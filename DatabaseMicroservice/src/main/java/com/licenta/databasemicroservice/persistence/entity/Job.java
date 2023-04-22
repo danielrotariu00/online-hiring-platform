@@ -35,9 +35,8 @@ public class Job {
     @NotEmpty
     private String title;
 
-    @ManyToOne
-    @JoinColumn(name = "recruiter_id", nullable=false)
-    private User recruiter;
+    @Column(name = "recruiter_id", nullable=false)
+    private Long recruiterId;
 
     @ManyToOne
     @JoinColumn(name = "company_industry_id", nullable=false)
@@ -57,7 +56,7 @@ public class Job {
 
     @ManyToOne
     @JoinColumn(name="experience_level_id")
-    private ExperienceLevel experienceLevel; // internship, entry-level, associate, mid-senior level, director
+    private ExperienceLevel experienceLevel; // internship, entry-level, mid-level, senior level, executive
 
     @Column(columnDefinition = "TEXT")
     private String description;

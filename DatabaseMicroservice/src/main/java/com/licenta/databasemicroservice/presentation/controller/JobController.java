@@ -19,7 +19,7 @@ import javax.validation.constraints.Min;
 @Validated
 @RestController
 @CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
-@RequestMapping(value="/jobs")
+@RequestMapping(value="/api/jobs")
 public class JobController {
 
     @Autowired

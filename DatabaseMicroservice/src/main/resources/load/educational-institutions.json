@@ -1,0 +1,32 @@
+[
+  {
+    "id": 32,
+    "name": "Gheorghe Asachi Technical University of Iasi",
+    "photo": "educational-institutions/32.png",
+    "website": "https://www.tuiasi.ro/"
+  },
+  {
+    "id": 33,
+    "name": "Alexandru Ioan Cuza University of Iasi",
+    "photo": "educational-institutions/33.png",
+    "website": "https://www.uaic.ro/"
+  },
+  {
+    "id": 34,
+    "name": "Harvard University",
+    "photo": "educational-institutions/34.png",
+    "website": "https://www.harvard.edu/"
+  },
+  {
+    "id": 35,
+    "name": "Stanford University",
+    "photo": "educational-institutions/35.png",
+    "website": "https://www.stanford.edu/"
+  },
+  {
+    "id": 36,
+    "name": "Massachusetts Institute of Technology",
+    "photo": "educational-institutions/36.png",
+    "website": "https://www.mit.edu/"
+  }
+]

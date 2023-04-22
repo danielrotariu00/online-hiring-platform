@@ -20,9 +20,6 @@ public class UserProfessionalExperienceDTO {
     private Long id;
 
     @NotNull
-    private Long userId;
-
-    @NotNull
     private Long companyId;
 
     @NotEmpty

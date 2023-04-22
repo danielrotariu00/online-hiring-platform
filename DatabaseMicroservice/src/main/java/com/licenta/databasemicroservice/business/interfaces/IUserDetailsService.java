@@ -12,4 +12,6 @@ public interface IUserDetailsService {
     UserDetailsResponse getUserDetails(Long userId);
 
     void saveImage(Long userId, MultipartFile image) throws IOException;
+
+    void deleteUserDetails(Long userId);
 }

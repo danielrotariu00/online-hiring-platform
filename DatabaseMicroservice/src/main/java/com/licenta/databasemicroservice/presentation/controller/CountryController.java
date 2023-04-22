@@ -1,7 +1,7 @@
 package com.licenta.databasemicroservice.presentation.controller;
 
 import com.licenta.databasemicroservice.business.interfaces.ICountryService;
-import com.licenta.databasemicroservice.business.model.country.CountryResponse;
+import com.licenta.databasemicroservice.business.model.CountryDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -15,20 +15,20 @@ import javax.validation.constraints.Min;
 @Validated
 @RestController
 @CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
-@RequestMapping(value="/countries")
+@RequestMapping(value="/api/countries")
 public class CountryController {
 
     @Autowired
     private ICountryService countryService;
 
     @RequestMapping(method= RequestMethod.GET)
-    public Iterable<CountryResponse> getAllCountries() {
+    public Iterable<CountryDTO> getAllCountries() {
 
         return countryService.getCountries();
     }
 
     @RequestMapping(value="/{countryId}", method=RequestMethod.GET)
-    public CountryResponse getCountry(@Min(1) @PathVariable Integer countryId) {
+    public CountryDTO getCountry(@Min(1) @PathVariable Integer countryId) {
 
         return countryService.getCountry(countryId);
     }

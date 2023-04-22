@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service
 class DatabaseService: IDatabaseService {
     override fun getCompanyIndustriesFollowedByUser(userId: Long): List<CompanyIndustry> {
         // TODO: replace localhost with env variable for database microservice
-        val response = get("http://localhost:23050/users/${userId}/followed-company-industries")
+        val response = get("http://localhost:23050/api/users/${userId}/followed-company-industries")
 
         if (response.statusCode != 200) {
             throw ExceptionWithStatus(response.text, HttpStatus.valueOf(response.statusCode))
@@ -26,7 +26,7 @@ class DatabaseService: IDatabaseService {
 
     override fun getCityById(cityId: Int): City {
         // TODO: replace localhost with env variable for database microservice
-        val response = get("http://localhost:23050/cities/${cityId}")
+        val response = get("http://localhost:23050/api/cities/${cityId}")
 
         if (response.statusCode != 200) {
             throw ExceptionWithStatus(response.text, HttpStatus.valueOf(response.statusCode))
@@ -39,7 +39,7 @@ class DatabaseService: IDatabaseService {
 
     override fun getCompanyById(companyId: Long): Company {
         // TODO: replace localhost with env variable for database microservice
-        val response = get("http://localhost:23050/companies/${companyId}")
+        val response = get("http://localhost:23050/api/companies/${companyId}")
 
         if (response.statusCode != 200) {
             throw ExceptionWithStatus(response.text, HttpStatus.valueOf(response.statusCode))
@@ -52,7 +52,7 @@ class DatabaseService: IDatabaseService {
 
     override fun getCountryById(countryId: Int): Country {
         // TODO: replace localhost with env variable for database microservice
-        val response = get("http://localhost:23050/countries/${countryId}")
+        val response = get("http://localhost:23050/api/countries/${countryId}")
 
         if (response.statusCode != 200) {
             throw ExceptionWithStatus(response.text, HttpStatus.valueOf(response.statusCode))
@@ -65,7 +65,7 @@ class DatabaseService: IDatabaseService {
 
     override fun getWorkTypeById(workTypeId: Int): WorkType {
         // TODO: replace localhost with env variable for database microservice
-        val response = get("http://localhost:23050/work-types/${workTypeId}")
+        val response = get("http://localhost:23050/api/work-types/${workTypeId}")
 
         if (response.statusCode != 200) {
             throw ExceptionWithStatus(response.text, HttpStatus.valueOf(response.statusCode))

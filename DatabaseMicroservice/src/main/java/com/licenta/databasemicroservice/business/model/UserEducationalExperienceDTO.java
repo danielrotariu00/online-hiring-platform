@@ -20,9 +20,6 @@ public class UserEducationalExperienceDTO {
     private Long id;
 
     @NotNull
-    private Long userId;
-
-    @NotNull
     private Long educationalInstitutionId;
 
     @NotEmpty

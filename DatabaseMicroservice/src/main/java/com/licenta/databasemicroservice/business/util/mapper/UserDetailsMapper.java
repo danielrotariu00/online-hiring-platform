@@ -4,7 +4,6 @@ import com.licenta.databasemicroservice.business.model.userdetails.SaveUserDetai
 import com.licenta.databasemicroservice.business.model.userdetails.UserDetailsResponse;
 import com.licenta.databasemicroservice.persistence.entity.UserDetails;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 
 import java.util.Date;
 import java.util.UUID;
@@ -14,6 +13,5 @@ public interface UserDetailsMapper {
 
     UserDetails toModel(SaveUserDetailsRequest request);
 
-    @Mapping(target="cityId", source="city.id")
     UserDetailsResponse toResponse(UserDetails userDetails);
 }

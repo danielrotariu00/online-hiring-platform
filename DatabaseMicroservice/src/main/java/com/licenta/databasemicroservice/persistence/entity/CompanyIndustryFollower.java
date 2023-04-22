@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -26,9 +27,8 @@ public class CompanyIndustryFollower {
     @GeneratedValue
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable=false)
-    private User user;
+    @Column(name = "user_id", nullable=false)
+    private Long userId;
 
     @ManyToOne
     @JoinColumn(name = "company_industry_id", nullable=false)

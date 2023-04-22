@@ -14,7 +14,6 @@ public interface JobMapper {
 
     Job toModel(JobRequest request);
 
-    @Mapping(target="recruiterId", source="recruiter.id")
     @Mapping(target="cityId", source="city.id")
     @Mapping(target="countryId", source="city.country.id")
     @Mapping(target="jobTypeId", source="jobType.id")

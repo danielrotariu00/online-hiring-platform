@@ -1,0 +1,34 @@
+[
+  {
+    "id": 1,
+    "name": "SUBMITTED"
+  },
+  {
+    "id": 2,
+    "name": "REVIEWED"
+  },
+  {
+    "id": 3,
+    "name": "IN PROGRESS"
+  },
+  {
+    "id": 4,
+    "name": "OFFER EXTENDED"
+  },
+  {
+    "id": 5,
+    "name": "HIRED"
+  },
+  {
+    "id": 6,
+    "name": "ON HOLD"
+  },
+  {
+    "id": 7,
+    "name": "DECLINED"
+  },
+  {
+    "id": 8,
+    "name": "WITHDRAWN"
+  }
+]

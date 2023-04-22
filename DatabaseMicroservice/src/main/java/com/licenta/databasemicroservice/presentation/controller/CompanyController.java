@@ -1,7 +1,7 @@
 package com.licenta.databasemicroservice.presentation.controller;
 
 import com.licenta.databasemicroservice.business.interfaces.ICompanyService;
-import com.licenta.databasemicroservice.business.model.company.CompanyDTO;
+import com.licenta.databasemicroservice.business.model.CompanyDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -22,7 +22,7 @@ import java.io.IOException;
 @Validated
 @RestController
 @CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
-@RequestMapping(value="/companies")
+@RequestMapping(value="/api/companies")
 public class CompanyController {
 
     @Autowired

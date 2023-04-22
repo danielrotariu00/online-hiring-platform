@@ -8,7 +8,6 @@ import org.mapstruct.Mapping;
 @Mapper
 public interface UserProfessionalExperienceMapper {
 
-    @Mapping(target="userId", source="user.id")
     @Mapping(target="companyId", source="company.id")
     UserProfessionalExperienceDTO toDTO(UserProfessionalExperience userProfessionalExperience);
 }

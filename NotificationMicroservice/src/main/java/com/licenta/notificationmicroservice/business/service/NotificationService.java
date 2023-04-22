@@ -32,8 +32,8 @@ public class NotificationService implements INotificationService {
     }
 
     @Override
-    public void updateIsRead(Long notificationId, Boolean isRead) {
-        Notification notification = getOrElseThrowException(notificationId);
+    public void updateIsRead(Long userId, Long notificationId, Boolean isRead) {
+        Notification notification = getOrElseThrowException(userId, notificationId);
 
         notification.setIsRead(isRead);
         notificationRepository.save(notification);
@@ -48,15 +48,15 @@ public class NotificationService implements INotificationService {
     }
 
     @Override
-    public void delete(Long notificationId) {
-        getOrElseThrowException(notificationId);
+    public void delete(Long userId, Long notificationId) {
+        Notification notification = getOrElseThrowException(userId, notificationId);
 
-        notificationRepository.deleteById(notificationId);
+        notificationRepository.delete(notification);
     }
 
-    private Notification getOrElseThrowException(Long notificationId) {
+    private Notification getOrElseThrowException(Long userId, Long notificationId) {
 
-        return notificationRepository.findById(notificationId).orElseThrow(
+        return notificationRepository.findByUserIdAndId(userId, notificationId).orElseThrow(
                 () -> new NotFoundException(String.format(NOTIFICATION_NOT_FOUND_MESSAGE, notificationId))
         );
     }

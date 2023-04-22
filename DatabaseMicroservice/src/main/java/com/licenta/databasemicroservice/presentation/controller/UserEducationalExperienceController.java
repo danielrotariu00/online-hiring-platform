@@ -19,27 +19,29 @@ import javax.validation.constraints.Min;
 @Validated
 @RestController
 @CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
+@RequestMapping(value="/api/users/{userId}/educational-experience")
 public class UserEducationalExperienceController {
 
     @Autowired
     private IUserEducationalExperienceService userEducationalExperienceService;
 
     @ResponseStatus(HttpStatus.CREATED)
-    @RequestMapping(value="/educational-experience", method=RequestMethod.POST)
-    public UserEducationalExperienceDTO add(@Valid @RequestBody UserEducationalExperienceDTO userEducationalExperienceDTO) {
+    @RequestMapping(method=RequestMethod.POST)
+    public UserEducationalExperienceDTO add(@Min(1) @PathVariable Long userId,
+                                            @Valid @RequestBody UserEducationalExperienceDTO userEducationalExperienceDTO) {
 
-        return userEducationalExperienceService.add(userEducationalExperienceDTO);
+        return userEducationalExperienceService.add(userId, userEducationalExperienceDTO);
     }
 
-    @RequestMapping(value="/users/{userId}/educational-experience", method=RequestMethod.GET)
+    @RequestMapping(method=RequestMethod.GET)
     public Iterable<UserEducationalExperienceDTO> getByUserId(@Min(1) @PathVariable Long userId) {
 
         return userEducationalExperienceService.getByUserId(userId);
     }
 
-    @RequestMapping(value="/educational-experience/{educationalExperienceId}", method=RequestMethod.DELETE)
-    public void delete(@Min(1) @PathVariable Long educationalExperienceId) {
+    @RequestMapping(value="/{educationalExperienceId}", method=RequestMethod.DELETE)
+    public void delete(@Min(1) @PathVariable Long userId, @Min(1) @PathVariable Long educationalExperienceId) {
 
-        userEducationalExperienceService.delete(educationalExperienceId);
+        userEducationalExperienceService.delete(userId, educationalExperienceId);
     }
 }

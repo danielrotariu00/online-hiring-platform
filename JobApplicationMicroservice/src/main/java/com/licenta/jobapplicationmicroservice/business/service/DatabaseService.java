@@ -17,7 +17,7 @@ import org.springframework.web.client.RestTemplate;
 public class DatabaseService implements IDatabaseService {
 
     private final RestTemplate restTemplate;
-    private final String URL_FORMAT = "http://localhost:23050/%s/%s";
+    private final String URL_FORMAT = "http://localhost:23050/api/%s/%s";
 
     @Autowired
     public DatabaseService() {

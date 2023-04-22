@@ -1,7 +1,7 @@
 package com.licenta.databasemicroservice.presentation.controller;
 
 import com.licenta.databasemicroservice.business.interfaces.IIndustryService;
-import com.licenta.databasemicroservice.business.model.industry.IndustryResponse;
+import com.licenta.databasemicroservice.business.model.IndustryDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -15,20 +15,20 @@ import javax.validation.constraints.Min;
 @Validated
 @RestController
 @CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
-@RequestMapping(value="/industries")
+@RequestMapping(value="/api/industries")
 public class IndustryController {
 
     @Autowired
     private IIndustryService industryService;
 
     @RequestMapping(method= RequestMethod.GET)
-    public Iterable<IndustryResponse> getAllIndustries() {
+    public Iterable<IndustryDTO> getAllIndustries() {
 
         return industryService.getIndustries();
     }
 
     @RequestMapping(value="/{industryId}", method=RequestMethod.GET)
-    public IndustryResponse getIndustry(@Min(1) @PathVariable Integer industryId) {
+    public IndustryDTO getIndustry(@Min(1) @PathVariable Integer industryId) {
 
         return industryService.getIndustry(industryId);
     }

@@ -1,10 +1,12 @@
 package com.licenta.jobapplicationmicroservice.business.service;
 
 import com.licenta.jobapplicationmicroservice.business.interfaces.IDatabaseService;
+import com.licenta.jobapplicationmicroservice.business.interfaces.IFileService;
 import com.licenta.jobapplicationmicroservice.business.interfaces.IJobApplicationService;
 import com.licenta.jobapplicationmicroservice.business.interfaces.INotificationService;
 import com.licenta.jobapplicationmicroservice.business.model.Company;
 import com.licenta.jobapplicationmicroservice.business.model.CreateJobApplicationRequest;
+import com.licenta.jobapplicationmicroservice.business.model.FileData;
 import com.licenta.jobapplicationmicroservice.business.model.Job;
 import com.licenta.jobapplicationmicroservice.business.model.JobApplicationResponse;
 import com.licenta.jobapplicationmicroservice.business.model.JobApplicationStatusResponse;
@@ -22,14 +24,13 @@ import com.licenta.jobapplicationmicroservice.persistence.document.JobApplicatio
 import com.licenta.jobapplicationmicroservice.persistence.repository.JobApplicationRepository;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.IntSummaryStatistics;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -55,14 +56,17 @@ public class JobApplicationService implements IJobApplicationService {
     @Autowired
     private JobApplicationRepository jobApplicationRepository;
 
+    @Autowired
+    private IFileService fileService;
+
     private final JobApplicationMapper jobApplicationMapper = Mappers.getMapper(JobApplicationMapper.class);
 
-    @Override
-    public void create(CreateJobApplicationRequest request) {
-        verifyUserExists(request.getUserId());
+    private static final String FILES_PATH = "src/main/resources/job-applications-files/";
 
+    @Override
+    public void create(Long userId, CreateJobApplicationRequest request) {
         Optional<JobApplication> jobApplicationOptional = jobApplicationRepository
-                .findByUserIdAndJobId(request.getUserId(), request.getJobId());
+                .findByUserIdAndJobId(userId, request.getJobId());
 
         if(jobApplicationOptional.isPresent()) {
             throw new ExceptionWithStatus("You already applied to this job", HttpStatus.CONFLICT);
@@ -76,7 +80,7 @@ public class JobApplicationService implements IJobApplicationService {
         }
 
         JobApplication jobApplication = JobApplication.builder()
-                .userId(request.getUserId())
+                .userId(userId)
                 .job(job)
                 .status(status)
                 .messageList(Collections.emptyList())
@@ -106,8 +110,6 @@ public class JobApplicationService implements IJobApplicationService {
 
     @Override
     public Iterable<JobApplicationResponse> getByUserId(Long userId) {
-        verifyUserExists(userId);
-
         return StreamSupport.stream(jobApplicationRepository.findAllByUserId(userId).spliterator(), false)
                 .map(jobApplicationMapper::toResponse)
                 .collect(Collectors.toList());
@@ -173,7 +175,6 @@ public class JobApplicationService implements IJobApplicationService {
     @Override
     public Message addMessage(String jobApplicationId, Message message) {
         JobApplication jobApplication = getJobApplicationOrElseThrowException(jobApplicationId);
-        verifyUserExists(message.getUserId());
 
         message.setTimestamp(LocalDateTime.now());
         jobApplication.getMessageList().add(message);
@@ -202,7 +203,7 @@ public class JobApplicationService implements IJobApplicationService {
     }
 
     @Override
-    public Review updateReview(String jobApplicationId, Review review) {
+    public Review updateReview(Long userId, String jobApplicationId, Review review) {
         JobApplication jobApplication = getJobApplicationOrElseThrowException(jobApplicationId);
 
         jobApplication.setReview(review);
@@ -254,6 +255,16 @@ public class JobApplicationService implements IJobApplicationService {
                 .build();
     }
 
+    @Override
+    public List<FileData> getFileList(String jobApplicationId) {
+        return fileService.list(FILES_PATH + jobApplicationId);
+    }
+
+    @Override
+    public Resource download(String jobApplicationId, String filename) {
+        return fileService.download(FILES_PATH + jobApplicationId, filename);
+    }
+
     private Integer getCountWithStatus(List<JobApplication> jobApplications, Integer jobApplicationStatusId) {
         return Math.toIntExact(jobApplications.stream()
                 .map(jobApplication -> jobApplication.getStatus().getId())
@@ -266,10 +277,6 @@ public class JobApplicationService implements IJobApplicationService {
         return jobApplicationRepository.findById(jobApplicationId).orElseThrow(
                 () -> new NotFoundException(String.format(JOB_APPLICATION_NOT_FOUND_MESSAGE, jobApplicationId))
         );
-    }
-
-    private void verifyUserExists(Long userId) {
-        databaseService.verifyUserExists(userId);
     }
 
     private void verifyJobExists(Long jobId) {

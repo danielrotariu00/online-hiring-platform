@@ -1,0 +1,107 @@
+[
+  {
+    "id": 1,
+    "name": "Seattle",
+    "country_id": 1
+  },
+  {
+    "id": 2,
+    "name": "New York",
+    "country_id": 1
+  },
+  {
+    "id": 3,
+    "name": "San Francisco",
+    "country_id": 1
+  },
+  {
+    "id": 4,
+    "name": "Zurich",
+    "country_id": 2
+  },
+  {
+    "id": 5,
+    "name": "Geneva",
+    "country_id": 2
+  },
+  {
+    "id": 6,
+    "name": "Jurong East",
+    "country_id": 3
+  },
+  {
+    "id": 7,
+    "name": "Toronto",
+    "country_id": 4
+  },
+  {
+    "id": 8,
+    "name": "Vancouver",
+    "country_id": 4
+  },
+  {
+    "id": 9,
+    "name": "Quebec",
+    "country_id": 4
+  },
+  {
+    "id": 10,
+    "name": "Sydney",
+    "country_id": 5
+  },
+  {
+    "id": 11,
+    "name": "Melbourne",
+    "country_id": 5
+  },
+  {
+    "id": 12,
+    "name": "London",
+    "country_id": 6
+  },
+  {
+    "id": 13,
+    "name": "Manchester",
+    "country_id": 6
+  },
+  {
+    "id": 14,
+    "name": "Berlin",
+    "country_id": 7
+  },
+  {
+    "id": 15,
+    "name": "Munchen",
+    "country_id": 7
+  },
+  {
+    "id": 16,
+    "name": "Paris",
+    "country_id": 8
+  },
+  {
+    "id": 17,
+    "name": "Nisa",
+    "country_id": 8
+  },
+  {
+    "id": 18,
+    "name": "Tokyo",
+    "country_id": 9
+  },
+  {
+    "id": 19,
+    "name": "Iasi",
+    "country_id": 10
+  },
+  {
+    "id": 20,
+    "name": "Cluj",
+    "country_id": 10
+  },
+  {
+    "id": 21,
+    "name": "Bucuresti",
+    "country_id": 10
+  }
+]

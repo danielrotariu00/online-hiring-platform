@@ -13,7 +13,7 @@ class DatabaseClient: IDatabaseClient{
 
     override fun getJobs(): List<JobDTO> {
         // TODO: replace localhost with env variable
-        val response = khttp.get("http://localhost:23050/jobs")
+        val response = khttp.get("http://localhost:23050/api/jobs")
 
         if (response.statusCode != 200) {
             throw ExceptionWithStatus(response.text, HttpStatus.valueOf(response.statusCode))

@@ -19,27 +19,28 @@ import javax.validation.constraints.Min;
 @Validated
 @RestController
 @CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
+@RequestMapping(value="/api/users/{userId}/projects")
 public class UserProjectController {
 
     @Autowired
     private IUserProjectService userProjectService;
 
     @ResponseStatus(HttpStatus.CREATED)
-    @RequestMapping(value="/projects", method=RequestMethod.POST)
-    public UserProjectDTO add(@Valid @RequestBody UserProjectDTO userProjectDTO) {
+    @RequestMapping(method=RequestMethod.POST)
+    public UserProjectDTO add(@Min(1) @PathVariable Long userId, @Valid @RequestBody UserProjectDTO userProjectDTO) {
 
-        return userProjectService.add(userProjectDTO);
+        return userProjectService.add(userId, userProjectDTO);
     }
 
-    @RequestMapping(value="/users/{userId}/projects", method=RequestMethod.GET)
+    @RequestMapping(method=RequestMethod.GET)
     public Iterable<UserProjectDTO> getByUserId(@Min(1) @PathVariable Long userId) {
 
         return userProjectService.getByUserId(userId);
     }
 
-    @RequestMapping(value="/projects/{projectId}", method=RequestMethod.DELETE)
-    public void delete(@Min(1) @PathVariable Long projectId) {
+    @RequestMapping(value="/{projectId}", method=RequestMethod.DELETE)
+    public void delete(@Min(1) @PathVariable Long userId, @Min(1) @PathVariable Long projectId) {
 
-        userProjectService.delete(projectId);
+        userProjectService.delete(userId, projectId);
     }
 }

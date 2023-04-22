@@ -19,9 +19,6 @@ public class UserProjectDTO {
 
     private Long id;
 
-    @NotNull
-    private Long userId;
-
     @NotEmpty
     private String name;
 
