@@ -283,6 +283,7 @@ export class DatabaseService {
     workTypeId: number,
     jobTypeId: number,
     experienceLevelId: number,
+    jobStatusId: number,
     description: string
   ) {
     return this.http.post(`${environment.databaseApiURL}/jobs`, {
@@ -293,6 +294,7 @@ export class DatabaseService {
       workTypeId,
       jobTypeId,
       experienceLevelId,
+      jobStatusId,
       description,
     });
   }
@@ -522,6 +524,7 @@ export class DatabaseService {
     page: number,
     maxJobs: number,
     open: boolean,
+    openJobStatusId: number,
     title?: String,
     countries?: Country[],
     cities?: City[],
@@ -627,7 +630,7 @@ export class DatabaseService {
     }
 
     if (open) {
-      const jobStatusQueryParam = `&jobStatusId=1`;
+      const jobStatusQueryParam = `&jobStatusId=${openJobStatusId}`;
 
       URL += jobStatusQueryParam;
     }

@@ -1,6 +1,5 @@
-package com.licenta.newsfeed.business.model
+package com.licenta.newsfeedmicroservice.business.model
 
-import com.licenta.newsfeedmicroservice.business.model.Job
 import java.io.Serializable
 
 data class JobQueryResponse(

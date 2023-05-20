@@ -6,11 +6,11 @@ import org.apache.spark.api.java.JavaSparkContext
 object Spark {
     private val sparkConf: SparkConf = SparkConf()
         .setAppName("Search Microservice")
-        .setMaster("spark://localhost:7077")
+        .setMaster("spark://${System.getenv("SPARK_MASTER_HOST")}:${System.getenv("SPARK_MASTER_PORT")}")
         .set("spark.io.encryption.enabled", "true")
         .set("spark.io.encryption.keySizeBits","256")
         .set("spark.executor.memory", "512m")
-        .setJars(arrayOf(System.getProperty("user.dir") + "/out/artifacts/SearchMicroservice_jar/SearchMicroservice.jar"))
+        .setJars(arrayOf("SearchMicroservice.jar"))
 
     val context = JavaSparkContext(sparkConf)
 }

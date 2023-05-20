@@ -10,6 +10,7 @@ import {
   RecruiterStatistics,
 } from "../models";
 import { JobApplicationStatus } from "../models/job_application_status";
+import { FileUpload } from "primeng/fileupload";
 
 @Injectable({ providedIn: "root" })
 export class JobApplicationService {
@@ -97,6 +98,15 @@ export class JobApplicationService {
         description,
       }
     );
+  }
+
+  uploadFile(
+    jobApplicationId: string,
+    fileUpload: FileUpload
+  ): Observable<any> {
+    fileUpload.url = `${environment.jobApplicationsApiURL}/job-applications/${jobApplicationId}/files`;
+    fileUpload.upload();
+    return fileUpload.onUpload.asObservable();
   }
 
   downloadFile(

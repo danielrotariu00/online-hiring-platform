@@ -94,6 +94,7 @@ export class RecruiterHomeComponent implements OnInit {
                   0,
                   this.maxJobs,
                   false,
+                  0,
                   undefined,
                   undefined,
                   undefined,
@@ -128,6 +129,7 @@ export class RecruiterHomeComponent implements OnInit {
         0,
         this.maxJobs,
         false,
+        0,
         undefined,
         undefined,
         undefined,
@@ -156,6 +158,7 @@ export class RecruiterHomeComponent implements OnInit {
         event.page,
         this.maxJobs,
         false,
+        0,
         undefined,
         undefined,
         undefined,
@@ -260,6 +263,7 @@ export class RecruiterHomeComponent implements OnInit {
                 0,
                 this.maxJobs,
                 false,
+                0,
                 undefined,
                 undefined,
                 undefined,
@@ -294,6 +298,7 @@ export class RecruiterHomeComponent implements OnInit {
           this.selectedWorkType.id,
           this.selectedJobType.id,
           this.selectedExperienceLevel.id,
+          this.selectedJobStatus.id,
           this.description
         )
         .pipe(first())
@@ -305,6 +310,7 @@ export class RecruiterHomeComponent implements OnInit {
                 0,
                 this.maxJobs,
                 false,
+                0,
                 undefined,
                 undefined,
                 undefined,

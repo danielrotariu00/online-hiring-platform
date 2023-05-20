@@ -1,8 +1,7 @@
 package com.licenta.databasemicroservice.presentation.controller;
 
 import com.licenta.databasemicroservice.business.interfaces.IUserDetailsService;
-import com.licenta.databasemicroservice.business.model.userdetails.SaveUserDetailsRequest;
-import com.licenta.databasemicroservice.business.model.userdetails.UserDetailsResponse;
+import com.licenta.databasemicroservice.business.model.UserDetailsDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,13 +25,13 @@ public class UserDetailsController {
     private IUserDetailsService userDetailsService;
 
     @RequestMapping(method=RequestMethod.PUT)
-    public UserDetailsResponse saveUserDetails(@Min(1) @PathVariable Long userId, @Valid @RequestBody SaveUserDetailsRequest request) {
+    public UserDetailsDTO saveUserDetails(@Min(1) @PathVariable Long userId, @Valid @RequestBody UserDetailsDTO request) {
 
         return userDetailsService.saveUserDetails(userId, request);
     }
 
     @RequestMapping(method=RequestMethod.GET)
-    public UserDetailsResponse getUserDetails(@Min(1) @PathVariable Long userId) {
+    public UserDetailsDTO getUserDetails(@Min(1) @PathVariable Long userId) {
 
         return userDetailsService.getUserDetails(userId);
     }
@@ -44,7 +43,7 @@ public class UserDetailsController {
     }
 
     @RequestMapping(value = "/image", method=RequestMethod.PUT)
-    public void uploadImage(@PathVariable Long userId, @RequestParam("img") MultipartFile image) throws IOException {
+    public void uploadImage(@PathVariable Long userId, @RequestParam("file") MultipartFile image) throws IOException {
 
         userDetailsService.saveImage(userId, image);
     }

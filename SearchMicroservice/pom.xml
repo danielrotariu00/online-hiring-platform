@@ -15,7 +15,7 @@
 	<description>Search Microservice</description>
 	<properties>
 		<java.version>11</java.version>
-		<kotlin.version>1.6.21</kotlin.version>
+		<kotlin.version>1.8.20</kotlin.version>
 	</properties>
 
 	<repositories>
@@ -80,6 +80,11 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.jetbrains.kotlin</groupId>
+			<artifactId>kotlin-maven-noarg</artifactId>
+			<version>${kotlin.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.mysql</groupId>

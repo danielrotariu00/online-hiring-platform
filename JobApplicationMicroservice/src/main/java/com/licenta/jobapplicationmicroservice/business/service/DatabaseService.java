@@ -17,7 +17,8 @@ import org.springframework.web.client.RestTemplate;
 public class DatabaseService implements IDatabaseService {
 
     private final RestTemplate restTemplate;
-    private final String URL_FORMAT = "http://localhost:23050/api/%s/%s";
+    private final String BASE_URL = String.format("http://%s:%s/api", System.getenv("DATABASE_MICROSERVICE_HOST"), System.getenv("DATABASE_MICROSERVICE_PORT"));
+    private final String URL_FORMAT = "%s/%s/%s";
 
     @Autowired
     public DatabaseService() {
@@ -28,7 +29,7 @@ public class DatabaseService implements IDatabaseService {
 
     @Override
     public void verifyUserExists(Long userId) {
-        ResponseEntity<String> response = restTemplate.getForEntity(String.format(URL_FORMAT, "users", userId), String.class);
+        ResponseEntity<String> response = restTemplate.getForEntity(String.format(URL_FORMAT, BASE_URL, "users", userId), String.class);
 
         if(response.getStatusCode() != HttpStatus.OK)
             throw new ExceptionWithStatus(response.getBody(), response.getStatusCode());
@@ -36,7 +37,7 @@ public class DatabaseService implements IDatabaseService {
 
     @Override
     public Job getJob(Long jobId) {
-        ResponseEntity<String> response = restTemplate.getForEntity(String.format(URL_FORMAT, "jobs", jobId), String.class);
+        ResponseEntity<String> response = restTemplate.getForEntity(String.format(URL_FORMAT, BASE_URL, "jobs", jobId), String.class);
 
         if(response.getStatusCode() != HttpStatus.OK)
             throw new ExceptionWithStatus(response.getBody(), response.getStatusCode());
@@ -47,7 +48,7 @@ public class DatabaseService implements IDatabaseService {
 
     @Override
     public Company getCompany(Long companyId) {
-        ResponseEntity<String> response = restTemplate.getForEntity(String.format(URL_FORMAT, "companies", companyId), String.class);
+        ResponseEntity<String> response = restTemplate.getForEntity(String.format(URL_FORMAT, BASE_URL, "companies", companyId), String.class);
 
         if(response.getStatusCode() != HttpStatus.OK)
             throw new ExceptionWithStatus(response.getBody(), response.getStatusCode());

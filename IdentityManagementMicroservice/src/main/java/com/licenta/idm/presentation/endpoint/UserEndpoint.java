@@ -97,7 +97,7 @@ public class UserEndpoint {
 	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "deleteUserRequest")
 	@ResponsePayload
 	public UserResponse deleteUser(@RequestPayload DeleteUserRequest request) throws MalformedClaimException {
-		 if (jwtProvider.isAuthorized(request.getToken(), request.getUserId())) {
+		if (jwtProvider.hasAdminRights(request.getToken()) || jwtProvider.hasManagerRights(request.getToken())) {
 			return userService.deleteUser(request);
 		 } else {
 			throw new ResponseStatusException(HttpStatus.FORBIDDEN);

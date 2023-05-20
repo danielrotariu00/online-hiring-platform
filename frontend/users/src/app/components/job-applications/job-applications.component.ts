@@ -97,6 +97,11 @@ export class JobApplicationsComponent implements OnInit {
           console.log(jobApplication);
           this.jobApplicationService.selectedJobApplicationId =
             this.selectedJobApplication.id;
+          this.jobApplicationService
+            .getFileList(this.selectedJobApplication.id)
+            .subscribe((result) => {
+              this.selectedJobApplication.fileList = result;
+            });
         });
     } else {
       event.value = [this.selectedJobApplication];

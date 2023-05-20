@@ -2,8 +2,7 @@ package com.licenta.databasemicroservice.business.service;
 
 import com.licenta.databasemicroservice.business.interfaces.ICityService;
 import com.licenta.databasemicroservice.business.interfaces.IUserDetailsService;
-import com.licenta.databasemicroservice.business.model.userdetails.SaveUserDetailsRequest;
-import com.licenta.databasemicroservice.business.model.userdetails.UserDetailsResponse;
+import com.licenta.databasemicroservice.business.model.UserDetailsDTO;
 import com.licenta.databasemicroservice.business.util.mapper.UserDetailsMapper;
 import com.licenta.databasemicroservice.persistence.entity.City;
 import com.licenta.databasemicroservice.persistence.entity.UserDetails;
@@ -42,7 +41,7 @@ public class UserDetailsService implements IUserDetailsService {
     private String usersImagesPath;
 
     @Override
-    public UserDetailsResponse saveUserDetails(Long userId, SaveUserDetailsRequest request) {
+    public UserDetailsDTO saveUserDetails(Long userId, UserDetailsDTO request) {
         UserDetails userDetails = userDetailsMapper.toModel(request);
 
 
@@ -63,13 +62,13 @@ public class UserDetailsService implements IUserDetailsService {
     }
 
     @Override
-    public UserDetailsResponse getUserDetails(Long userId) {
+    public UserDetailsDTO getUserDetails(Long userId) {
         UserDetails  userDetails = userDetailsRepository.findById(userId).orElse(null);
 
         if(userDetails != null)
             return userDetailsMapper.toResponse(userDetails);
         else
-            return UserDetailsResponse.builder().build();
+            return UserDetailsDTO.builder().build();
     }
 
     @Override
@@ -102,7 +101,6 @@ public class UserDetailsService implements IUserDetailsService {
             fos.write(imageBytes);
             fos.flush();
         }
-        System.out.println(imageName);
 
         path = urlService.getBaseUrl() + "/images/users/" + imageName;
         userDetails.setProfilePictureUrl(path);

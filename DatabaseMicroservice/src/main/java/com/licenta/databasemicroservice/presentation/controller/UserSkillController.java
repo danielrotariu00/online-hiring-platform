@@ -18,7 +18,7 @@ import javax.validation.constraints.Min;
 
 @Validated
 @RestController
-@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
+@CrossOrigin
 @RequestMapping(value="/api/users/{userId}/skills")
 public class UserSkillController {
 

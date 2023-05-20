@@ -12,8 +12,7 @@ import org.springframework.stereotype.Service
 class DatabaseClient: IDatabaseClient{
 
     override fun getJobs(): List<JobDTO> {
-        // TODO: replace localhost with env variable
-        val response = khttp.get("http://localhost:23050/api/jobs")
+        val response = khttp.get("http://${System.getenv("DATABASE_MICROSERVICE_HOST")}:${System.getenv("DATABASE_MICROSERVICE_PORT")}/api/jobs")
 
         if (response.statusCode != 200) {
             throw ExceptionWithStatus(response.text, HttpStatus.valueOf(response.statusCode))

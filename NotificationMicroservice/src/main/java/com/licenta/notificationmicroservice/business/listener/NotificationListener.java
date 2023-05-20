@@ -3,7 +3,6 @@ package com.licenta.notificationmicroservice.business.listener;
 import com.licenta.notificationmicroservice.business.constants.KafkaConstants;
 import com.licenta.notificationmicroservice.business.interfaces.INotificationService;
 import com.licenta.notificationmicroservice.business.model.NotificationDTO;
-import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;

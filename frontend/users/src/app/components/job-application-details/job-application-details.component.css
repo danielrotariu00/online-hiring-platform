@@ -62,3 +62,7 @@ li {
   border-top: 1px solid rgba(209, 201, 201, 0.7);
   font-size: 18px;
 }
+
+.hover {
+  cursor: pointer;
+}

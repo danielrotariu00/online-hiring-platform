@@ -9,7 +9,6 @@ import com.licenta.databasemicroservice.business.interfaces.IJobTypeService;
 import com.licenta.databasemicroservice.business.interfaces.IWorkTypeService;
 import com.licenta.databasemicroservice.business.model.job.JobRequest;
 import com.licenta.databasemicroservice.business.model.job.JobResponse;
-import com.licenta.databasemicroservice.business.util.Constants;
 import com.licenta.databasemicroservice.business.util.exception.NotFoundException;
 import com.licenta.databasemicroservice.business.util.mapper.JobMapper;
 import com.licenta.databasemicroservice.persistence.entity.City;
@@ -60,7 +59,7 @@ public class JobService implements IJobService {
         WorkType workType = workTypeService.getWorkTypeOrElseThrowException(request.getWorkTypeId());
         JobType jobType = jobTypeService.getJobTypeOrElseThrowException(request.getJobTypeId());
         ExperienceLevel experienceLevel = experienceLevelService.getExperienceLevelOrElseThrowException(request.getExperienceLevelId());
-        JobStatus jobStatus = jobStatusService.getJobStatusOrElseThrowException(Constants.INITIAL_JOB_STATUS_ID);
+        JobStatus jobStatus = jobStatusService.getJobStatusOrElseThrowException(request.getJobStatusId());
 
         job.setRecruiterId(request.getRecruiterId());
         job.setCompanyIndustry(companyIndustry);

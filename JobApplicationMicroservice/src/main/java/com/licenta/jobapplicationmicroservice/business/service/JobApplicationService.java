@@ -27,7 +27,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -263,6 +267,24 @@ public class JobApplicationService implements IJobApplicationService {
     @Override
     public Resource download(String jobApplicationId, String filename) {
         return fileService.download(FILES_PATH + jobApplicationId, filename);
+    }
+
+    @Override
+    public void saveFile(String jobApplicationId, MultipartFile file) throws IOException {
+        getJobApplicationOrElseThrowException(jobApplicationId);
+
+
+        byte[] fileBytes = file.getBytes();
+        String path = FILES_PATH + "/" + jobApplicationId;
+
+        File jobApplicationDirectory = new File(path);
+        if (!jobApplicationDirectory.exists()){
+            jobApplicationDirectory.mkdirs();
+        }
+        try (FileOutputStream fos = new FileOutputStream(path + '/' + file.getOriginalFilename())) {
+            fos.write(fileBytes);
+            fos.flush();
+        }
     }
 
     private Integer getCountWithStatus(List<JobApplication> jobApplications, Integer jobApplicationStatusId) {

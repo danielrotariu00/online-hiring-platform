@@ -43,6 +43,15 @@
       ></p-confirmDialog>
       <br />
       <br />
+      <p-fieldset legend="Files" [toggleable]="true" collapsed="true">
+        <div *ngFor="let fileData of selectedJobApplication?.fileList">
+          <a class="hover" (click)="downloadFile(fileData)">{{
+            fileData.filename
+          }}</a>
+        </div>
+        <br />
+      </p-fieldset>
+      <br />
       <div class="chat-box">
         <div class="header">
           <h4>&nbsp; Messages</h4>

@@ -3,6 +3,7 @@ package com.licenta.databasemicroservice.business.util;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.licenta.databasemicroservice.business.service.UrlService;
 import com.licenta.databasemicroservice.persistence.entity.City;
 import com.licenta.databasemicroservice.persistence.entity.Country;
 import com.licenta.databasemicroservice.persistence.entity.EducationalInstitution;
@@ -61,6 +62,8 @@ public class DataLoader implements ApplicationRunner {
     private LanguageLevelRepository languageLevelRepository;
     @Autowired
     private SkillRepository skillRepository;
+    @Autowired
+    private UrlService urlService;
 
     public void run(ApplicationArguments args) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
@@ -89,7 +92,11 @@ public class DataLoader implements ApplicationRunner {
             List<EducationalInstitution> educationalInstitutions = mapper.readValue(Paths.get(INITIAL_DATA_PATH + "educational-institutions.json").toFile(),
                     new TypeReference<List<EducationalInstitution>>() {
                     });
-            educationalInstitutions.forEach(e -> e.setId(null));
+            String baseURL = urlService.getBaseUrl() + "/images/";
+            educationalInstitutions.forEach(e -> {
+                e.setId(null);
+                e.setPhoto(baseURL + e.getPhoto());
+            });
             educationalInstitutionRepository.saveAllAndFlush(educationalInstitutions);
         }
 
@@ -113,7 +120,6 @@ public class DataLoader implements ApplicationRunner {
             List<JobStatus> jobStatuses = mapper.readValue(Paths.get(INITIAL_DATA_PATH + "job-statuses.json").toFile(),
                     new TypeReference<List<JobStatus>>() {
                     });
-            jobStatuses.forEach(j -> j.setId(null));
             jobStatusRepository.saveAllAndFlush(jobStatuses);
         }
 

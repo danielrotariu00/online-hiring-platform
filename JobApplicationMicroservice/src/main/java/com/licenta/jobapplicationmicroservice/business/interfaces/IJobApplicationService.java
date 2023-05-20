@@ -9,7 +9,9 @@ import com.licenta.jobapplicationmicroservice.business.model.RecruiterStatistics
 import com.licenta.jobapplicationmicroservice.business.model.Review;
 import com.licenta.jobapplicationmicroservice.business.model.UpdateJobApplicationRequest;
 import org.springframework.core.io.Resource;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface IJobApplicationService {
@@ -33,4 +35,6 @@ public interface IJobApplicationService {
     List<FileData> getFileList(String jobApplicationId);
 
     Resource download(String jobApplicationId, String filename);
+
+    void saveFile(String jobApplicationId, MultipartFile file) throws IOException;
 }

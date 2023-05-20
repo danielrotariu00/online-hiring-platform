@@ -19,8 +19,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
@@ -31,7 +33,7 @@ import java.util.List;
 
 @Validated
 @RestController
-@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
+@CrossOrigin
 @RequestMapping(value="/api")
 public class JobApplicationController {
 
@@ -104,6 +106,12 @@ public class JobApplicationController {
     public RecruiterStatistics getRecruiterStatistics(@PathVariable Long recruiterId) {
 
         return jobApplicationService.getRecruiterStatistics(recruiterId);
+    }
+
+    @RequestMapping(value = "/job-applications/{jobApplicationId}/files", method = RequestMethod.PUT)
+    public void uploadFile(@PathVariable String jobApplicationId, @RequestParam("file") MultipartFile file) throws IOException {
+
+        jobApplicationService.saveFile(jobApplicationId, file);
     }
 
     @RequestMapping(value = "/job-applications/{jobApplicationId}/files", method = RequestMethod.GET)

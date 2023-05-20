@@ -70,7 +70,8 @@ class FilterService: IFilterService {
             industryId = jobDTO.industryId,
             description = jobDTO.description,
             postedAt = jobDTO.postedAt,
-            jobStatusId = jobDTO.jobStatusId
+            jobStatusId = jobDTO.jobStatusId,
+            savedAt = LocalDateTime.now()
         )
     }
 

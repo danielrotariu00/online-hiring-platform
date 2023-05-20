@@ -21,6 +21,7 @@ import { ConfirmationService, MessageService } from "primeng/api";
 import { first } from "rxjs/operators";
 import { formatDate } from "@angular/common";
 import { saveAs } from "file-saver";
+import { FileUpload } from "primeng/fileupload";
 
 @Component({
   selector: "app-job-application-details",
@@ -36,9 +37,10 @@ export class JobApplicationDetailsComponent
   @ViewChild("scrollMe")
   private myScrollContainer: ElementRef;
 
+  @ViewChild(FileUpload) fileupload!: FileUpload;
+
   @Input()
   jobApplication: JobApplication;
-  fileList?: FileData[];
 
   displayReviewForm: boolean = false;
   inputRating: number = 0;
@@ -80,7 +82,7 @@ export class JobApplicationDetailsComponent
     this.jobApplicationService
       .getFileList(this.jobApplication.id)
       .subscribe((result) => {
-        this.fileList = result;
+        this.jobApplication.fileList = result;
       });
   }
 
@@ -181,6 +183,22 @@ export class JobApplicationDetailsComponent
           console.log("error");
         },
       });
+  }
+
+  uploadFile() {
+    if (this.fileupload.hasFiles()) {
+      this.jobApplicationService
+        .uploadFile(this.jobApplication.id, this.fileupload)
+        .pipe(first())
+        .subscribe({
+          next: (event: any) => {
+            console.log("success");
+          },
+          error: (error) => {
+            console.log("error");
+          },
+        });
+    }
   }
 
   downloadFile(fileData: FileData): void {

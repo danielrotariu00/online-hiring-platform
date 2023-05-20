@@ -4,6 +4,7 @@ import { JobResponse } from "./job_response";
 import { JobApplicationMessage } from "./job_application_message";
 import { UserDetails } from "./user_details";
 import { Review } from "./review";
+import { FileData } from "./file_data";
 
 export class JobApplication {
   id?: string;
@@ -16,4 +17,5 @@ export class JobApplication {
   messageList: Set<JobApplicationMessage>;
   review: Review;
   formattedUpdatedAt: string;
+  fileList?: FileData[];
 }

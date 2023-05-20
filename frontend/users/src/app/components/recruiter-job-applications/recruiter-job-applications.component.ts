@@ -1,5 +1,5 @@
 import { formatDate } from "@angular/common";
-import { isNgTemplate } from "@angular/compiler";
+import { saveAs } from "file-saver";
 import {
   Component,
   ElementRef,
@@ -24,6 +24,7 @@ import {
   User,
   UserDetails,
   JobApplicationMessage,
+  FileData,
 } from "../../models";
 import { JobApplicationStatus } from "../../models/job_application_status";
 import {
@@ -199,6 +200,11 @@ export class RecruiterJobApplicationsComponent implements OnInit, OnDestroy {
 
           this.jobApplicationService.selectedJobApplicationId =
             this.selectedJobApplication.id;
+          this.jobApplicationService
+            .getFileList(this.selectedJobApplication.id)
+            .subscribe((result) => {
+              this.selectedJobApplication.fileList = result;
+            });
         });
     } else {
       event.value = [this.selectedJobApplication];
@@ -266,6 +272,12 @@ export class RecruiterJobApplicationsComponent implements OnInit, OnDestroy {
           },
         });
     }
+  }
+
+  downloadFile(fileData: FileData): void {
+    this.jobApplicationService
+      .downloadFile(this.selectedJobApplication.id, fileData.filename)
+      .subscribe((blob) => saveAs(blob, fileData.filename));
   }
 
   ngAfterViewChecked() {

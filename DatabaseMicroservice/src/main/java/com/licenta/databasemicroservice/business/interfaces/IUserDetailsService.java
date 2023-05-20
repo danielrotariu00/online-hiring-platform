@@ -1,15 +1,14 @@
 package com.licenta.databasemicroservice.business.interfaces;
 
-import com.licenta.databasemicroservice.business.model.userdetails.SaveUserDetailsRequest;
-import com.licenta.databasemicroservice.business.model.userdetails.UserDetailsResponse;
+import com.licenta.databasemicroservice.business.model.UserDetailsDTO;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
 public interface IUserDetailsService {
 
-    UserDetailsResponse saveUserDetails(Long userId, SaveUserDetailsRequest request);
-    UserDetailsResponse getUserDetails(Long userId);
+    UserDetailsDTO saveUserDetails(Long userId, UserDetailsDTO request);
+    UserDetailsDTO getUserDetails(Long userId);
 
     void saveImage(Long userId, MultipartFile image) throws IOException;
 

@@ -21,7 +21,7 @@ import java.io.IOException;
 
 @Validated
 @RestController
-@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
+@CrossOrigin
 @RequestMapping(value="/api/companies")
 public class CompanyController {
 
@@ -60,7 +60,7 @@ public class CompanyController {
     }
 
     @RequestMapping(value = "/{companyId}/image", method=RequestMethod.PUT)
-    public void uploadImage(@PathVariable Long companyId, @RequestParam("img") MultipartFile image) throws IOException {
+    public void uploadImage(@PathVariable Long companyId, @RequestParam("file") MultipartFile image) throws IOException {
 
         companyService.saveImage(companyId, image);
     }
