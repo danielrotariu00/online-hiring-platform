@@ -43,6 +43,7 @@ import { MessageService } from "primeng/api";
 import { ManagerHomeComponent } from "./components/manager-home/manager-home.component";
 import { CompanyRecruitersComponent } from "./components/company-recruiters/company-recruiters.component";
 import { SecurePipe } from "./helpers/secure.pipe";
+import { ProgressSpinnerModule } from "primeng/progressspinner";
 
 @NgModule({
   imports: [
@@ -68,6 +69,7 @@ import { SecurePipe } from "./helpers/secure.pipe";
     SplitButtonModule,
     FileUploadModule,
     SliderModule,
+    ProgressSpinnerModule,
   ],
   declarations: [
     AppComponent,

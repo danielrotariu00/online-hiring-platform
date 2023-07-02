@@ -107,22 +107,33 @@ export default function Users() {
   };
 
   const onConfirmClick = () => {
-    let companyManagersURL = "http://localhost:5000/api/managers";
-    const requestOptions = {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: newEmail,
-        password: newPassword,
-        companyId: selectedCompany.id,
-      }),
-    };
-    fetch(companyManagersURL, requestOptions)
-      .then((response) => response.json())
-      .then((_data) => getCompanies());
+    let re =
+      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (re.test(newEmail)) {
+      if (newPassword.length < 6) {
+        alert("Password is too short!");
+      } else {
+        let companyManagersURL = "http://localhost:5000/api/managers";
+        const requestOptions = {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: newEmail,
+            password: newPassword,
+            companyId: selectedCompany.id,
+          }),
+        };
+        fetch(companyManagersURL, requestOptions)
+          .then((response) => response.json())
+          .then((_data) => getCompanies());
+        onHide();
+      }
+    } else {
+      alert("Invalid email!");
+    }
   };
 
   const onCreateClick = () => {
@@ -162,7 +173,6 @@ export default function Users() {
           icon="pi pi-check"
           onClick={() => {
             onConfirmClick();
-            onHide();
           }}
           autoFocus
         />

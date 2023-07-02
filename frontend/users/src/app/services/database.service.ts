@@ -670,6 +670,7 @@ export class DatabaseService {
 
     job.id = jobResponse.id;
     job.title = jobResponse.title;
+    job.postedAt = jobResponse.postedAt;
 
     this.getCompanyById(jobResponse.companyId).subscribe((company: Company) => {
       job.company = company;

@@ -15,10 +15,10 @@ CORS(app)
 
 IDM_MICROSERVICE_URL = "http://{}:{}/ws/users.wsdl".format(os.environ["IDM_MICROSERVICE_HOST"], os.environ["IDM_MICROSERVICE_PORT"])
 DATABASE_MICROSERVICE_API_URL = "http://{}:{}/api".format(os.environ["DATABASE_MICROSERVICE_HOST"], os.environ["DATABASE_MICROSERVICE_PORT"])
-SEARCH_MICROSERVICE_API_URL = "http://{}:{}/api".format(os.environ["SEARCH_MICROSERVICE_HOST"], os.environ["SEARCH_MICROSERVICE_PORT"])
+FILTER_MICROSERVICE_API_URL = "http://{}:{}/api".format(os.environ["FILTER_MICROSERVICE_HOST"], os.environ["FILTER_MICROSERVICE_PORT"])
 NEWSFEED_MICROSERVICE_API_URL = "http://{}:{}/api".format(os.environ["NEWSFEED_MICROSERVICE_HOST"], os.environ["NEWSFEED_MICROSERVICE_PORT"])
-JOB_APPLICATION_MICROSERVICE_API_URL = "http://{}:{}/api".format(os.environ["JOB_APPLICATION_MICROSERVICE_HOST"], os.environ["JOB_APPLICATION_MICROSERVICE_PORT"])
-NOTIFICATION_MICROSERVICE_API_URL = "http://{}:{}/api".format(os.environ["NOTIFICATION_MICROSERVICE_HOST"], os.environ["NOTIFICATION_MICROSERVICE_PORT"])
+JOB_APPLICATION_MICROSERVICE_API_URL = "http://{}:{}/api".format(os.environ["JOB_APPLICATIONS_MICROSERVICE_HOST"], os.environ["JOB_APPLICATIONS_MICROSERVICE_PORT"])
+NOTIFICATION_MICROSERVICE_API_URL = "http://{}:{}/api".format(os.environ["NOTIFICATIONS_MICROSERVICE_HOST"], os.environ["NOTIFICATIONS_MICROSERVICE_PORT"])
 
 CANDIDATE_ROLE_ID = 1
 RECRUITER_ROLE_ID = 2
@@ -450,7 +450,7 @@ def job_applications_proxy(user, path):
 @app.route("/filter-api/<path:path>", methods=["GET"])
 @login_required
 def filter_proxy(_, path):
-    return forward_request(SEARCH_MICROSERVICE_API_URL, path, request)
+    return forward_request(FILTER_MICROSERVICE_API_URL, path, request)
 
 
 @app.route("/newsfeed-api/<path:path>", methods=["GET"])

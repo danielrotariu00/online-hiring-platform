@@ -1,4 +1,5 @@
-import { Component, OnInit } from "@angular/core";
+import { formatDate } from "@angular/common";
+import { Component, Inject, LOCALE_ID, OnInit } from "@angular/core";
 import { Job, NewsfeedEntry, User } from "src/app/models";
 import { AccountService, DatabaseService } from "src/app/services";
 import { NewsfeedService } from "src/app/services/newsfeed.service";
@@ -18,7 +19,8 @@ export class NewsfeedComponent implements OnInit {
   constructor(
     private databaseService: DatabaseService,
     private newsfeedService: NewsfeedService,
-    private accountService: AccountService
+    private accountService: AccountService,
+    @Inject(LOCALE_ID) private locale: string
   ) {
     this.user = this.accountService.userValue;
   }
@@ -33,6 +35,15 @@ export class NewsfeedComponent implements OnInit {
             .subscribe((jobResponse) => {
               let job = this.databaseService.toJob(jobResponse);
               this.jobs.push(...[job]);
+              this.jobs = this.jobs.map((job) => {
+                job.formattedTimestamp = formatDate(
+                  job.postedAt,
+                  "d MMM y, h:mm:ss a",
+                  this.locale
+                );
+
+                return job;
+              });
               this.selectedJob = this.jobs[0];
             });
         });
@@ -53,6 +64,15 @@ export class NewsfeedComponent implements OnInit {
               .subscribe((jobResponse) => {
                 let job = this.databaseService.toJob(jobResponse);
                 this.jobs.push(...[job]);
+                this.jobs = this.jobs.map((job) => {
+                  job.formattedTimestamp = formatDate(
+                    job.postedAt,
+                    "d MMM y, h:mm:ss a",
+                    this.locale
+                  );
+
+                  return job;
+                });
               });
           });
         });

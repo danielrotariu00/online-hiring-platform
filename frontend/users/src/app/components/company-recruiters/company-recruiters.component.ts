@@ -7,6 +7,7 @@ import {
 } from "../../services";
 import { Router } from "@angular/router";
 import { first } from "rxjs";
+import { MessageService } from "primeng/api";
 
 @Component({
   selector: "app-recruiters",
@@ -29,7 +30,8 @@ export class CompanyRecruitersComponent implements OnInit {
   constructor(
     private accountService: AccountService,
     private databaseService: DatabaseService,
-    private jobApplicationService: JobApplicationService
+    private jobApplicationService: JobApplicationService,
+    private messageService: MessageService
   ) {}
 
   ngOnInit(): void {
@@ -70,32 +72,55 @@ export class CompanyRecruitersComponent implements OnInit {
   }
 
   addRecruiter() {
-    this.databaseService
-      .addCompanyRecruiter(this.companyId, this.email, this.password)
-      .pipe(first())
-      .subscribe({
-        next: () => {
-          this.displayRecruiterForm = false;
-          this.databaseService
-            .getCompanyRecruitersByCompanyId(this.companyId)
-            .subscribe((companyRecruiters: CompanyRecruiter[]) => {
-              this.companyRecruiters = companyRecruiters.map(
-                (companyRecruiter) => {
-                  this.databaseService
-                    .getRecruiterById(companyRecruiter.recruiterId)
-                    .subscribe((companyRecruiterResponse: CompanyRecruiter) => {
-                      companyRecruiter.email = companyRecruiterResponse.email;
-                    });
+    const expression: RegExp =
+      /^(?=.{1,254}$)(?=.{1,64}@)[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+(\.[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+)*@[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?(\.[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?)*$/;
+    const result: boolean = expression.test(this.email);
 
-                  return companyRecruiter;
-                }
-              );
-            });
-        },
-        error: (error) => {
-          console.log("error");
-        },
+    if (!result) {
+      this.messageService.add({
+        severity: "error",
+        summary: "Error",
+        detail: "Email is not valid!",
       });
+    } else {
+      if (this.password.length < 6) {
+        this.messageService.add({
+          severity: "error",
+          summary: "Error",
+          detail: "Password must be at least 6 characters!",
+        });
+      } else {
+        this.databaseService
+          .addCompanyRecruiter(this.companyId, this.email, this.password)
+          .pipe(first())
+          .subscribe({
+            next: () => {
+              this.displayRecruiterForm = false;
+              this.databaseService
+                .getCompanyRecruitersByCompanyId(this.companyId)
+                .subscribe((companyRecruiters: CompanyRecruiter[]) => {
+                  this.companyRecruiters = companyRecruiters.map(
+                    (companyRecruiter) => {
+                      this.databaseService
+                        .getRecruiterById(companyRecruiter.recruiterId)
+                        .subscribe(
+                          (companyRecruiterResponse: CompanyRecruiter) => {
+                            companyRecruiter.email =
+                              companyRecruiterResponse.email;
+                          }
+                        );
+
+                      return companyRecruiter;
+                    }
+                  );
+                });
+            },
+            error: (error) => {
+              console.log("error");
+            },
+          });
+      }
+    }
   }
 
   deleteRecruiter() {

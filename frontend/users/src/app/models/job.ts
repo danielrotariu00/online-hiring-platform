@@ -24,4 +24,5 @@ export class Job {
   description: string;
   jobStatusId: number;
   postedAt: string;
+  formattedTimestamp?: string;
 }

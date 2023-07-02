@@ -12,6 +12,7 @@ export default function Users() {
 
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
+  const roleNames = ["None", "Candidate", "Recruiter", "Manager", "Admin"];
 
   useEffect(() => {
     getUsers();
@@ -106,7 +107,7 @@ export default function Users() {
               <div>
                 <h3>Id: {selectedUser?.id}</h3>
                 <h3>Email: {selectedUser?.email}</h3>
-                <h3>RoleId: {selectedUser?.userRole?.roleId}</h3>
+                <h3>Role: {roleNames[selectedUser?.userRole?.roleId]}</h3>
                 <h3>CompanyId: {selectedUser?.userRole?.companyId}</h3>
               </div>
             }

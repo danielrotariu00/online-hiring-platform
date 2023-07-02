@@ -2,7 +2,7 @@ package com.licenta.newsfeedmicroservice.business.services
 
 import com.licenta.newsfeedmicroservice.business.interfaces.IDatabaseService
 import com.licenta.newsfeedmicroservice.business.interfaces.INewsfeedService
-import com.licenta.newsfeedmicroservice.business.interfaces.ISearchService
+import com.licenta.newsfeedmicroservice.business.interfaces.IFilterService
 import com.licenta.newsfeedmicroservice.business.model.*
 import com.licenta.newsfeedmicroservice.business.util.parser.LocalDateTimeParser
 import com.licenta.newsfeedmicroservice.persistence.entities.Entry
@@ -15,7 +15,7 @@ class NewsfeedService: INewsfeedService {
     @Autowired
     private lateinit var databaseService: IDatabaseService
     @Autowired
-    private lateinit var searchService: ISearchService
+    private lateinit var searchService: IFilterService
     @Autowired
     private lateinit var callService: CallService // todo: interface
     @Autowired

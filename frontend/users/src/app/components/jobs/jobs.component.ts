@@ -1,4 +1,5 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { Component, Inject, LOCALE_ID, OnInit, ViewChild } from "@angular/core";
+import { formatDate } from "@angular/common";
 import { ActivatedRoute } from "@angular/router";
 import { Paginator } from "primeng/paginator";
 import {
@@ -24,6 +25,8 @@ import { DatabaseService } from "../../services";
 })
 export class JobsComponent implements OnInit {
   @ViewChild("paginator", { static: true }) paginator: Paginator;
+
+  isLoading: boolean = false;
 
   jobs: Job[];
   selectedJob: Job;
@@ -65,7 +68,8 @@ export class JobsComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private databaseService: DatabaseService
+    private databaseService: DatabaseService,
+    @Inject(LOCALE_ID) private locale: string
   ) {}
 
   ngOnInit(): void {
@@ -83,6 +87,7 @@ export class JobsComponent implements OnInit {
           .filter((jobStatus) => jobStatus.name === "OPEN")
           .map((jobStatus) => jobStatus.id)[0];
 
+        this.isLoading = true;
         this.databaseService
           .getJobs(
             0,
@@ -97,10 +102,20 @@ export class JobsComponent implements OnInit {
           )
           .subscribe((jobQueryResponse: JobQueryResponse) => {
             this.jobs = this.toJobList(jobQueryResponse.jobList);
+            this.jobs = this.jobs.map((job) => {
+              job.formattedTimestamp = formatDate(
+                job.postedAt,
+                "d MMM y, h:mm:ss a",
+                this.locale
+              );
+
+              return job;
+            });
             this.totalElements = jobQueryResponse.totalElements;
             this.totalPages = jobQueryResponse.totalPages;
             this.selectedJob = this.jobs[0];
             setTimeout(() => this.paginator.changePage(0));
+            this.isLoading = false;
           });
 
         this.databaseService
@@ -161,6 +176,7 @@ export class JobsComponent implements OnInit {
 
   onClickFilter() {
     this.jobs = [];
+    this.isLoading = true;
     this.databaseService
       .getJobs(
         0,
@@ -180,14 +196,25 @@ export class JobsComponent implements OnInit {
       )
       .subscribe((jobQueryResponse: JobQueryResponse) => {
         this.jobs = this.toJobList(jobQueryResponse.jobList);
+        this.jobs = this.jobs.map((job) => {
+          job.formattedTimestamp = formatDate(
+            job.postedAt,
+            "d MMM y, h:mm:ss a",
+            this.locale
+          );
+
+          return job;
+        });
         this.totalElements = jobQueryResponse.totalElements;
         this.totalPages = jobQueryResponse.totalPages;
         this.selectedJob = this.jobs[0];
+        this.isLoading = false;
       });
   }
 
   onPageChange(event: any) {
     this.jobs = [];
+    this.isLoading = true;
     this.databaseService
       .getJobs(
         event.page,
@@ -207,6 +234,16 @@ export class JobsComponent implements OnInit {
       )
       .subscribe((jobQueryResponse: JobQueryResponse) => {
         this.jobs = this.toJobList(jobQueryResponse.jobList);
+        this.jobs = this.jobs.map((job) => {
+          job.formattedTimestamp = formatDate(
+            job.postedAt,
+            "d MMM y, h:mm:ss a",
+            this.locale
+          );
+
+          return job;
+        });
+        this.isLoading = false;
       });
   }
 
@@ -222,14 +259,25 @@ export class JobsComponent implements OnInit {
     this.description = "";
     this.postedSince = undefined;
 
+    this.isLoading = true;
     this.databaseService
       .getJobs(0, this.maxJobs, true, this.openjobStatusId)
       .subscribe((jobQueryResponse: JobQueryResponse) => {
         this.jobs = this.toJobList(jobQueryResponse.jobList);
+        this.jobs = this.jobs.map((job) => {
+          job.formattedTimestamp = formatDate(
+            job.postedAt,
+            "d MMM y, h:mm:ss a",
+            this.locale
+          );
+
+          return job;
+        });
         this.totalElements = jobQueryResponse.totalElements;
         this.totalPages = jobQueryResponse.totalPages;
         this.selectedJob = this.jobs[0];
         setTimeout(() => this.paginator.changePage(0));
+        this.isLoading = false;
       });
 
     this.databaseService.getCities().subscribe((cities: City[]) => {

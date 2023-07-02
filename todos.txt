@@ -1,11 +1,4 @@
 todo:
-- educational institution image path
-- docker deployment
-- admin ui, role name instead of id
 - update data on company profile when edit
 - view jobs bug
-- apply - recruiter 3 notifications bug
-- filter jobs spinner and no results found
-- confirmation for buttons
-- admin login unauthorized
 

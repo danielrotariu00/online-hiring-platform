@@ -187,6 +187,12 @@
           (onPageChange)="onPageChange($event)"
           [showPageLinks]="true"
         ></p-paginator>
+        <div *ngIf="jobs.length === 0 && !isLoading">
+          <p>No results found.</p>
+        </div>
+        <div *ngIf="isLoading">
+          <p-progressSpinner></p-progressSpinner>
+        </div>
         <ng-template ngFor let-job [ngForOf]="jobs">
           <div (click)="setSelectedJob(job)" class="job-preview">
             <br />

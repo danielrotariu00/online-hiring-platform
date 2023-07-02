@@ -15,16 +15,12 @@ services:
   database-microservice:
     image: database-microservice
     container_name: database-microservice
-    ports: 
-      - 23050:23050
     depends_on:
       - mysqldb
       
-  search-microservice:
-    image: search-microservice
-    container_name: search-microservice
-    ports: 
-      - 23051:23051
+  filter-microservice:
+    image: filter-microservice
+    container_name: filter-microservice
     depends_on:
     - mysqldb
     - spark-master
@@ -32,23 +28,19 @@ services:
   newsfeed-microservice:
     image: newsfeed-microservice
     container_name: newsfeed-microservice
-    ports: 
-      - 23052:23052
     depends_on:
     - mysqldb
 
-  job-application-microservice:
-    image: job-application-microservice
-    container_name: job-application-microservice
-    ports: 
-      - 23053:23053
+  job-applications-microservice:
+    image: job-applications-microservice
+    container_name: job-applications-microservice
     depends_on:
     - mongodb
     - kafka
 
-  notification-microservice:
-    image: notification-microservice
-    container_name: notification-microservice
+  notifications-microservice:
+    image: notifications-microservice
+    container_name: notifications-microservice
     ports: 
       - 23054:23054
     depends_on:
@@ -58,18 +50,13 @@ services:
   idm-microservice:
     image: idm-microservice
     container_name: idm-microservice
-    ports: 
-      - 8090:8090
     depends_on:
     - mysqldb
       
   mysqldb:
-    platform: linux/x86_64
     container_name: mysqldb
     image: mysql:latest
     restart: always
-    ports:
-      - 3307:3306
     environment:
       MYSQL_USER: daniel
       MYSQL_PASSWORD: daniel
@@ -79,15 +66,22 @@ services:
     image: mongo:latest
     container_name: mongodb
     restart: always
+      
+  users-frontend:
+    image: users-frontend:latest
+    container_name: users-frontend
     ports:
-      - 27018:27017
+      - 4200:4200
+      
+  admin-frontend:
+    image: admin-frontend:latest
+    container_name: admin-frontend
+    ports:
+      - 3000:3000
          
   spark-master:
     image: spark-master
     container_name: spark-master
-    ports:
-      - 8080:8080
-      - 7077:7077
     volumes:
       - shared-workspace:/opt/workspace
       
@@ -97,8 +91,6 @@ services:
     environment:
       - SPARK_WORKER_CORES=1
       - SPARK_WORKER_MEMORY=512m
-    ports:
-      - 8081:8081
     volumes:
       - shared-workspace:/opt/workspace
     depends_on:
@@ -110,8 +102,6 @@ services:
     environment:
       - SPARK_WORKER_CORES=1
       - SPARK_WORKER_MEMORY=512m
-    ports:
-      - 8082:8081
     volumes:
       - shared-workspace:/opt/workspace
     depends_on:
@@ -123,16 +113,12 @@ services:
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
-    ports:
-      - 22181:2181
   
   kafka:
     image: confluentinc/cp-kafka:latest
     container_name: kafka
     depends_on:
       - zookeeper
-    ports:
-      - 29092:29092
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
