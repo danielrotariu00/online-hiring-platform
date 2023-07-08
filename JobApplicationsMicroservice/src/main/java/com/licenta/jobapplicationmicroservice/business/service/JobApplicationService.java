@@ -133,12 +133,10 @@ public class JobApplicationService implements IJobApplicationService {
         JobApplication jobApplication = getJobApplicationOrElseThrowException(jobApplicationId);
         JobApplicationStatus status = jobApplicationStatusService.getStatusOrElseThrowException(request.getStatusId());
 
-        // TODO: define status change order
         if (status != jobApplication.getStatus()) {
             jobApplication.setStatus(status);
             jobApplicationRepository.save(jobApplication);
 
-            // todo extract constant
             Job job = databaseService.getJob(jobApplication.getJob().getId());
             Company company = databaseService.getCompany(job.getCompanyId());
             if (status.getName().equals("WITHDRAWN")) {
