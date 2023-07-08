@@ -17,9 +17,9 @@ class NewsfeedService: INewsfeedService {
     @Autowired
     private lateinit var searchService: IFilterService
     @Autowired
-    private lateinit var callService: CallService // todo: interface
+    private lateinit var callService: CallService
     @Autowired
-    private lateinit var entryService: EntryService // todo: interface
+    private lateinit var entryService: EntryService
 
     override fun getNewsfeed(userId: Long, maxEntries: Int): Iterable<EntryResponse> {
         val lastCall = callService.getAndUpdateLastCallTimestamp(userId)
