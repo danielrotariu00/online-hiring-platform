@@ -2,6 +2,7 @@ import { Component, OnInit, Input, OnChanges } from "@angular/core";
 import { Job, JobApplication, JobResponse, User } from "../../models";
 import { AccountService, JobApplicationService } from "../../services";
 import { first } from "rxjs/operators";
+import { MessageService } from "primeng/api";
 
 @Component({
   selector: "app-job-details",
@@ -18,7 +19,8 @@ export class JobDetailsComponent implements OnChanges {
 
   constructor(
     private accountService: AccountService,
-    private jobApplicationService: JobApplicationService
+    private jobApplicationService: JobApplicationService,
+    private messageService: MessageService
   ) {
     this.accountService.user.subscribe((x) => (this.user = x));
   }
@@ -40,11 +42,19 @@ export class JobDetailsComponent implements OnChanges {
       .pipe(first())
       .subscribe({
         next: () => {
-          console.log("success");
           this.applied = true;
+          this.messageService.add({
+            severity: "success",
+            summary: "Success",
+            detail: "Application sent successfully.",
+          });
         },
         error: (error) => {
-          console.log("error");
+          this.messageService.add({
+            severity: "error",
+            summary: "error",
+            detail: "An error has occured.",
+          });
         },
       });
   }

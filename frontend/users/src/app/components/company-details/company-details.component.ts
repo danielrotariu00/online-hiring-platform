@@ -11,6 +11,7 @@ import {
   User,
 } from "../../models";
 import { AccountService, DatabaseService } from "../../services";
+import { MessageService } from "primeng/api";
 
 @Component({
   selector: "app-company-details",
@@ -28,7 +29,8 @@ export class CompanyDetailsComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private accountService: AccountService,
-    private databaseService: DatabaseService
+    private databaseService: DatabaseService,
+    private messageService: MessageService
   ) {}
 
   ngOnInit(): void {
@@ -47,33 +49,47 @@ export class CompanyDetailsComponent implements OnInit {
               company.country = country;
             });
         });
-      this.company = company;
-    });
 
-    this.databaseService
-      .getCompanyIndustriesByCompanyId(companyId)
-      .subscribe((companyIndustries: CompanyIndustry[]) => {
-        this.companyIndustries = companyIndustries.map((companyIndustry) => {
+      let compIndustries = [];
+      this.databaseService
+        .getCompanyIndustriesByCompanyId(companyId)
+        .subscribe((companyIndustries: CompanyIndustry[]) => {
+          compIndustries = companyIndustries.map((companyIndustry) => {
+            this.databaseService
+              .getIndustryByID(companyIndustry.industryId)
+              .subscribe((industry: Industry) => {
+                companyIndustry.industry = industry;
+              });
+
+            return companyIndustry;
+          });
+
           this.databaseService
-            .getIndustryByID(companyIndustry.industryId)
-            .subscribe((industry: Industry) => {
-              companyIndustry.industry = industry;
+            .getCompanyIndustriesFollowedByUser(this.user.id)
+            .subscribe((companyIndustries: CompanyIndustry[]) => {
+              let ids = companyIndustries.map(
+                (companyIndustry) => companyIndustry.id
+              );
+
+              let temp = [];
+
+              compIndustries.forEach((companyIndustry) => {
+                companyIndustry.isFollowed = ids.includes(companyIndustry.id);
+                temp.push(companyIndustry);
+              });
+
+              this.companyIndustries = [...temp];
+
+              if (company.photo) {
+                let splitted = company.photo.split(":");
+                splitted[1] = "//localhost";
+                company.photo = splitted.join(":") + `?${Date.now()}`;
+              }
+
+              this.company = company;
             });
-
-          return companyIndustry;
         });
-      });
-
-    this.databaseService
-      .getCompanyIndustriesFollowedByUser(this.user.id)
-      .subscribe((companyIndustries: CompanyIndustry[]) => {
-        let ids = companyIndustries.map(
-          (companyIndustry) => companyIndustry.id
-        );
-        this.companyIndustries.forEach((companyIndustry) => {
-          companyIndustry.isFollowed = ids.includes(companyIndustry.id);
-        });
-      });
+    });
   }
 
   onClickFollow(companyIndustry: CompanyIndustry) {
@@ -82,11 +98,19 @@ export class CompanyDetailsComponent implements OnInit {
       .pipe(first())
       .subscribe({
         next: () => {
-          console.log("success");
           companyIndustry.isFollowed = true;
+          this.messageService.add({
+            severity: "success",
+            summary: "Success",
+            detail: "Industry followed successfully.",
+          });
         },
         error: (error) => {
-          console.log("error");
+          this.messageService.add({
+            severity: "error",
+            summary: "Error",
+            detail: "An error has occured.",
+          });
         },
       });
   }
@@ -97,11 +121,19 @@ export class CompanyDetailsComponent implements OnInit {
       .pipe(first())
       .subscribe({
         next: () => {
-          console.log("success");
           companyIndustry.isFollowed = false;
+          this.messageService.add({
+            severity: "success",
+            summary: "Success",
+            detail: "Industry unfollowed successfully.",
+          });
         },
         error: (error) => {
-          console.log("error");
+          this.messageService.add({
+            severity: "error",
+            summary: "Error",
+            detail: "An error has occured.",
+          });
         },
       });
   }

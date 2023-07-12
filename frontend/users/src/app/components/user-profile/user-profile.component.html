@@ -151,7 +151,7 @@
         ></button>
         <p-dialog
           [(visible)]="displayUserProfessionalExperienceForm"
-          [style]="{ width: '50vw', height: '45vw' }"
+          [style]="{ width: '50vw', height: '50vw' }"
           [baseZIndex]="10000"
         >
           <h4>Company</h4>
@@ -185,11 +185,19 @@
           <br />
           <br />
           <h4>Start Date</h4>
-          <p-calendar inputId="basic" [(ngModel)]="startDate"></p-calendar>
+          <p-calendar
+            inputId="basic"
+            [maxDate]="endDate"
+            [(ngModel)]="startDate"
+          ></p-calendar>
           <br />
           <br />
           <h4>End Date</h4>
-          <p-calendar inputId="basic" [(ngModel)]="endDate"></p-calendar>
+          <p-calendar
+            inputId="basic"
+            [minDate]="startDate"
+            [(ngModel)]="endDate"
+          ></p-calendar>
           <br />
           <br />
           <h4>Description</h4>
@@ -239,15 +247,6 @@
             (click)="
               deleteUserProfessionalExperience(professionalExperience.id)
             "
-          ></button>
-          <button
-            *ngIf="isOwner"
-            pButton
-            pRipple
-            type="button"
-            icon="pi pi-pencil"
-            class="p-button-rounded p-button-outlined edit"
-            disabled="true"
           ></button>
           <div class="experience-text">
             <h4>{{ professionalExperience?.company?.name }}</h4>
@@ -313,11 +312,19 @@
           <br />
           <br />
           <h4>Start Date</h4>
-          <p-calendar inputId="basic" [(ngModel)]="edStartDate"></p-calendar>
+          <p-calendar
+            inputId="basic"
+            [maxDate]="edEndDate"
+            [(ngModel)]="edStartDate"
+          ></p-calendar>
           <br />
           <br />
           <h4>End Date</h4>
-          <p-calendar inputId="basic" [(ngModel)]="edEndDate"></p-calendar>
+          <p-calendar
+            inputId="basic"
+            [minDate]="edStartDate"
+            [(ngModel)]="edEndDate"
+          ></p-calendar>
           <br />
           <br />
           <h4>Description</h4>
@@ -370,15 +377,6 @@
             class="p-button-rounded p-button-danger p-button-outlined"
             (click)="deleteUserEducationalExperience(educationalExperience.id)"
           ></button>
-          <button
-            *ngIf="isOwner"
-            pButton
-            pRipple
-            type="button"
-            icon="pi pi-pencil"
-            class="p-button-rounded p-button-outlined edit"
-            disabled="true"
-          ></button>
           <div class="experience-text">
             <h4>{{ educationalExperience?.educationalInstitution?.name }}</h4>
             <h5>{{ educationalExperience?.speciality }}</h5>
@@ -406,7 +404,7 @@
         ></button>
         <p-dialog
           [(visible)]="displayUserSkillForm"
-          [style]="{ width: '20vw', height: '20vw' }"
+          [style]="{ width: '20vw', height: '30vw' }"
           [baseZIndex]="10000"
         >
           <h4>Skill</h4>
@@ -487,11 +485,19 @@
           <br />
           <br />
           <h4>Start Date</h4>
-          <p-calendar inputId="basic" [(ngModel)]="pStartDate"></p-calendar>
+          <p-calendar
+            inputId="basic"
+            [maxDate]="pEndDate"
+            [(ngModel)]="pStartDate"
+          ></p-calendar>
           <br />
           <br />
           <h4>End Date</h4>
-          <p-calendar inputId="basic" [(ngModel)]="pEndDate"></p-calendar>
+          <p-calendar
+            inputId="basic"
+            [minDate]="pStartDate"
+            [(ngModel)]="pEndDate"
+          ></p-calendar>
           <br />
           <br />
           <h4>Description</h4>
@@ -530,15 +536,6 @@
             class="p-button-rounded p-button-danger p-button-outlined"
             (click)="deleteUserProject(userProject.id)"
           ></button>
-          <button
-            *ngIf="isOwner"
-            pButton
-            pRipple
-            type="button"
-            icon="pi pi-pencil"
-            class="p-button-rounded p-button-outlined edit"
-            disabled="true"
-          ></button>
           <div class="tabbed">
             <h4>{{ userProject?.name }}</h4>
             <h6>
@@ -564,7 +561,7 @@
         ></button>
         <p-dialog
           [(visible)]="displayUserLanguageForm"
-          [style]="{ width: '20vw', height: '30vw' }"
+          [style]="{ width: '20vw', height: '35vw' }"
           [baseZIndex]="10000"
         >
           <h4>Language</h4>
@@ -646,15 +643,6 @@
             class="p-button-rounded p-button-danger p-button-outlined"
             (click)="deleteUserLanguage(userLanguage.languageId)"
           ></button>
-          <button
-            *ngIf="isOwner"
-            pButton
-            pRipple
-            type="button"
-            icon="pi pi-pencil"
-            class="p-button-rounded p-button-outlined edit"
-            disabled="true"
-          ></button>
           <div class="tabbed">
             <h4>
               {{ userLanguage?.language?.name }} -
@@ -662,6 +650,8 @@
             </h4>
           </div>
         </ng-template>
+        <br />
+        <br />
       </div>
     </div>
   </div>

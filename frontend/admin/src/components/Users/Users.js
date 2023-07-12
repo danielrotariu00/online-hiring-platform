@@ -102,17 +102,24 @@ export default function Users() {
         <SplitterPanel className="flex align-items-center justify-content-center">
           <h2>User Details</h2>
 
-          <Card
-            title={
-              <div>
-                <h3>Id: {selectedUser?.id}</h3>
-                <h3>Email: {selectedUser?.email}</h3>
-                <h3>Role: {roleNames[selectedUser?.userRole?.roleId]}</h3>
-                <h3>CompanyId: {selectedUser?.userRole?.companyId}</h3>
-              </div>
-            }
-            style={{ height: "20em", width: "30em" }}
-          ></Card>
+          {selectedUser && (
+            <Card
+              title={
+                <div>
+                  <h3>Id: {selectedUser?.id}</h3>
+                  <h3>Email: {selectedUser?.email}</h3>
+                  <h3>Role: {roleNames[selectedUser?.userRole?.roleId]}</h3>
+                  <h3>
+                    CompanyId:{" "}
+                    {selectedUser?.userRole?.companyId == 0
+                      ? "None"
+                      : selectedUser?.userRole?.companyId}
+                  </h3>
+                </div>
+              }
+              style={{ height: "20em", width: "30em" }}
+            ></Card>
+          )}
         </SplitterPanel>
       </Splitter>
     </div>

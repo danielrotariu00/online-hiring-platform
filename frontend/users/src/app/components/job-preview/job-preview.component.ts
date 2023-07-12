@@ -12,5 +12,11 @@ export class JobPreviewComponent implements OnInit {
 
   constructor() {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    if (this.job.company.photo) {
+      let splitted = this.job.company.photo.split(":");
+      splitted[1] = "//localhost";
+      this.job.company.photo = splitted.join(":") + `?${Date.now()}`;
+    }
+  }
 }

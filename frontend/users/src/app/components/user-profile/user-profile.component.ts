@@ -16,6 +16,7 @@ import { UserProject } from "src/app/models/user_project";
 import { LanguageLevel } from "src/app/models/language_level";
 import { FileUpload } from "primeng/fileupload";
 import { environment } from "src/environments/environment";
+import { MessageService } from "primeng/api";
 
 @Component({
   selector: "app-user-profile",
@@ -85,6 +86,7 @@ export class UserProfileComponent implements OnInit {
     private router: Router,
     private accountService: AccountService,
     private databaseService: DatabaseService,
+    private messageService: MessageService,
     @Inject(LOCALE_ID) private locale: string,
     @Inject(DOCUMENT) private document: Document
   ) {}
@@ -108,8 +110,15 @@ export class UserProfileComponent implements OnInit {
                 userDetails.country = country;
               });
           });
-        userDetails.profilePictureUrl =
-          userDetails.profilePictureUrl + `?${Date.now()}`;
+
+        if (userDetails.profilePictureUrl) {
+          let splitted = userDetails.profilePictureUrl.split(":");
+          splitted[1] = "//localhost";
+          userDetails.profilePictureUrl = splitted.join(":") + `?${Date.now()}`;
+
+          // userDetails.profilePictureUrl = userDetails.profilePictureUrl + `?${Date.now()}`;
+        }
+
         this.userDetails = userDetails;
       });
 
@@ -122,6 +131,14 @@ export class UserProfileComponent implements OnInit {
               .getCompanyById(userProfessionalExperience.companyId)
               .subscribe((company: Company) => {
                 userProfessionalExperience.company = company;
+
+                if (userProfessionalExperience.company.photo) {
+                  let splitted =
+                    userProfessionalExperience.company.photo.split(":");
+                  splitted[1] = "//localhost";
+                  userProfessionalExperience.company.photo =
+                    splitted.join(":") + `?${Date.now()}`;
+                }
               });
 
             userProfessionalExperience.formattedStartDate = formatDate(
@@ -152,6 +169,15 @@ export class UserProfileComponent implements OnInit {
               .subscribe((educationalInstitution: EducationalInstitution) => {
                 userEducationalExperience.educationalInstitution =
                   educationalInstitution;
+                if (userEducationalExperience.educationalInstitution.photo) {
+                  let splitted =
+                    userEducationalExperience.educationalInstitution.photo.split(
+                      ":"
+                    );
+                  splitted[1] = "//localhost";
+                  userEducationalExperience.educationalInstitution.photo =
+                    splitted.join(":") + `?${Date.now()}`;
+                }
               });
 
             userEducationalExperience.formattedStartDate = formatDate(
@@ -270,8 +296,16 @@ export class UserProfileComponent implements OnInit {
 
   showUserSkillForm() {
     this.displayUserSkillForm = true;
+    this.skills = [];
+
     this.databaseService.getSkills().subscribe((skills: Skill[]) => {
-      this.skills = skills;
+      let skillsIds = this.userSkills.map((userSkill) => userSkill.skillId);
+
+      for (let i = 0; i < skills.length; i++) {
+        if (!skillsIds.includes(skills[i].id)) {
+          this.skills.push(skills[i]);
+        }
+      }
     });
   }
 
@@ -281,8 +315,18 @@ export class UserProfileComponent implements OnInit {
 
   showUserLanguageForm() {
     this.displayUserLanguageForm = true;
+    this.languages = [];
+
     this.databaseService.getLanguages().subscribe((languages: Language[]) => {
-      this.languages = languages;
+      let languagesIds = this.userLanguages.map(
+        (userLanguage) => userLanguage.languageId
+      );
+
+      for (let i = 0; i < languages.length; i++) {
+        if (!languagesIds.includes(languages[i].id)) {
+          this.languages.push(languages[i]);
+        }
+      }
     });
     this.databaseService
       .getLanguageLevels()
@@ -292,38 +336,62 @@ export class UserProfileComponent implements OnInit {
   }
 
   saveUserDetails() {
-    this.databaseService
-      .saveUserDetails(
-        this.loggedUser.id,
-        this.firstName,
-        this.lastName,
-        this.phoneNumber,
-        this.selectedCity.id,
-        this.userDetails.address,
-        this.profileDescription,
-        this.userDetails.profilePictureUrl
-      )
-      .pipe(first())
-      .subscribe({
-        next: (userDetails: UserDetails) => {
-          this.displayUserDetailsForm = false;
-          this.databaseService
-            .getCityById(userDetails.cityId)
-            .subscribe((city: City) => {
-              userDetails.city = city;
-
-              this.databaseService
-                .getCountryById(userDetails.city.countryId)
-                .subscribe((country: Country) => {
-                  userDetails.country = country;
-                });
-            });
-          this.userDetails = userDetails;
-        },
-        error: (error) => {
-          console.log("error");
-        },
+    if (
+      !this.firstName ||
+      !this.lastName ||
+      !this.phoneNumber ||
+      !this.selectedCity ||
+      !this.profileDescription
+    ) {
+      this.messageService.add({
+        severity: "error",
+        summary: "Error",
+        detail: "All fields are required.",
       });
+    } else {
+      this.databaseService
+        .saveUserDetails(
+          this.loggedUser.id,
+          this.firstName,
+          this.lastName,
+          this.phoneNumber,
+          this.selectedCity.id,
+          this.userDetails.address,
+          this.profileDescription,
+          this.userDetails.profilePictureUrl
+        )
+        .pipe(first())
+        .subscribe({
+          next: (userDetails: UserDetails) => {
+            this.displayUserDetailsForm = false;
+            this.databaseService
+              .getCityById(userDetails.cityId)
+              .subscribe((city: City) => {
+                userDetails.city = city;
+
+                this.databaseService
+                  .getCountryById(userDetails.city.countryId)
+                  .subscribe((country: Country) => {
+                    userDetails.country = country;
+                  });
+              });
+            this.userDetails = userDetails;
+
+            this.messageService.add({
+              severity: "success",
+              summary: "Success",
+              detail: "Details updated successfully.",
+            });
+          },
+          error: (error) => {
+            this.messageService.add({
+              severity: "error",
+              summary: "Error",
+              detail: "An error has occured.",
+            });
+          },
+        });
+    }
 
     if (this.imageUpload.hasFiles()) {
       this.databaseService
@@ -331,54 +399,94 @@ export class UserProfileComponent implements OnInit {
         .pipe(first())
         .subscribe({
           next: (event: any) => {
-            console.log("success");
+            this.messageService.add({
+              severity: "success",
+              summary: "Success",
+              detail: "Picture updated successfully.",
+            });
           },
           error: (error) => {
-            console.log("error");
+            this.messageService.add({
+              severity: "error",
+              summary: "Error",
+              detail: "Only images are allowed.",
+            });
           },
         });
     }
   }
 
   addUserProfessionalExperience() {
-    this.databaseService
-      .addUserProfessionalExperience(
-        this.loggedUser.id,
-        this.selectedCompany.id,
-        this.jobTitle,
-        this.startDate,
-        this.endDate,
-        this.description
-      )
-      .pipe(first())
-      .subscribe({
-        next: (userProfessionalExperience: UserProfessionalExperience) => {
-          this.displayUserProfessionalExperienceForm = false;
-          this.databaseService
-            .getCompanyById(userProfessionalExperience.companyId)
-            .subscribe((company: Company) => {
-              userProfessionalExperience.company = company;
-            });
-
-          userProfessionalExperience.formattedStartDate = formatDate(
-            userProfessionalExperience.startDate,
-            "d MMM y",
-            this.locale
-          );
-
-          userProfessionalExperience.formattedEndDate = formatDate(
-            userProfessionalExperience.endDate,
-            "d MMM y",
-            this.locale
-          );
-          this.userProfessionalExperienceList.push(
-            ...[userProfessionalExperience]
-          );
-        },
-        error: (error) => {
-          console.log("error");
-        },
+    if (
+      !this.selectedCompany ||
+      !this.jobTitle ||
+      !this.startDate ||
+      !this.endDate ||
+      !this.description
+    ) {
+      this.messageService.add({
+        severity: "error",
+        summary: "Error",
+        detail: "All fields are required.",
       });
+    } else {
+      this.databaseService
+        .addUserProfessionalExperience(
+          this.loggedUser.id,
+          this.selectedCompany.id,
+          this.jobTitle,
+          this.startDate,
+          this.endDate,
+          this.description
+        )
+        .pipe(first())
+        .subscribe({
+          next: (userProfessionalExperience: UserProfessionalExperience) => {
+            this.displayUserProfessionalExperienceForm = false;
+            this.databaseService
+              .getCompanyById(userProfessionalExperience.companyId)
+              .subscribe((company: Company) => {
+                userProfessionalExperience.company = company;
+                if (userProfessionalExperience.company.photo) {
+                  let splitted =
+                    userProfessionalExperience.company.photo.split(":");
+                  splitted[1] = "//localhost";
+                  userProfessionalExperience.company.photo =
+                    splitted.join(":") + `?${Date.now()}`;
+                }
+              });
+
+            userProfessionalExperience.formattedStartDate = formatDate(
+              userProfessionalExperience.startDate,
+              "d MMM y",
+              this.locale
+            );
+
+            userProfessionalExperience.formattedEndDate = formatDate(
+              userProfessionalExperience.endDate,
+              "d MMM y",
+              this.locale
+            );
+
+            this.userProfessionalExperienceList.push(
+              ...[userProfessionalExperience]
+            );
+
+            this.messageService.add({
+              severity: "success",
+              summary: "Success",
+              detail: "Experience added successfully.",
+            });
+          },
+          error: (error) => {
+            this.messageService.add({
+              severity: "error",
+              summary: "Error",
+              detail: "An error has occured.",
+            });
+          },
+        });
+    }
   }
 
   deleteUserProfessionalExperience(id: number) {
@@ -387,62 +495,106 @@ export class UserProfileComponent implements OnInit {
       .pipe(first())
       .subscribe({
         next: () => {
-          console.log("success");
           this.userProfessionalExperienceList =
             this.userProfessionalExperienceList.filter(
               (userProfessionalExperience) =>
                 userProfessionalExperience.id != id
             );
+          this.messageService.add({
+            severity: "success",
+            summary: "Success",
+            detail: "Experience deleted successfully.",
+          });
         },
         error: (error) => {
-          console.log("error");
+          this.messageService.add({
+            severity: "error",
+            summary: "Error",
+            detail: "An error has occured.",
+          });
         },
       });
   }
 
   addUserEducationalExperience() {
-    this.databaseService
-      .addUserEducationalExperience(
-        this.loggedUser.id,
-        this.selectedEducationalInstitution.id,
-        this.speciality,
-        this.title,
-        this.edStartDate,
-        this.edEndDate,
-        this.edDescription
-      )
-      .pipe(first())
-      .subscribe({
-        next: (userEducationalExperience: UserEducationalExperience) => {
-          this.displayUserEducationalExperienceForm = false;
-          this.databaseService
-            .getEducationalInstitutionById(
-              userEducationalExperience.educationalInstitutionId
-            )
-            .subscribe((educationalInstitution: EducationalInstitution) => {
-              userEducationalExperience.educationalInstitution =
-                educationalInstitution;
-            });
-
-          userEducationalExperience.formattedStartDate = formatDate(
-            userEducationalExperience.startDate,
-            "d MMM y",
-            this.locale
-          );
-
-          userEducationalExperience.formattedEndDate = formatDate(
-            userEducationalExperience.endDate,
-            "d MMM y",
-            this.locale
-          );
-          this.userEducationalExperienceList.push(
-            ...[userEducationalExperience]
-          );
-        },
-        error: (error) => {
-          console.log("error");
-        },
+    if (
+      !this.selectedEducationalInstitution ||
+      !this.speciality ||
+      !this.title ||
+      !this.edStartDate ||
+      !this.edEndDate ||
+      !this.edDescription
+    ) {
+      this.messageService.add({
+        severity: "error",
+        summary: "Error",
+        detail: "All fields are required.",
       });
+    } else {
+      this.databaseService
+        .addUserEducationalExperience(
+          this.loggedUser.id,
+          this.selectedEducationalInstitution.id,
+          this.speciality,
+          this.title,
+          this.edStartDate,
+          this.edEndDate,
+          this.edDescription
+        )
+        .pipe(first())
+        .subscribe({
+          next: (userEducationalExperience: UserEducationalExperience) => {
+            this.displayUserEducationalExperienceForm = false;
+            this.databaseService
+              .getEducationalInstitutionById(
+                userEducationalExperience.educationalInstitutionId
+              )
+              .subscribe((educationalInstitution: EducationalInstitution) => {
+                userEducationalExperience.educationalInstitution =
+                  educationalInstitution;
+
+                if (userEducationalExperience.educationalInstitution.photo) {
+                  let splitted =
+                    userEducationalExperience.educationalInstitution.photo.split(
+                      ":"
+                    );
+                  splitted[1] = "//localhost";
+                  userEducationalExperience.educationalInstitution.photo =
+                    splitted.join(":") + `?${Date.now()}`;
+                }
+              });
+
+            userEducationalExperience.formattedStartDate = formatDate(
+              userEducationalExperience.startDate,
+              "d MMM y",
+              this.locale
+            );
+
+            userEducationalExperience.formattedEndDate = formatDate(
+              userEducationalExperience.endDate,
+              "d MMM y",
+              this.locale
+            );
+
+            this.userEducationalExperienceList.push(
+              ...[userEducationalExperience]
+            );
+
+            this.messageService.add({
+              severity: "success",
+              summary: "Success",
+              detail: "Experience added successfully.",
+            });
+          },
+          error: (error) => {
+            this.messageService.add({
+              severity: "error",
+              summary: "Error",
+              detail: "An error has occured.",
+            });
+          },
+        });
+    }
   }
 
   deleteUserEducationalExperience(id: number) {
@@ -451,37 +603,62 @@ export class UserProfileComponent implements OnInit {
       .pipe(first())
       .subscribe({
         next: () => {
-          console.log("success");
           this.userEducationalExperienceList =
             this.userEducationalExperienceList.filter(
               (userEducationalExperience) => userEducationalExperience.id != id
             );
+          this.messageService.add({
+            severity: "success",
+            summary: "Success",
+            detail: "Experience deleted successfully.",
+          });
         },
         error: (error) => {
-          console.log("error");
+          this.messageService.add({
+            severity: "error",
+            summary: "Error",
+            detail: "An error has occured.",
+          });
         },
       });
   }
 
   addUserSkill() {
-    this.databaseService
-      .addUserSkill(this.loggedUser.id, this.selectedSkill.id)
-      .pipe(first())
-      .subscribe({
-        next: (userSkill: UserSkill) => {
-          this.displayUserSkillForm = false;
-          this.databaseService
-            .getSkillById(userSkill.skillId)
-            .subscribe((skill: Skill) => {
-              userSkill.skill = skill;
-            });
-
-          this.userSkills.push(...[userSkill]);
-        },
-        error: (error) => {
-          console.log("error");
-        },
+    if (!this.selectedSkill) {
+      this.messageService.add({
+        severity: "error",
+        summary: "Error",
+        detail: "No skill selected.",
       });
+    } else {
+      this.databaseService
+        .addUserSkill(this.loggedUser.id, this.selectedSkill.id)
+        .pipe(first())
+        .subscribe({
+          next: (userSkill: UserSkill) => {
+            this.displayUserSkillForm = false;
+            this.databaseService
+              .getSkillById(userSkill.skillId)
+              .subscribe((skill: Skill) => {
+                userSkill.skill = skill;
+              });
+
+            this.userSkills.push(...[userSkill]);
+            this.messageService.add({
+              severity: "success",
+              summary: "Success",
+              detail: "Skill added successfully.",
+            });
+          },
+          error: (error) => {
+            this.messageService.add({
+              severity: "error",
+              summary: "Error",
+              detail: "An error has occured.",
+            });
+          },
+        });
+    }
   }
 
   deleteUserSkill(skillId: number) {
@@ -490,48 +667,79 @@ export class UserProfileComponent implements OnInit {
       .pipe(first())
       .subscribe({
         next: () => {
-          console.log("success");
           this.userSkills = this.userSkills.filter(
             (userSkill) => userSkill.skillId != skillId
           );
+          this.messageService.add({
+            severity: "success",
+            summary: "Success",
+            detail: "Skill deleted successfully.",
+          });
         },
         error: (error) => {
-          console.log("error");
+          this.messageService.add({
+            severity: "error",
+            summary: "Error",
+            detail: "An error has occured.",
+          });
         },
       });
   }
 
   addUserProject() {
-    this.databaseService
-      .addUserProject(
-        this.loggedUser.id,
-        this.pName,
-        this.pStartDate,
-        this.pEndDate,
-        this.pDescription
-      )
-      .pipe(first())
-      .subscribe({
-        next: (userProject: UserProject) => {
-          this.displayUserProjectForm = false;
-
-          userProject.formattedStartDate = formatDate(
-            userProject.startDate,
-            "d MMM y",
-            this.locale
-          );
-
-          userProject.formattedEndDate = formatDate(
-            userProject.endDate,
-            "d MMM y",
-            this.locale
-          );
-          this.userProjects.push(...[userProject]);
-        },
-        error: (error) => {
-          console.log("error");
-        },
+    if (
+      !this.pName ||
+      !this.pStartDate ||
+      !this.pEndDate ||
+      !this.pDescription
+    ) {
+      this.messageService.add({
+        severity: "error",
+        summary: "Error",
+        detail: "All fields are required.",
       });
+    } else {
+      this.databaseService
+        .addUserProject(
+          this.loggedUser.id,
+          this.pName,
+          this.pStartDate,
+          this.pEndDate,
+          this.pDescription
+        )
+        .pipe(first())
+        .subscribe({
+          next: (userProject: UserProject) => {
+            this.displayUserProjectForm = false;
+
+            userProject.formattedStartDate = formatDate(
+              userProject.startDate,
+              "d MMM y",
+              this.locale
+            );
+
+            userProject.formattedEndDate = formatDate(
+              userProject.endDate,
+              "d MMM y",
+              this.locale
+            );
+            this.userProjects.push(...[userProject]);
+
+            this.messageService.add({
+              severity: "success",
+              summary: "Success",
+              detail: "Project added successfully.",
+            });
+          },
+          error: (error) => {
+            this.messageService.add({
+              severity: "error",
+              summary: "Error",
+              detail: "An error has occured.",
+            });
+          },
+        });
+    }
   }
 
   deleteUserProject(id: number) {
@@ -540,46 +748,73 @@ export class UserProfileComponent implements OnInit {
       .pipe(first())
       .subscribe({
         next: () => {
-          console.log("success");
           this.userProjects = this.userProjects.filter(
             (userProject) => userProject.id != id
           );
+
+          this.messageService.add({
+            severity: "success",
+            summary: "Success",
+            detail: "Project deleted successfully.",
+          });
         },
         error: (error) => {
-          console.log("error");
+          this.messageService.add({
+            severity: "error",
+            summary: "Error",
+            detail: "An error has occured.",
+          });
         },
       });
   }
 
   addUserLanguage() {
-    this.databaseService
-      .addUserLanguage(
-        this.loggedUser.id,
-        this.selectedLanguage.id,
-        this.selectedLanguageLevel.id
-      )
-      .pipe(first())
-      .subscribe({
-        next: (userLanguage: UserLanguage) => {
-          this.displayUserLanguageForm = false;
-          this.databaseService
-            .getLanguageById(userLanguage.languageId)
-            .subscribe((language: Language) => {
-              userLanguage.language = language;
-            });
-
-          this.databaseService
-            .getLanguageLevelById(userLanguage.languageLevelId)
-            .subscribe((languageLevel: LanguageLevel) => {
-              userLanguage.languageLevel = languageLevel;
-            });
-
-          this.userLanguages.push(...[userLanguage]);
-        },
-        error: (error) => {
-          console.log("error");
-        },
+    if (!this.selectedLanguage || !this.selectedLanguageLevel) {
+      this.messageService.add({
+        severity: "error",
+        summary: "Error",
+        detail: "All fields are required.",
       });
+    } else {
+      this.databaseService
+        .addUserLanguage(
+          this.loggedUser.id,
+          this.selectedLanguage.id,
+          this.selectedLanguageLevel.id
+        )
+        .pipe(first())
+        .subscribe({
+          next: (userLanguage: UserLanguage) => {
+            this.displayUserLanguageForm = false;
+            this.databaseService
+              .getLanguageById(userLanguage.languageId)
+              .subscribe((language: Language) => {
+                userLanguage.language = language;
+              });
+
+            this.databaseService
+              .getLanguageLevelById(userLanguage.languageLevelId)
+              .subscribe((languageLevel: LanguageLevel) => {
+                userLanguage.languageLevel = languageLevel;
+              });
+
+            this.userLanguages.push(...[userLanguage]);
+
+            this.messageService.add({
+              severity: "success",
+              summary: "Success",
+              detail: "Language added successfully.",
+            });
+          },
+          error: (error) => {
+            this.messageService.add({
+              severity: "error",
+              summary: "Error",
+              detail: "An error has occured.",
+            });
+          },
+        });
+    }
   }
 
   deleteUserLanguage(languageId: number) {
@@ -588,13 +823,21 @@ export class UserProfileComponent implements OnInit {
       .pipe(first())
       .subscribe({
         next: () => {
-          console.log("success");
           this.userLanguages = this.userLanguages.filter(
             (userLanguage) => userLanguage.languageId != languageId
           );
+          this.messageService.add({
+            severity: "success",
+            summary: "Success",
+            detail: "Language deleted successfully.",
+          });
         },
         error: (error) => {
-          console.log("error");
+          this.messageService.add({
+            severity: "error",
+            summary: "Error",
+            detail: "An error has occured.",
+          });
         },
       });
   }
@@ -611,9 +854,4 @@ export class UserProfileComponent implements OnInit {
     } else {
     }
   }
-
-  // public getLinkPicture(pictureUrl: string) {
-  //   let timeStamp = new Date().getTime();
-  //   return pictureUrl + "?" + timeStamp;
-  // }
 }

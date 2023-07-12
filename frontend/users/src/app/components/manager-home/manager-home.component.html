@@ -25,10 +25,14 @@
               (click)="showCompanyDetailsForm()"
             ></button>
             <h1>{{ company.name }}</h1>
-            <h3>{{ company.city?.name }}, {{ company.country?.name }}</h3>
+            <h3 *ngIf="company.city">
+              {{ company.city?.name }}, {{ company.country?.name }}
+            </h3>
           </div>
         </div>
-        <a href="https://{{ company.website }}">Visit Website</a>
+        <a *ngIf="company.website" href="https://{{ company.website }}"
+          >Visit Website</a
+        >
         <br />
         <br />
         <p-fieldset legend="About" [toggleable]="true" collapsed="true">

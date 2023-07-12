@@ -17,6 +17,7 @@ import {
 } from "../../models";
 
 import { DatabaseService } from "../../services";
+import { MessageService } from "primeng/api";
 
 @Component({
   selector: "app-jobs",
@@ -69,6 +70,7 @@ export class JobsComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private databaseService: DatabaseService,
+    private messageService: MessageService,
     @Inject(LOCALE_ID) private locale: string
   ) {}
 

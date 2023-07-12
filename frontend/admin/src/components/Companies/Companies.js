@@ -53,26 +53,24 @@ export default function Users() {
                 fetch(usersUrl + `/${managerId}`, requestOptions)
                   .then((response) => response.json())
                   .then((manager) => {
-                    console.log(manager);
                     companies[i]["managers"].push({
                       id: managerId,
                       email: manager.email,
                     });
-                    console.log(companies[i]);
                     setCompanies(companies);
                   })
                   .catch((err) => {
-                    console.log(err.message);
+                    alert(err.message);
                   });
               }
             })
             .catch((err) => {
-              console.log(err.message);
+              alert(err.message);
             });
         }
       })
       .catch((err) => {
-        console.log(err.message);
+        alert(err.message);
       });
   };
 
@@ -111,7 +109,7 @@ export default function Users() {
       /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     if (re.test(newEmail)) {
       if (newPassword.length < 6) {
-        alert("Password is too short!");
+        alert("Password must contain at least 6 characters.");
       } else {
         let companyManagersURL = "http://localhost:5000/api/managers";
         const requestOptions = {
@@ -127,28 +125,48 @@ export default function Users() {
           }),
         };
         fetch(companyManagersURL, requestOptions)
-          .then((response) => response.json())
+          .then((response) => {
+            if (!response.ok) {
+              alert("Error: Check if email is already used.");
+            } else {
+              return response.json();
+            }
+          })
           .then((_data) => getCompanies());
         onHide();
       }
     } else {
-      alert("Invalid email!");
+      alert("Invalid email.");
     }
   };
 
   const onCreateClick = () => {
-    let companiesUrl = "http://localhost:5000/database-api/companies";
-    const requestOptions = {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name: newName,
-      }),
-    };
-    fetch(companiesUrl, requestOptions).then((_data) => getCompanies());
+    if (!newName || newName.length < 3) {
+      alert("Name must contain at least 3 characters.");
+    } else {
+      let companiesUrl = "http://localhost:5000/database-api/companies";
+      const requestOptions = {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: newName,
+        }),
+      };
+      fetch(companiesUrl, requestOptions).then((_data) => {
+        if (!_data.ok) {
+          if (_data.status == 409) {
+            alert("Name is already in use.");
+          } else {
+            alert("Please enter a name.");
+          }
+        } else {
+          getCompanies();
+        }
+      });
+    }
   };
 
   const onAddClick = () => {
@@ -266,7 +284,9 @@ export default function Users() {
               </div>
             ))}
           </ul>
-          <Button label="Add Manager" onClick={onAddClick} />
+          {selectedCompany && (
+            <Button label="Add Manager" onClick={onAddClick} />
+          )}
           <Dialog
             header="New Manager"
             visible={displayForm}

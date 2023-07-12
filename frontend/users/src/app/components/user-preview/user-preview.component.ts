@@ -19,6 +19,12 @@ export class UserPreviewComponent implements OnInit {
     this.databaseService
       .getUserDetails(this.userId)
       .subscribe((userDetails: UserDetails) => {
+        if (userDetails.profilePictureUrl) {
+          let splitted = userDetails.profilePictureUrl.split(":");
+          splitted[1] = "//localhost";
+          userDetails.profilePictureUrl = splitted.join(":") + `?${Date.now()}`;
+        }
+
         this.userDetails = userDetails;
       });
   }

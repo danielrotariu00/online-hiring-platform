@@ -18,6 +18,7 @@ import { AccountService, DatabaseService } from "../../services";
 import { Router } from "@angular/router";
 import { Paginator } from "primeng/paginator";
 import { first } from "rxjs";
+import { MessageService } from "primeng/api";
 
 @Component({
   selector: "app-companies",
@@ -61,7 +62,8 @@ export class RecruiterHomeComponent implements OnInit {
   constructor(
     private router: Router,
     private accountService: AccountService,
-    private databaseService: DatabaseService
+    private databaseService: DatabaseService,
+    private messageService: MessageService
   ) {}
 
   ngOnInit(): void {
@@ -240,101 +242,137 @@ export class RecruiterHomeComponent implements OnInit {
   }
 
   saveJob() {
-    if (this.edit) {
-      this.databaseService
-        .editJob(
-          this.selectedJob.id,
-          this.jobTitle,
-          this.loggedUser.id,
-          this.selectedFormCompanyIndustry.id,
-          this.selectedCity.id,
-          this.selectedWorkType.id,
-          this.selectedJobType.id,
-          this.selectedExperienceLevel.id,
-          this.description,
-          this.selectedJobStatus.id
-        )
-        .pipe(first())
-        .subscribe({
-          next: () => {
-            this.displayJobForm = false;
-            this.databaseService
-              .getJobs(
-                0,
-                this.maxJobs,
-                false,
-                0,
-                undefined,
-                undefined,
-                undefined,
-                [this.company],
-                undefined,
-                undefined,
-                undefined,
-                undefined,
-                undefined,
-                undefined,
-                false
-              )
-              .subscribe((jobQueryResponse: JobQueryResponse) => {
-                this.jobs = this.toJobList(jobQueryResponse.jobList);
-                this.totalElements = jobQueryResponse.totalElements;
-                this.totalPages = jobQueryResponse.totalPages;
-                this.selectedJob = this.jobs[0];
-                setTimeout(() => this.paginator.changePage(0));
-              });
-          },
-          error: (error) => {
-            console.log("error");
-          },
-        });
+    if (
+      !this.jobTitle ||
+      !this.selectedFormCompanyIndustry ||
+      !this.selectedCity ||
+      !this.selectedWorkType ||
+      !this.selectedJobType ||
+      !this.selectedExperienceLevel ||
+      !this.selectedJobStatus ||
+      !this.description
+    ) {
+      this.messageService.add({
+        severity: "error",
+        summary: "Error",
+        detail: "All fields are required.",
+      });
     } else {
-      this.databaseService
-        .addJob(
-          this.jobTitle,
-          this.loggedUser.id,
-          this.selectedFormCompanyIndustry.id,
-          this.selectedCity.id,
-          this.selectedWorkType.id,
-          this.selectedJobType.id,
-          this.selectedExperienceLevel.id,
-          this.selectedJobStatus.id,
-          this.description
-        )
-        .pipe(first())
-        .subscribe({
-          next: () => {
-            this.displayJobForm = false;
-            this.databaseService
-              .getJobs(
-                0,
-                this.maxJobs,
-                false,
-                0,
-                undefined,
-                undefined,
-                undefined,
-                [this.company],
-                undefined,
-                undefined,
-                undefined,
-                undefined,
-                undefined,
-                undefined,
-                false
-              )
-              .subscribe((jobQueryResponse: JobQueryResponse) => {
-                this.jobs = this.toJobList(jobQueryResponse.jobList);
-                this.totalElements = jobQueryResponse.totalElements;
-                this.totalPages = jobQueryResponse.totalPages;
-                this.selectedJob = this.jobs[0];
-                setTimeout(() => this.paginator.changePage(0));
+      if (this.edit) {
+        this.databaseService
+          .editJob(
+            this.selectedJob.id,
+            this.jobTitle,
+            this.loggedUser.id,
+            this.selectedFormCompanyIndustry.id,
+            this.selectedCity.id,
+            this.selectedWorkType.id,
+            this.selectedJobType.id,
+            this.selectedExperienceLevel.id,
+            this.description,
+            this.selectedJobStatus.id
+          )
+          .pipe(first())
+          .subscribe({
+            next: () => {
+              this.displayJobForm = false;
+              this.databaseService
+                .getJobs(
+                  0,
+                  this.maxJobs,
+                  false,
+                  0,
+                  undefined,
+                  undefined,
+                  undefined,
+                  [this.company],
+                  undefined,
+                  undefined,
+                  undefined,
+                  undefined,
+                  undefined,
+                  undefined,
+                  false
+                )
+                .subscribe((jobQueryResponse: JobQueryResponse) => {
+                  this.jobs = this.toJobList(jobQueryResponse.jobList);
+                  this.totalElements = jobQueryResponse.totalElements;
+                  this.totalPages = jobQueryResponse.totalPages;
+                  this.selectedJob = this.jobs[0];
+                  setTimeout(() => this.paginator.changePage(0));
+
+                  this.messageService.add({
+                    severity: "success",
+                    summary: "Success",
+                    detail: "Job updated successfully.",
+                  });
+                });
+            },
+            error: (error) => {
+              this.messageService.add({
+                severity: "error",
+                summary: "Error",
+                detail: "An error has occured.",
               });
-          },
-          error: (error) => {
-            console.log("error");
-          },
-        });
+            },
+          });
+      } else {
+        this.databaseService
+          .addJob(
+            this.jobTitle,
+            this.loggedUser.id,
+            this.selectedFormCompanyIndustry.id,
+            this.selectedCity.id,
+            this.selectedWorkType.id,
+            this.selectedJobType.id,
+            this.selectedExperienceLevel.id,
+            this.selectedJobStatus.id,
+            this.description
+          )
+          .pipe(first())
+          .subscribe({
+            next: () => {
+              this.displayJobForm = false;
+              this.databaseService
+                .getJobs(
+                  0,
+                  this.maxJobs,
+                  false,
+                  0,
+                  undefined,
+                  undefined,
+                  undefined,
+                  [this.company],
+                  undefined,
+                  undefined,
+                  undefined,
+                  undefined,
+                  undefined,
+                  undefined,
+                  false
+                )
+                .subscribe((jobQueryResponse: JobQueryResponse) => {
+                  this.jobs = this.toJobList(jobQueryResponse.jobList);
+                  this.totalElements = jobQueryResponse.totalElements;
+                  this.totalPages = jobQueryResponse.totalPages;
+                  this.selectedJob = this.jobs[0];
+                  setTimeout(() => this.paginator.changePage(0));
+                  this.messageService.add({
+                    severity: "success",
+                    summary: "Success",
+                    detail: "Job added successfully.",
+                  });
+                });
+            },
+            error: (error) => {
+              this.messageService.add({
+                severity: "error",
+                summary: "Error",
+                detail: "An error has occured.",
+              });
+            },
+          });
+      }
     }
   }
 

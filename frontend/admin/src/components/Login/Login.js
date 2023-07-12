@@ -23,9 +23,14 @@ export default function Login({ setToken, setUserId, setUserRole }) {
         password: password,
       }),
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (response.status != 200) {
+          alert(response.statusText);
+        } else {
+          return response.json();
+        }
+      })
       .then((data) => {
-        console.log(data);
         let token = data.token;
         let userId = data.id;
         let userRole = data.userRole;
@@ -44,9 +49,7 @@ export default function Login({ setToken, setUserId, setUserRole }) {
 
         // window.location.reload(true);
       })
-      .catch((err) => {
-        console.log(err.message);
-      });
+      .catch((err) => {});
   };
 
   return (

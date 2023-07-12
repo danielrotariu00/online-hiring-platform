@@ -674,6 +674,12 @@ export class DatabaseService {
 
     this.getCompanyById(jobResponse.companyId).subscribe((company: Company) => {
       job.company = company;
+
+      if (job.company.photo) {
+        let splitted = job.company.photo.split(":");
+        splitted[1] = "//localhost";
+        job.company.photo = splitted.join(":") + `?${Date.now()}`;
+      }
     });
 
     this.getCityById(jobResponse.cityId).subscribe((city: City) => {
@@ -713,6 +719,7 @@ export class DatabaseService {
     );
 
     job.description = jobResponse.description;
+
     return job;
   }
 }

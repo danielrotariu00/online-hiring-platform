@@ -11,5 +11,11 @@ export class CompanyPreviewComponent implements OnInit {
   company: Company;
   constructor() {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    if (this.company.photo) {
+      let splitted = this.company.photo.split(":");
+      splitted[1] = "//localhost";
+      this.company.photo = splitted.join(":") + `?${Date.now()}`;
+    }
+  }
 }

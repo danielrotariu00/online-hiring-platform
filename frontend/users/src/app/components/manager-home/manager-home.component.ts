@@ -11,6 +11,7 @@ import { AccountService, DatabaseService } from "../../services";
 import { Router } from "@angular/router";
 import { first } from "rxjs";
 import { FileUpload } from "primeng/fileupload";
+import { MessageService } from "primeng/api";
 
 @Component({
   selector: "app-manager-home",
@@ -40,15 +41,14 @@ export class ManagerHomeComponent implements OnInit {
 
   constructor(
     private accountService: AccountService,
-    private databaseService: DatabaseService
+    private databaseService: DatabaseService,
+    private messageService: MessageService
   ) {}
 
   ngOnInit(): void {
     this.accountService.user.subscribe((x) => {
       this.loggedUser = x;
       this.companyId = this.loggedUser.companyId;
-      console.log(this.loggedUser);
-      console.log(this.companyId);
 
       this.databaseService
         .getCompanyById(this.companyId)
@@ -64,7 +64,15 @@ export class ManagerHomeComponent implements OnInit {
                   company.country = country;
                 });
             });
-          company.photo = company.photo + `?${Date.now()}`;
+
+          if (company.photo) {
+            let splitted = company.photo.split(":");
+            splitted[1] = "//localhost";
+            company.photo = splitted.join(":") + `?${Date.now()}`;
+
+            // company.photo = company.photo + `?${Date.now()}`;
+          }
+
           this.company = company;
         });
 
@@ -86,8 +94,18 @@ export class ManagerHomeComponent implements OnInit {
 
   showIndustryForm() {
     this.displayIndustryForm = true;
+    this.industries = [];
+
     this.databaseService.getIndustries().subscribe((industries: Industry[]) => {
-      this.industries = industries;
+      let companyIndustryIds = this.companyIndustries.map(
+        (companyIndustry) => companyIndustry.industryId
+      );
+
+      for (let i = 0; i < industries.length; i++) {
+        if (!companyIndustryIds.includes(industries[i].id)) {
+          this.industries.push(industries[i]);
+        }
+      }
     });
   }
 
@@ -97,7 +115,6 @@ export class ManagerHomeComponent implements OnInit {
       .pipe(first())
       .subscribe({
         next: (companyIndustry: CompanyIndustry) => {
-          console.log(companyIndustry);
           this.displayIndustryForm = false;
           this.databaseService
             .getIndustryByID(companyIndustry.industryId)
@@ -105,9 +122,28 @@ export class ManagerHomeComponent implements OnInit {
               companyIndustry.industry = industry;
             });
           this.companyIndustries.push(...[companyIndustry]);
+          this.selectedIndustry = null;
+
+          this.messageService.add({
+            severity: "success",
+            summary: "Success",
+            detail: "Industry added successfully.",
+          });
         },
         error: (error) => {
-          console.log("error");
+          if (error == "CONFLICT") {
+            this.messageService.add({
+              severity: "error",
+              summary: "Error",
+              detail: "Industry already exists.",
+            });
+          } else {
+            this.messageService.add({
+              severity: "error",
+              summary: "Error",
+              detail: "An error has occured",
+            });
+          }
         },
       });
   }
@@ -118,13 +154,21 @@ export class ManagerHomeComponent implements OnInit {
       .pipe(first())
       .subscribe({
         next: () => {
-          console.log("success");
           this.companyIndustries = this.companyIndustries.filter(
             (companyIndustry) => companyIndustry.industryId != industryId
           );
+          this.messageService.add({
+            severity: "success",
+            summary: "Success",
+            detail: "Industry deleted successfully.",
+          });
         },
         error: (error) => {
-          console.log("error");
+          this.messageService.add({
+            severity: "error",
+            summary: "Error",
+            detail: "An error has occured",
+          });
         },
       });
   }
@@ -147,37 +191,66 @@ export class ManagerHomeComponent implements OnInit {
   }
 
   saveCompanyDetails() {
-    this.databaseService
-      .updateCompany(
-        this.company.id,
-        this.companyName,
-        this.companyWebsite,
-        this.selectedCity.id,
-        this.companyDescription,
-        this.company.photo
-      )
-      .pipe(first())
-      .subscribe({
-        next: (company: Company) => {
-          this.displayCompanyDetailsForm = false;
-          this.databaseService
-            .getCityById(company.cityId)
-            .subscribe((city: City) => {
-              company.city = city;
-
-              this.databaseService
-                .getCountryById(company.city.countryId)
-                .subscribe((country: Country) => {
-                  company.country = country;
-                });
-            });
-          this.company.name = company.name;
-          this.company = company;
-        },
-        error: (error) => {
-          console.log("error");
-        },
+    if (
+      !this.companyName ||
+      !this.companyWebsite ||
+      !this.selectedCity ||
+      !this.companyDescription
+    ) {
+      this.messageService.add({
+        severity: "error",
+        summary: "Error",
+        detail: "All fields are required.",
       });
+    } else {
+      console.log(this.selectedCity);
+      this.databaseService
+        .updateCompany(
+          this.company.id,
+          this.companyName,
+          this.companyWebsite,
+          this.selectedCity.id,
+          this.companyDescription,
+          this.company.photo
+        )
+        .pipe(first())
+        .subscribe({
+          next: () => {
+            this.displayCompanyDetailsForm = false;
+
+            this.databaseService
+              .getCompanyById(this.companyId)
+              .subscribe((company) => {
+                this.databaseService
+                  .getCityById(company.cityId)
+                  .subscribe((city: City) => {
+                    company.city = city;
+
+                    this.databaseService
+                      .getCountryById(company.city.countryId)
+                      .subscribe((country: Country) => {
+                        company.country = country;
+                      });
+                  });
+                company.photo = company.photo + `?${Date.now()}`;
+                this.company = company;
+              });
+            this.messageService.add({
+              severity: "success",
+              summary: "Success",
+              detail: "Details updated successfully.",
+            });
+          },
+          error: (error) => {
+            console.log("error");
+            this.messageService.add({
+              severity: "error",
+              summary: "Error",
+              detail: "An error has occured",
+            });
+          },
+        });
+    }
 
     if (this.imageUpload.hasFiles()) {
       this.databaseService
@@ -185,10 +258,18 @@ export class ManagerHomeComponent implements OnInit {
         .pipe(first())
         .subscribe({
           next: (event: any) => {
-            console.log("success");
+            this.messageService.add({
+              severity: "success",
+              summary: "Success",
+              detail: "Picture updated successfully.",
+            });
           },
           error: (error) => {
-            console.log("error");
+            this.messageService.add({
+              severity: "error",
+              summary: "Error",
+              detail: "Only images are allowed.",
+            });
           },
         });
     }

@@ -80,14 +80,14 @@ export class CompanyRecruitersComponent implements OnInit {
       this.messageService.add({
         severity: "error",
         summary: "Error",
-        detail: "Email is not valid!",
+        detail: "Email is not valid.",
       });
     } else {
       if (this.password.length < 6) {
         this.messageService.add({
           severity: "error",
           summary: "Error",
-          detail: "Password must be at least 6 characters!",
+          detail: "Password must be at least 6 characters.",
         });
       } else {
         this.databaseService
@@ -110,13 +110,23 @@ export class CompanyRecruitersComponent implements OnInit {
                           }
                         );
 
+                      this.messageService.add({
+                        severity: "success",
+                        summary: "Success",
+                        detail: "Recruiter added successfully.",
+                      });
+
                       return companyRecruiter;
                     }
                   );
                 });
             },
             error: (error) => {
-              console.log("error");
+              this.messageService.add({
+                severity: "error",
+                summary: "Error",
+                detail: "Email already in use.",
+              });
             },
           });
       }
@@ -138,9 +148,18 @@ export class CompanyRecruitersComponent implements OnInit {
               this.selectedCompanyRecruiter.recruiterId
           );
           this.selectedCompanyRecruiter = null;
+          this.messageService.add({
+            severity: "success",
+            summary: "Success",
+            detail: "Recruiter deleted successfully.",
+          });
         },
         error: (error) => {
-          console.log("error");
+          this.messageService.add({
+            severity: "error",
+            summary: "error",
+            detail: "An error has occured.",
+          });
         },
       });
   }

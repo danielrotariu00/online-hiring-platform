@@ -131,14 +131,14 @@ export class JobApplicationDetailsComponent
               this.messageService.add({
                 severity: "success",
                 summary: "Success",
-                detail: "You have withdrawn your job application",
+                detail: "Application withdrawn successfully.",
               });
             },
             error: (error) => {
               this.messageService.add({
                 severity: "error",
                 summary: "Error",
-                detail: "An error has occured",
+                detail: "An error has occured.",
               });
             },
           });
@@ -166,23 +166,40 @@ export class JobApplicationDetailsComponent
   }
 
   saveReview() {
-    this.jobApplicationService
-      .updateReview(
-        this.user.id,
-        this.jobApplication.id,
-        this.inputRating,
-        this.inputDescription
-      )
-      .pipe(first())
-      .subscribe({
-        next: (review: Review) => {
-          this.displayReviewForm = false;
-          this.jobApplication.review = review;
-        },
-        error: (error) => {
-          console.log("error");
-        },
+    if (!this.inputRating || !this.inputDescription) {
+      this.messageService.add({
+        severity: "error",
+        summary: "Error",
+        detail: "All fields are required.",
       });
+    } else {
+      this.jobApplicationService
+        .updateReview(
+          this.user.id,
+          this.jobApplication.id,
+          this.inputRating,
+          this.inputDescription
+        )
+        .pipe(first())
+        .subscribe({
+          next: (review: Review) => {
+            this.displayReviewForm = false;
+            this.jobApplication.review = review;
+            this.messageService.add({
+              severity: "success",
+              summary: "Success",
+              detail: "Review updated successfully.",
+            });
+          },
+          error: (error) => {
+            this.messageService.add({
+              severity: "error",
+              summary: "Error",
+              detail: "An error has occured.",
+            });
+          },
+        });
+    }
   }
 
   uploadFile() {
@@ -192,10 +209,18 @@ export class JobApplicationDetailsComponent
         .pipe(first())
         .subscribe({
           next: (event: any) => {
-            console.log("success");
+            this.messageService.add({
+              severity: "success",
+              summary: "Success",
+              detail: "File uploaded successfully.",
+            });
           },
           error: (error) => {
-            console.log("error");
+            this.messageService.add({
+              severity: "error",
+              summary: "Error",
+              detail: "An error has occured.",
+            });
           },
         });
     }

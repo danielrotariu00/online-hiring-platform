@@ -108,7 +108,12 @@
           </h5>
         </p-fieldset>
         <br />
-        <h4>Average rating: {{ recruiterStatistics?.averageRating }} / 5</h4>
+        <div *ngIf="recruiterStatistics?.averageRating != 0">
+          <h4>Average rating: {{ recruiterStatistics?.averageRating }} / 5</h4>
+        </div>
+        <div *ngIf="recruiterStatistics?.averageRating == 0">
+          <h4>Average rating: No data</h4>
+        </div>
         <br />
         <div class="reviews-box">
           <div class="header">
