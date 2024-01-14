@@ -1,4 +1,1 @@
-todo:
-- update data on company profile when edit
-- view jobs bug
 
