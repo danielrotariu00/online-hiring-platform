@@ -55,6 +55,7 @@ Candidate & Recruiter frontend components
 ![alt text](https://github.com/danielrotariu00/online-hiring-platform/blob/main/users-frontend.png)
 
 Admin frontend components
+
 ![alt text](https://github.com/danielrotariu00/online-hiring-platform/blob/main/admin-frontend.png)
 
 UI Screenshots
