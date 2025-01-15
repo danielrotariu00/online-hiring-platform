@@ -59,24 +59,47 @@ Admin frontend components
 ![alt text](https://github.com/danielrotariu00/online-hiring-platform/blob/main/admin-frontend.png)
 
 UI Screenshots
+
+Edit company profile
+
 ![alt text](https://github.com/danielrotariu00/online-hiring-platform/blob/main/01.png)
+
+Manage recruiters
 
 ![alt text](https://github.com/danielrotariu00/online-hiring-platform/blob/main/02.png)
 
+Candidate profile
+
 ![alt text](https://github.com/danielrotariu00/online-hiring-platform/blob/main/03.png)
+
+Companies
 
 ![alt text](https://github.com/danielrotariu00/online-hiring-platform/blob/main/04.png)
 
+Company profile
+
 ![alt text](https://github.com/danielrotariu00/online-hiring-platform/blob/main/05.png)
+
+Newsfeed with recent job
 
 ![alt text](https://github.com/danielrotariu00/online-hiring-platform/blob/main/06.png)
 
+Filter jobs
+
 ![alt text](https://github.com/danielrotariu00/online-hiring-platform/blob/main/07.png)
+
+Notifications
 
 ![alt text](https://github.com/danielrotariu00/online-hiring-platform/blob/main/08.png)
 
+Own applications
+
 ![alt text](https://github.com/danielrotariu00/online-hiring-platform/blob/main/09.png)
 
+Company Jobs
+
 ![alt text](https://github.com/danielrotariu00/online-hiring-platform/blob/main/10.png)
+
+Job Applications
 
 ![alt text](https://github.com/danielrotariu00/online-hiring-platform/blob/main/11.png)
