@@ -8,3 +8,7 @@ Docker network
 
 Use Case Diagram
 ![alt text](https://github.com/danielrotariu00/online-hiring-platform/blob/main/use-case-diagram.png)
+
+Register action
+
+![alt text](https://github.com/danielrotariu00/online-hiring-platform/blob/main/register.png)
