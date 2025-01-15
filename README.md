@@ -59,13 +59,23 @@ Admin frontend components
 
 UI Screenshots
 ![alt text](https://github.com/danielrotariu00/online-hiring-platform/blob/main/01.png)
+
 ![alt text](https://github.com/danielrotariu00/online-hiring-platform/blob/main/02.png)
+
 ![alt text](https://github.com/danielrotariu00/online-hiring-platform/blob/main/03.png)
+
 ![alt text](https://github.com/danielrotariu00/online-hiring-platform/blob/main/04.png)
+
 ![alt text](https://github.com/danielrotariu00/online-hiring-platform/blob/main/05.png)
+
 ![alt text](https://github.com/danielrotariu00/online-hiring-platform/blob/main/06.png)
+
 ![alt text](https://github.com/danielrotariu00/online-hiring-platform/blob/main/07.png)
+
 ![alt text](https://github.com/danielrotariu00/online-hiring-platform/blob/main/08.png)
+
 ![alt text](https://github.com/danielrotariu00/online-hiring-platform/blob/main/09.png)
+
 ![alt text](https://github.com/danielrotariu00/online-hiring-platform/blob/main/10.png)
+
 ![alt text](https://github.com/danielrotariu00/online-hiring-platform/blob/main/11.png)
